@@ -1,3 +1,4 @@
+# pyright: basic
 """Trade-off chart for ADR-0006 from .build/logs/tune-taus.json (dev + negatives only)."""
 
 from __future__ import annotations
@@ -23,9 +24,15 @@ ax.scatter(
     label="tau settings with false referral <= 10%",
 )
 c, d = data["chosen"], data["default"]
-ax.scatter(100 * c["false_see_doctor"], 100 * c["sensitivity"], s=70, color="#d1495b", label="chosen")
 ax.scatter(
-    100 * d["false_see_doctor"], 100 * d["sensitivity"], s=70, marker="s", color="#2b6777",
+    100 * c["false_see_doctor"], 100 * c["sensitivity"], s=70, color="#d1495b", label="chosen"
+)
+ax.scatter(
+    100 * d["false_see_doctor"],
+    100 * d["sensitivity"],
+    s=70,
+    marker="s",
+    color="#2b6777",
     label="spec defaults",
 )
 ax.axvline(30, color="#555", ls="--", lw=1)
