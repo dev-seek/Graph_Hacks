@@ -11,8 +11,8 @@ services:
     volumes:
       - falkordb_data:/var/lib/falkordb/data
     ports:
-      - "127.0.0.1:6379:6379"   # local dev only; remove in production (internal network only)
-      - "127.0.0.1:3000:3000"   # FalkorDB Browser, local dev only
+      - "127.0.0.1:6379:6379" # local dev only; remove in production (internal network only)
+      - "127.0.0.1:3000:3000" # FalkorDB Browser, local dev only
     networks: [internal]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -38,7 +38,13 @@ services:
       - "127.0.0.1:8000:8000"
     networks: [internal]
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/api/health')"]
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request as u; u.urlopen('http://localhost:8000/api/health')",
+        ]
       interval: 5s
       timeout: 3s
       retries: 12
@@ -47,7 +53,8 @@ services:
   web:
     profiles: [web]
     image: node:22-alpine
-    command: ["sh", "-c", "echo 'web service is a stub until P4' && sleep infinity"]
+    command:
+      ["sh", "-c", "echo 'web service is a stub until P4' && sleep infinity"]
     networks: [internal]
 
 networks:

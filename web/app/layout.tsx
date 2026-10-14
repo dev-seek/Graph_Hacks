@@ -22,7 +22,11 @@ export const metadata: Metadata = {
     "Helps families gather the right evidence and reach the right specialist sooner. It does not diagnose.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${atkinson.variable} ${fraunces.variable}`}>
       <body>{children}</body>

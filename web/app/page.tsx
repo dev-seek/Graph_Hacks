@@ -4,14 +4,16 @@ export default function Home() {
       <section className="on-night rounded-2xl bg-night px-6 py-8 text-card">
         <h1 className="!text-card text-3xl">Constellation</h1>
         <p className="mt-3">
-          Tell us your child&apos;s story. We help you gather the right evidence and reach the right
-          doctor sooner.
+          Tell us your child&apos;s story. We help you gather the right evidence
+          and reach the right doctor sooner.
         </p>
-        <p className="mt-3 text-starlight">This is a placeholder page for the build skeleton.</p>
+        <p className="mt-3 text-starlight">
+          This is a placeholder page for the build skeleton.
+        </p>
       </section>
       <p className="mt-6 text-muted">
-        This doesn&apos;t tell us what&apos;s causing anything. It helps you and your doctor decide
-        what to check.
+        This doesn&apos;t tell us what&apos;s causing anything. It helps you and
+        your doctor decide what to check.
       </p>
       <a
         href="#start"

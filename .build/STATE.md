@@ -21,7 +21,7 @@ updated: (set by Claude on every change)
 - [x] 5 Makefile (all targets, logs, llm-key-check) + scripts/review_check.py (+tests)
 - [x] 6 docs skeleton: LICENSE, DATA_LICENSES, AI_USAGE, VERIFIED, ADR 0001, README skeleton
 - [x] 7 Next.js skeleton (tokens, fonts, placeholder page), pnpm lockfile
-- [ ] 8 pre-commit + GitHub Actions CI
+- [x] 8 pre-commit + GitHub Actions CI
 - [x] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
 - [x] 10 draft review/negatives.yaml (40 cases)
 - [ ] 11 draft review/demo_stories.md + doctor_letters.md
