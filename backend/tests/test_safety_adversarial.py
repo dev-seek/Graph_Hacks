@@ -44,6 +44,16 @@ MUST_FLAG: list[tuple[str, str, int | None]] = [
     ),
     ("He swallowed bleach but took his medicine as prescribed", "poisoning", None),
     ("My 7 year old says he wants to die", "teen_self_harm", 84),
+    (
+        "No headache yesterday, but this morning she woke with a headache and was sick",
+        "morning_vomiting_headache",
+        None,
+    ),
+    (
+        "She had gastro last month but now wakes every morning with a headache and vomiting",
+        "morning_vomiting_headache",
+        None,
+    ),
     ("She won’t wake up, hard to rouse", "unresponsive", None),
     ("The rash doesn’t fade when pressed and she has a fever", "nonblanching_rash_fever", None),
 ]

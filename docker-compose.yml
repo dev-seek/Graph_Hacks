@@ -52,7 +52,7 @@ services:
   # web: stub until P4 (Next.js app in ./web). Enabled with `docker compose --profile web up`.
   web:
     profiles: [web]
-    image: node:22-alpine
+    image: node:22.23.3-alpine
     command:
       ["sh", "-c", "echo 'web service is a stub until P4' && sleep infinity"]
     networks: [internal]

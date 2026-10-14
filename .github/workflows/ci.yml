@@ -6,7 +6,7 @@ on:
 
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       falkordb:
         image: falkordb/falkordb:6.0.2   # same pinned tag as docker-compose.yml
@@ -18,7 +18,7 @@ jobs:
       FALKORDB_HOST: localhost
       FALKORDB_PORT: "6379"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: astral-sh/setup-uv@v10.3.0
         with:
           version: "0.13.1"
@@ -32,14 +32,14 @@ jobs:
       - run: uv run pip-audit --skip-editable || true
 
   web:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.1.0
         with:
           package_json_file: web/package.json
-          version: 12
-      - uses: actions/setup-node@v7
+          version: 12.11.2
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: 22
           cache: pnpm
@@ -51,11 +51,11 @@ jobs:
       - run: pnpm --dir web audit --prod || true
 
   secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
+      - uses: gitleaks/gitleaks-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

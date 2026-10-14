@@ -22,7 +22,7 @@ def test_list_graphs_responds(db: FalkorDB) -> None:
 
 def test_ro_query_with_timeout_is_enforced(db: FalkorDB) -> None:
     g = db.select_graph("p0_timeout_probe")
-    g.query("CREATE (:Probe)")
+    g.query("CREATE (:Probe)", timeout=2000)
     try:
         with pytest.raises(Exception, match="(?i)time"):
             g.ro_query("UNWIND range(1, 1000000000) AS x RETURN count(x)", timeout=200)
