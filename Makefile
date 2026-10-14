@@ -13,7 +13,7 @@ setup:
 	@$(RUN) setup bash -c "uv sync && ( [ ! -f web/package.json ] || pnpm --dir web install --frozen-lockfile ) && (uv run pre-commit install || true)"
 
 data:
-	$(call NYI,data,P1)
+	@$(RUN) data uv run python scripts/data.py
 
 kb:
 	$(call NYI,kb,P1)

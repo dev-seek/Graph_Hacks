@@ -1,0 +1,26 @@
+sources:
+  hp_json:
+    file: hp.json
+    version: v2026-09-01
+    url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2026-09-01/hp.json
+    sha256: a7b3a012e7b4007a35a7cf8da35f2373b54cc16907f80d13d62470d31f833501
+  hpoa:
+    file: phenotype.hpoa
+    version: v2026-09-01
+    url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2026-09-01/phenotype.hpoa
+    sha256: e89aa39c8f97bf5a52c5d160f9250a603681d630ade8ec2679d84ac5aece1f72
+  orpha_product9:
+    file: en_product9_prev.xml
+    version: '2026-06-29'
+    url: https://www.orphadata.com/data/xml/en_product9_prev.xml
+    sha256: 6b492b3cc61e5a0327de12f59386a07a071760a938d0bbd8f525bc4a5f71b7f0
+  orpha_product1:
+    file: en_product1.json.tar.gz
+    version: '2026-06-29'
+    url: https://www.orphadata.com/data/json/en_product1.json.tar.gz
+    sha256: b3691511af69261c8eede0ae8bed74a0def006f8a67010ed267a02d0f94f6fb3
+  phenopackets:
+    file: all_phenopackets.zip
+    version: 0.1.27
+    url: https://github.com/monarch-initiative/phenopacket-store/releases/download/0.1.27/all_phenopackets.zip
+    sha256: d0c70005bb09b87035087516252b6b539fbc0415be7c664b73c9cde7eedf205a

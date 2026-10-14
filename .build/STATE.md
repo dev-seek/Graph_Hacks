@@ -14,7 +14,7 @@ updated: (set by Claude on every change)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [ ] 1. data/manifest.yaml + `make data` (resolve release URLs from GitHub/Orphadata, SHA-256, record versions)
+- [x] 1. data/manifest.yaml + `make data` (resolve release URLs from GitHub/Orphadata, SHA-256, record versions)
 - [ ] 2. Derive real file structures (hp.json, hpoa, product1, phenopackets) -> VERIFIED.md; ID normaliser
 - [ ] 3. Synthetic fixture ontology in data/fixtures/
 - [ ] 4. Parsers tests-first (test-engineer): hp, hpoa+freq+OMIM/IEA, prevalence, product1, phenopackets
