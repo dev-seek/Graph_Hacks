@@ -16,7 +16,7 @@ from app.eval.simulator import SimParent
 Strategy = Literal["ours", "b1", "b2"]
 DEFAULT_AGE_MONTHS = 60
 QUESTIONS_PER_ROUND = 4
-DOCTOR_EXAM_CHECKS = 5
+DOCTOR_EXAM_CHECKS = 8
 DOCTOR_TESTS = 3
 
 

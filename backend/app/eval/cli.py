@@ -12,7 +12,7 @@ from falkordb import Graph
 
 from app.engine.reasoner import Reasoner
 from app.eval.cases import DevCase, load_dev_cases
-from app.eval.metrics import Rank, summarise
+from app.eval.metrics import Rank, paired_diff_ci, summarise, top_k
 from app.eval.paths import ROOT
 from app.eval.runner import CaseTrace, Strategy, run_case
 from app.eval.simulator import SimFeature, SimParent
@@ -85,14 +85,14 @@ def fmt(s: dict[str, float], key: str) -> str:
     return f"{100 * s[key]:5.1f} [{100 * s[key + '_lo']:4.1f},{100 * s[key + '_hi']:4.1f}]"
 
 
-def smoke() -> int:
+def smoke(n_cases: int = SMOKE_CASES) -> int:
     info = load_kb_info()
     if info is None:
         print("no kb built: run make kb")  # noqa: T201
         return 1
     graph = connect().select_graph(info.release)
     reasoner = Reasoner(graph)
-    cases = sample(load_dev_cases(graph), SMOKE_CASES)
+    cases = sample(load_dev_cases(graph), n_cases)
     homes = home_terms(graph, cases)
     report: dict[str, Any] = {"kb": info.release, "cases": len(cases), "rounds": SMOKE_ROUNDS}
     print(f"eval-smoke: {len(cases)} dev cases, {SMOKE_ROUNDS} rounds, kb {info.release}")  # noqa: T201
@@ -110,6 +110,11 @@ def smoke() -> int:
         s = summarise(ranks)
         report[name] = s
         print(f"{name:16} {fmt(s, 'top1')} {fmt(s, 'top10')} {s['mrr']:.3f}")  # noqa: T201
+    ours = ranks_at(results["ours"], SMOKE_ROUNDS)
+    for name, ranks in rows_out[:3]:
+        lo, hi = paired_diff_ci(ours, ranks, lambda r: top_k(r, 10))
+        report[f"top10_gain_vs_{name}"] = [lo, hi]
+        print(f"Ours - {name}: top10 gain 95% CI [{100 * lo:+.1f}, {100 * hi:+.1f}] pts")  # noqa: T201
     lat = [r.score_ms + r.plan_ms for t in results["ours"] for r in t.rounds]
     report["round_ms_median"] = sorted(lat)[len(lat) // 2]
     LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -119,4 +124,4 @@ def smoke() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(smoke())
+    sys.exit(smoke(int(sys.argv[1]) if len(sys.argv) > 1 else SMOKE_CASES))

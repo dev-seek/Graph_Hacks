@@ -11,6 +11,7 @@ Run `python -m app.eval.tune <stage>` with stage in {grid, taus}. Results go to 
 from __future__ import annotations
 
 import json
+import pickle
 import sys
 import time
 from collections.abc import Sequence
@@ -29,7 +30,7 @@ from app.eval.negatives import load_resolved
 from app.eval.negatives_run import NegativeRun, negative_rates, run_negative
 from app.eval.paths import ROOT
 from app.eval.runner import CaseTrace, run_case
-from app.eval.taus import min_false_see_doctor
+from app.eval.taus import choose, min_false_see_doctor, sweep
 from app.graph.client import connect
 from app.kb.info import load_kb_info
 from app.safety.engine import SafetyEngine
@@ -37,6 +38,7 @@ from app.safety.engine import SafetyEngine
 LOGS = ROOT / ".build" / "logs"
 TUNE_CASES = 120
 ROUNDS = 3
+MAX_ROUNDS = 4
 MAX_FALSE_REFERRAL = 0.10
 MAX_FALSE_SEE_DOCTOR = 0.30
 
@@ -130,8 +132,16 @@ def _fmt(e: Evaluation) -> str:
 
 
 def _best(evals: list[Evaluation]) -> Evaluation:
-    """Feasible = some tau meets FR <= 10% and FSD <= 30% on the negatives; then max dev MRR."""
-    ok = [e for e in evals if e.min_fsd <= MAX_FALSE_SEE_DOCTOR]
+    """Feasible at the default taus (FR <= 10%, FSD <= 30% on the negatives), then max dev MRR.
+
+    The default-tau feasibility check stops pi0 drifting towards "everything is rare" just because
+    the dev positives are all rare-disease cases (see ADR-0005).
+    """
+    ok = [
+        e
+        for e in evals
+        if e.false_referral <= MAX_FALSE_REFERRAL and e.false_see_doctor <= MAX_FALSE_SEE_DOCTOR
+    ]
     return max(ok or evals, key=lambda e: (e.mrr, e.top10))
 
 
@@ -194,7 +204,32 @@ def grid() -> int:
 
 
 def taus() -> int:
-    raise SystemExit("implemented in the taus stage (see tune_taus)")
+    """Stage 2: with the tuned scoring params, sweep tau0/tau1/tau2 (ADR-0006)."""
+    best = json.loads((LOGS / "tune-grid2.json").read_text())["best"]
+    params = _params(best)
+    release, cases, homes = setup()
+    ids = [c.case.case_id for c in cases]
+    n_neg = len(load_resolved())
+    pdict = asdict(params)
+    with Pool(8, initializer=_init, initargs=(release, cases, homes)) as pool:
+        pos = pool.map(_dev_task, [(c, pdict, MAX_ROUNDS, True) for c in ids], chunksize=2)
+        negs = pool.map(_neg_task, [(i, pdict, MAX_ROUNDS) for i in range(n_neg)], chunksize=1)
+    (LOGS / "tune-taus-traces.pkl").write_bytes(pickle.dumps((pos, negs)))
+    points = sweep(pos, negs)
+    chosen = choose(points)
+    floor = sum(1 for r in negs if r.urgent_soon or r.emergency) / len(negs)
+    out = {
+        "params": best,
+        "n_dev": len(pos),
+        "n_neg": len(negs),
+        "safety_floor_see_doctor": floor,
+        "chosen": asdict(chosen) if chosen else None,
+        "default": asdict(next(p for p in points if p.taus == Taus())),
+        "points": [asdict(p) for p in points],
+    }
+    (LOGS / "tune-taus.json").write_text(json.dumps(out, indent=2))
+    print(json.dumps({k: v for k, v in out.items() if k != "points"}, indent=2))  # noqa: T201
+    return 0
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ packages = ["backend/app"]
 [dependency-groups]
 dev = [
     "hypothesis==6.169.1",
+    "matplotlib==3.11.2",
     "pip-audit==2.10.1",
     "pre-commit==4.7.0",
     "pyright==1.1.414",

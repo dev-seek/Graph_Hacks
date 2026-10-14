@@ -1,0 +1,17 @@
+# Tuned engine values (P2). Chosen on the DEV split + synthetic negatives only; see ADRs 0003-0006.
+# The dataclass defaults in backend/app/engine stay at the spec §7/§8.3 starting values.
+scoring:
+  eps: 0.02
+  lam: 1.0
+  pi0: 0.7
+  beta: 0.45
+  gamma_on: false
+  w:
+    parent_story: 0.8
+    parent_answer: 0.9
+    doctor_exam: 1.0
+    lab_or_test: 1.0
+taus:
+  t0: 0.3
+  t1: 0.4
+  t2: 0.5

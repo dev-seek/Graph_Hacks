@@ -13,6 +13,7 @@ from typing import Any
 from falkordb import Graph
 from redis.exceptions import RedisError
 
+from app.engine.config import tuned_params
 from app.engine.planner import Askable, Plan, PlannerInput, plan_round
 from app.engine.scoring import (
     Finding,
@@ -70,7 +71,7 @@ class Reasoner:
         self, graph: Graph, cache: AncestorCache | None = None, params: Params | None = None
     ) -> None:
         self.graph = graph
-        self.params = params or Params()
+        self.params = params or tuned_params()
         self.cache = cache or AncestorCache.load(graph)
         self._prior_total: float | None = None
 
