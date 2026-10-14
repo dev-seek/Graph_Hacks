@@ -1,46 +1,175 @@
-# STATUS: TEMPLATE — Claude drafts this in P0; the human reviews and edits it, then replaces this line with: # STATUS: REVIEWED by <name> on <date>
-# After that line says REVIEWED, Claude may read this file but a hook blocks it from editing it.
+# STATUS: DRAFT — drafted by Claude, awaiting human review
+# Deterministic red-flag rules checked on every parent message, answer batch and document, before anything else.
+# An LLM can only ADD a flag, never remove one. Matching is per sentence: a rule fires when one `patterns` regex
+# matches and no `negations` regex matches in the same sentence (see backend/app/safety/rules.py).
+# Optional `min_age_months` / `max_age_months` gate a rule when the child's age is known (unknown age = rule active).
 #
-# What this is: the red-flag rules Constellation checks on every parent message, answer batch and document,
-# before anything else. Deterministic. An LLM can only ADD a flag, never remove one.
+# Levels: EMERGENCY -> urgent screen, journey stops. URGENT_SOON -> banner + "see a doctor in the next day or two".
 #
-# How to draft it (Claude) and review it (human) (≈ 60–90 min):
-#   1. For each rule ID listed under `required_ids` below, write one rule in `rules:`.
-#   2. `patterns` are lower-case regexes; keep them simple and add common phrasings parents use
-#      (e.g. "fit", "seizure", "shaking and not responding"). `negations` stop false alarms ("no seizures").
-#   3. `plain` is the sentence shown to the parent (reading age ~12, no fear words, no exclamation marks).
-#   4. `source` = a public page you used (NHS, WHO, AAP, IAP, national guidance). One URL per rule.
-#   5. Delete every FILL_ME. `make review-check` fails while any FILL_ME remains or a required ID is missing.
-#   6. Write 30 short test messages that SHOULD flag and 30 that should NOT in `corpus:` (realistic parent wording).
-#
-# Levels: EMERGENCY → urgent screen, journey stops. URGENT_SOON → banner + "see a doctor in the next day or two".
+# FOR THE HUMAN REVIEWER — things Claude could not fully verify:
+#   * crisis_lines.IN (Tele-MANAS 14416): the official site renders its number with JavaScript, so it could not be
+#     machine-read here. Please confirm on https://telemanas.mohfw.gov.in/ before marking REVIEWED.
+#   * Sources: each URL was fetched on 2026-10-15 and the cited guidance read. NHS pages are used as public, plain-language
+#     guidance; unexplained_bruising_bleeding cites the NHS haemophilia symptoms page (closest reachable NHS page; a
+#     paediatric haematology source would be better); morning_vomiting_headache cites the HeadSmart/"Better Safe Than
+#     Tumour" site, which asks people to speak to a doctor when two or more symptoms appear.
+#   * Patterns are English and deliberately broad; false alarms are cheaper than misses. Tune only via the corpus below.
 
 version: 1
 required_ids:
-  EMERGENCY: [seizure_long_or_repeated, breathing_difficulty, unresponsive, poisoning, severe_head_injury,
-              nonblanching_rash_fever, fever_under_3_months, severe_dehydration_infant, teen_self_harm]
-  URGENT_SOON: [skill_regression, new_weakness_or_unsteadiness, rapid_head_growth, morning_vomiting_headache,
-                unexplained_bruising_bleeding]
-
-crisis_lines:            # shown with teen_self_harm; verify numbers yourself
-  IN: FILL_ME
-  US: FILL_ME
-emergency_numbers:
-  IN: FILL_ME
-  EU: FILL_ME
-  US: FILL_ME
-
+  EMERGENCY: [seizure_long_or_repeated, breathing_difficulty, unresponsive, poisoning, severe_head_injury, nonblanching_rash_fever, fever_under_3_months, severe_dehydration_infant, teen_self_harm]
+  URGENT_SOON: [skill_regression, new_weakness_or_unsteadiness, rapid_head_growth, morning_vomiting_headache, unexplained_bruising_bleeding]
+crisis_lines: {IN: 'Tele-MANAS 14416 (free, 24 hours) — see reviewer note', US: '988 (call or text, 24 hours)', GB: Samaritans 116 123; Childline (under 19s) 0800 1111}
+emergency_numbers: {IN: '112', EU: '112', US: '911'}
 rules:
-  - id: FILL_ME                      # one of required_ids
-    level: FILL_ME                   # EMERGENCY | URGENT_SOON
-    patterns: [FILL_ME]              # lower-case regexes
-    negations: [FILL_ME]             # regexes that cancel a match in the same sentence
-    hpo_ids: []                      # optional: confirmed findings that also trigger this rule
-    plain: FILL_ME                   # the sentence the parent sees
-    source: FILL_ME                  # public guidance URL
-
+- id: seizure_long_or_repeated
+  level: EMERGENCY
+  patterns: [\b(seizure|seizures|fit|fits|convulsion|convulsions|convulsing)\b.*\b(\d+|ten|fifteen|twenty)\s*(min|mins|minutes)\b, '\b(seizure|seizures|fit|fits|convulsion|convulsions)\b.*\b(won''?t|will not|did not|didn''?t|not)\s+(stop|stopping)\b', \b(another|second|third|again|repeated|several|back to back|one after another)\b.*\b(seizure|seizures|fit|fits|convulsion|convulsions)\b, \b(seizure|seizures|fit|fits|convulsion|convulsions)\b.*\b(again|another one|twice|three times|more than once)\b, '\b(shaking|jerking|twitching|stiff)\b.*\b(not responding|unresponsive|won''?t wake|cannot wake|can''?t wake|eyes rolled)\b', \b(first|1st)\s+(seizure|fit|convulsion)\b]
+  negations: ['\b(no|never|not had any|hasn''?t had|has not had|without any)\s+(a\s+)?(seizure|seizures|fit|fits|convulsion|convulsions)\b', \bfit and (well|healthy)\b, '\bkeeps? fit\b', \bfit for\b, '\bdoesn''?t fit\b', '\bfits? (in|into|well)\b']
+  plain: This sounds like a seizure that may be long or may be happening again. Please call your local emergency number now. While you wait, lay your child on their side on a soft surface, do not put anything in their mouth, and stay with them.
+  source: https://www.nhs.uk/conditions/febrile-seizures/
+- id: breathing_difficulty
+  level: EMERGENCY
+  patterns: [\b(struggling|difficulty|trouble|hard|working hard)\b.*\bbreath(e|ing)\b, '\bcan''?t breathe\b', \bcannot breathe\b, \bgasping\b, \bgrunting\b.*\b(breath|breathing|every breath)\b, \b(blue|bluish|grey|gray)\b.*\b(lips|tongue|face|skin)\b, \b(lips|tongue)\b.*\b(blue|bluish)\b, \b(tummy|belly|chest|ribs)\b.*\b(sucking in|sucks in|pulling in|sinking in|sucking under)\b, \b(stops|stopped|pauses|pausing|paused)\b.*\bbreathing\b, \bbreathing\b.*\b(stops|stopped|pauses|pausing)\b, '\bbreathing (very )?(fast|fast and shallow)\b.*\b(can''?t|cannot|struggl)']
+  negations: ['\bno (trouble|difficulty|problems?) (with )?breath(e|ing)\b', '\bbreathing (is |was )?(fine|normal|ok|okay)\b', \bnot (struggling|having trouble|blue)\b, '\bbreath(e|ing) (is |was )?easy\b', '\bholds? (his|her|their) breath\b.*\b(tantrum|cries|crying)\b']
+  plain: Trouble breathing needs help right away. Please call your local emergency number now. Keep your child upright and calm, and stay with them.
+  source: https://www.nhs.uk/conditions/bronchiolitis/
+- id: unresponsive
+  level: EMERGENCY
+  patterns: [\b(unresponsive|unconscious|passed out|collapsed|limp and)\b, '\b(won''?t|will not|can''?t|cannot|couldn''?t)\s+(wake|be woken|be roused)\b', \bhard to (wake|rouse)\b, \bnot (responding|waking)\b, '\b(floppy|limp)\b.*\b(not responding|won''?t wake|unresponsive)\b', \bblacked out\b, '\bfainted\b.*\b(not|hasn''?t|won''?t)\b.*\b(come|wake|respond)']
+  negations: [\bno (collapse|collapsing|fainting)\b, \bnever (passed out|collapsed|fainted)\b, '\bwakes? (up )?(easily|fine|normally)\b', \bcollapsed (his|her|their) (sandcastle|tower|block)]
+  plain: A child who cannot be woken or is not responding needs help right away. Please call your local emergency number now. If they are breathing, lay them on their side and stay with them.
+  source: https://www.nhs.uk/conditions/head-injury-and-concussion/
+- id: poisoning
+  level: EMERGENCY
+  patterns: ['\b(swallowed|swallow|ate|eaten|drank|drunk|chewed|took|taken)\b.*\b(tablets?|pills?|medicine|medication|bleach|detergent|cleaning|battery|batteries|button battery|poison|poisonous|paraffin|petrol|kerosene|pesticide|rat poison|liquid)\b', \b(overdose|overdosed|poisoned|poisoning)\b, '\bdrank (some )?(bleach|cleaner|cleaning|petrol|kerosene)\b', \bgot into the (medicine|medicines|tablets|pills)\b, \b(ate|eaten|chewed|swallowed)\b.*\b(wild|unknown|garden|poisonous|unfamiliar) (berries|mushrooms|plant|plants|leaves|seeds)\b]
+  negations: ['\b(didn''?t|did not|never|hasn''?t|has not)\s+(swallow|eat|drink|take|ate|drank|took)\b', \b(took|taken|take|takes)\b.*\b(as prescribed|as directed|the right dose|as the doctor said|his usual|her usual|regular|every day|each day|daily)\b, \bgave (him|her|them)\b.*\b(as prescribed|correct dose|right dose)\b, \b(ate|eaten|drank|drunk)\b.*\b(liquid food|clear liquid|plenty of liquid|liquids)\b]
+  plain: Swallowing something harmful needs help right away. Please call your local emergency number or poison helpline now. Keep the packaging, do not make your child sick, and stay with them.
+  source: https://www.nhs.uk/conditions/poisoning/
+- id: severe_head_injury
+  level: EMERGENCY
+  patterns: ['\b(hit|banged|bumped|knocked|smashed|fell on|fell and hit|struck)\b.*\b(head)\b.*\b(vomit|vomited|vomiting|sick|drowsy|sleepy|confused|knocked out|unconscious|blacked out|seizure|fit|bleeding|won''?t wake|clear fluid)\b', \b(head injury|head trauma)\b.*\b(vomit|vomited|vomiting|drowsy|sleepy|confused|knocked out|unconscious|seizure|fit|bleeding|fluid)\b, \bknocked out\b, \bfell (from|off)\b.*\b(roof|balcony|window|stairs|height|tree|wall)\b.*\bhead\b, \bclear fluid\b.*\b(ear|ears|nose)\b, \bhead\b.*\b(road accident|car accident|crash|hit by a)\b]
+  negations: [\bno (head injury|vomiting|drowsiness)\b, '\bwasn''?t knocked out\b', '\b(not|never) (been )?knocked out\b', '\bhit (his|her|their) head\b.*\b(and )?(was|is|seems|seemed) (fine|ok|okay|normal)\b', \bheadbutted\b.*\bgame\b]
+  plain: A knock to the head with these signs needs urgent checking. Please call your local emergency number or go to an emergency department now. Keep your child still and awake, and stay with them.
+  source: https://www.nhs.uk/conditions/head-injury-and-concussion/
+- id: nonblanching_rash_fever
+  level: EMERGENCY
+  patterns: ['\b(rash|spots|marks|bruise like|purple|purplish|blotches|blotchy)\b.*\b(doesn''?t|does not|won''?t|will not|not)\s+(fade|go away|blanch|disappear)\b', '\b(glass test|tumbler test|glass)\b.*\b(doesn''?t|does not|didn''?t|did not|still|not)\b.*\b(fade|visible|there|see)\b', '\bnon[- ]?blanching\b', '\b(fever|temperature|hot)\b.*\b(rash|purple spots|red spots|pin ?prick spots)\b.*\b(doesn''?t|does not|won''?t|not)\b.*\b(fade|disappear|go)', \bpurple (rash|spots|marks)\b.*\b(fever|temperature|unwell|ill)\b, \b(fever|temperature)\b.*\bpurple (rash|spots|marks|blotches)\b]
+  negations: ['\b(rash|spots) (does|did|will|would)? ?fade\b', '\b(rash|spots|marks|it|they) (does |did |will |would )?fades? (when|if|under)\b', \bno rash\b, \bno fever\b.*\brash\b]
+  plain: 'A rash that does not fade when pressed, with fever or a child who seems unwell, needs urgent help. Please call your local emergency number now. Press a clear glass on the rash: if you can still see it through the glass, tell the emergency team.'
+  source: https://www.nhs.uk/conditions/meningitis/symptoms/
+- id: fever_under_3_months
+  level: EMERGENCY
+  max_age_months: 3
+  patterns: [\b(fever|temperature|feverish|febrile|burning up|hot to touch)\b, '\b(38|39|40)(\.\d)?\s*(c|°|degrees)\b', '\b(100\.4|101|102|103)(\.\d)?\s*(f|°)\b']
+  negations: [\bno (fever|temperature)\b, \bnormal temperature\b, \bnot (feverish|hot|had a fever)\b, \btemperature (is|was) (normal|fine)\b, '\bwithout (a )?fever\b']
+  plain: A fever in a baby under 3 months needs a doctor right away. Please call your local emergency number or go to an emergency department now, even if your baby looks well.
+  source: https://www.nhs.uk/conditions/fever-in-children/
+- id: severe_dehydration_infant
+  level: EMERGENCY
+  max_age_months: 24
+  patterns: [\b(no|not any|hardly any|barely any|few)\s+(wet nappies|wet nappy|wet diapers|wet diaper|pee|wee|urine|tears)\b, \bsunken\b.*\b(soft spot|fontanelle|fontanel|eyes)\b, \b(soft spot|fontanelle|fontanel)\b.*\b(sunken|sinking|dipped|sunk)\b, \bnot (had|passed)\b.*\b(wet nappy|wet diaper|pee|wee|urine)\b.*\b(hours|since|all day|today|12|8)\b, '\b(vomiting|vomit|diarrh(o)?ea|throwing up)\b.*\b(can''?t keep|won''?t keep|cannot keep|not keeping)\b.*\b(anything|fluids|milk|water|feed)\b', \b(dry|very dry)\b.*\b(mouth|lips)\b.*\b(drowsy|floppy|sleepy|no tears)\b]
+  negations: [\bnormal (wet nappies|nappies|pee|wee)\b, \b(lots of|plenty of|many) wet (nappies|nappy|diapers)\b, \b(wet nappies|wee|pee) (is|are|was|were) (normal|fine)\b, \bkeeping (fluids|milk|feeds) down\b]
+  plain: Signs like very few wet nappies, no tears or a sunken soft spot can mean your baby is badly short of fluid. Please call your local emergency number or go to an emergency department now. Offer small sips or a feed on the way if your baby will take it.
+  source: https://www.nhs.uk/conditions/dehydration/
+- id: teen_self_harm
+  level: EMERGENCY
+  min_age_months: 108
+  patterns: ['\b(wants?|wanted|want|talks? about|talking about|talked about|thinks? about|thinking about|thought about|says (he|she|they)|saying|said)\b.*\b(to die|kill (him|her|them)self|killing (him|her|them)self|end (his|her|their) life|ending (his|her|their) life|suicide|suicidal|better off dead|not be here|not want to be here|no reason to live)\b', '\b(self[- ]?harm|self[- ]?harming|cutting (him|her|them)self|cuts? (his|her|their) (arms?|wrists?|legs?)|hurting (him|her|them)self|hurt (him|her|them)self)\b', \b(tried|attempted|attempt)\b.*\b(to (kill|end|hurt)|suicide|overdose|take (his|her|their) own life)\b, '\b(took|taken) (an |a lot of )?(overdose|too many (tablets|pills))\b', \bsuicide (note|plan|attempt)\b, '\b(wants?|wanted) to (hurt|harm) (him|her|them)self\b']
+  negations: ['\b(no|never|not)\b.*\b(self[- ]?harm|suicid|thoughts of dying|wants to die)\b', '\bdoesn''?t (want to|think about)\b.*\b(die|suicide|self[- ]?harm)\b', \bnot suicidal\b, \bsuicide squad\b]
+  plain: Thank you for telling us. Your child's safety comes first. If they may be in danger right now, call your local emergency number. You can also talk to a crisis line at any time, and stay with your child until you have help.
+  source: https://www.nhs.uk/nhs-services/mental-health-services/where-to-get-urgent-help-for-mental-health/
+- id: skill_regression
+  level: URGENT_SOON
+  patterns: ['\b(lost|losing|loses|forgotten|forgot|stopped|stopping|no longer|can''?t any more|cannot any more|doesn''?t any more|not able to any more|gone backwards|going backwards|regressed|regressing|regression|backslid|slipping back)\b.*\b(skills?|words?|talking|speaking|speech|walking|crawling|sitting|clapping|waving|eye contact|smiling|toilet|potty|trained|feeding|using (his|her|their) hands|abilities)\b', '\b(skills?|words?|speech|walking|talking)\b.*\b(lost|disappeared|gone|regressed|going backwards|got worse and worse|slipping)\b', '\bused to (say|talk|walk|crawl|sit|clap|wave|smile|use)\b.*\b(but|and)\b.*\b(now|no longer|stopped|can''?t|doesn''?t)\b', '\b(can''?t|cannot|doesn''?t|does not|won''?t)\b.*\b(do|say|walk|talk)\b.*\b(what|things) (he|she|they) (could|used to)\b']
+  negations: [\bno (loss of|regression)\b, '\bhasn''?t lost\b', '\bnot lost (any )?(skills|words)\b', \bnever (lost|regressed)\b, '\bno longer (needs|wears) (a )?(nappy|diaper)\b', '\bstopped (using|needing) (a )?(dummy|pacifier|bottle|nappies)\b']
+  plain: Losing skills your child once had is something a doctor should look at soon. Please book an appointment in the next day or two and tell them exactly what has changed and when.
+  source: https://www.cdc.gov/act-early/milestones/index.html
+- id: new_weakness_or_unsteadiness
+  level: URGENT_SOON
+  patterns: ['\b(new|sudden|suddenly|recent|getting worse|worse every day|over (the )?(last|past) (few )?(days|weeks))\b.*\b(weak|weakness|weaker|floppy|clumsy|unsteady|wobbly|stumbling|falling over|dragging (a|his|her|their) (leg|foot)|limp|limping|can''?t (walk|stand|lift|climb)|trouble (walking|standing|climbing|lifting)|legs? (give|gave) way|drooping|droop|droops|slurred|slurring)\b', '\b(weak|weakness|wobbly|unsteady|floppy|clumsy|stumbling|falling over)\b.*\b(new|sudden|suddenly|since (last|this)|getting worse|worse every day|over (the )?(last|past) (few )?(days|weeks))\b', '\b(legs?|arms?|hands?|face)\b.*\b(feel|feels|felt|are|is)\b.*\b(weak|heavy|numb|wobbly)\b.*\b(suddenly|new|now|getting worse|this week|since)\b', '\b(can''?t|cannot|unable to) (stand|walk|climb stairs|get up|lift (his|her|their) (arm|arms|leg|legs))\b.*\b(since|suddenly|now|this week|yesterday|today)\b']
+  negations: [\bno (weakness|unsteadiness)\b, '\b(not|isn''?t) (weak|unsteady|wobbly)\b', \bhas always been (clumsy|wobbly|unsteady)\b, '\balways (been )?(clumsy|wobbly)\b', \bnot new\b]
+  plain: New weakness, floppiness or unsteadiness is something a doctor should check soon. Please book an appointment in the next day or two, and go to an emergency department if it is getting worse quickly.
+  source: https://www.nhs.uk/conditions/guillain-barre-syndrome/
+- id: rapid_head_growth
+  level: URGENT_SOON
+  max_age_months: 36
+  patterns: [\bhead\b.*\b(growing|grown|grew|getting)\b.*\b(fast|quickly|rapidly|too fast|too big|bigger|larger|so much)\b, \b(big|bigger|large|larger|enlarged|swollen|huge)\b.*\bhead\b.*\b(suddenly|quickly|fast|rapidly|lately|recently|new|crossed|percentile|centile|bulging)\b, \bbulging\b.*\b(soft spot|fontanelle|fontanel)\b, \b(soft spot|fontanelle|fontanel)\b.*\b(bulging|bulges|tense|swollen|raised|sticking out)\b, \bhead (circumference|size)\b.*\b(jumped|crossed|increased|growing too|above|rapid)\b, \bhead\b.*\bmeasure\w*\b.*\b(bigger|larger|jumped|crossed)\b]
+  negations: [\bno (bulging|rapid)\b, \bhead (size|growth) (is|was) (normal|fine)\b, '\bsoft spot (is |looks |feels )?(flat|normal|fine)\b', \bnormal head\b]
+  plain: A head that is growing very fast, or a soft spot that looks tense or bulging, should be checked by a doctor soon. Please book an appointment in the next day or two. Go to an emergency department if your baby is also very sleepy or being sick.
+  source: https://www.nhs.uk/conditions/hydrocephalus/symptoms/
+- id: morning_vomiting_headache
+  level: URGENT_SOON
+  patterns: ['^(?=.*\b(morning|mornings|waking|wakes up|woke up|on waking|first thing)\b)(?=.*\b(headache|headaches|head hurts|head ache)\b)(?=.*\b(vomit|vomiting|vomited|sick|being sick|throws? up|throwing up)\b)', '\b(headache|headaches)\b.*\bwake[sn]? (him|her|them) (up )?(at night|in the night)\b.*\b(vomit|vomiting|sick|being sick)\b']
+  negations: [\bno (headache|headaches|vomiting)\b, \b(stomach|tummy) bug\b, \b(food poisoning|gastro|norovirus|stomach flu)\b, '\bnot (been )?(sick|vomiting)\b']
+  plain: Headaches together with being sick, especially in the morning, are worth getting checked soon. Please book an appointment in the next day or two. Go to an emergency department if your child is very sleepy, confused or the headache is the worst they have had.
+  source: https://bettersafethantumour.com/
+- id: unexplained_bruising_bleeding
+  level: URGENT_SOON
+  patterns: ['\b(bruises?|bruising|bruised)\b.*\b(no reason|for no reason|nowhere|out of nowhere|unexplained|don''?t know (how|why)|can''?t explain|everywhere|all over|easily|so easily|a lot|lots|keep appearing|keeps appearing|appear)\b', '\b(unexplained|unusual|lots of|many|so many|easy|easily)\b.*\b(bruises?|bruising|bleeding|nosebleeds?)\b', '\b(nosebleeds?|nose bleeds?|gums? bleed|bleeding gums|bleeds? (a lot|for ages|a long time|for a long time))\b.*\b(often|again and again|every day|frequent|frequently|won''?t stop|wouldn''?t stop|keeps|for ages|long time|a lot)\b', '\b(tiny|small|red|purple|pin ?prick)\b.*\b(spots|dots)\b.*\b(skin|legs|body|arms)\b.*\b(no reason|appeared|appear|unexplained|everywhere)\b', \bblood in (his|her|their) (poo|stool|wee|pee|urine)\b]
+  negations: [\bno (bruising|bruises|bleeding)\b, '\b(one|a) (small )?bruise (from|after)\b', '\bbruise(d)? (from|after) (a )?(fall|football|football|playing|bumping|bumped|sport|knee)\b', \bnormal (bruises|bruising)\b, '\bfrom (a )?(fall|football|bike)\b']
+  plain: Bruises or bleeding that you cannot explain, or that happen very easily, should be checked by a doctor soon. Please book an appointment in the next day or two, and go to an emergency department if bleeding will not stop.
+  source: https://www.nhs.uk/conditions/haemophilia/symptoms/
 corpus:
-  should_flag:                       # 30 items: {text, expect_id}
-    - {text: FILL_ME, expect_id: FILL_ME}
-  should_not_flag:                   # 30 items: plain text
-    - FILL_ME
+  should_flag:
+  - {text: She had a seizure for about 10 minutes and it did not stop, expect_id: seizure_long_or_repeated}
+  - {text: 'He had another fit just now, the second one today', expect_id: seizure_long_or_repeated}
+  - {text: His arms and legs were jerking and he was not responding to us, expect_id: seizure_long_or_repeated}
+  - {text: It was her first seizure ever and she went stiff and blue, expect_id: seizure_long_or_repeated}
+  - {text: He is struggling to breathe and his tummy is sucking in, expect_id: breathing_difficulty}
+  - {text: Her lips look blue and she is gasping, expect_id: breathing_difficulty}
+  - {text: He collapsed at school and is not responding, expect_id: unresponsive}
+  - {text: 'She won''t wake up properly, she is very hard to wake', expect_id: unresponsive}
+  - {text: I think he swallowed some of my tablets, expect_id: poisoning}
+  - {text: She drank some bleach from the bottle under the sink, expect_id: poisoning}
+  - {text: He swallowed a button battery this afternoon, expect_id: poisoning}
+  - {text: 'She fell off the bed and hit her head, then vomited twice and is very drowsy', expect_id: severe_head_injury}
+  - {text: He was knocked out for a minute after the fall, expect_id: severe_head_injury}
+  - {text: High fever and a purple rash that doesn't fade when I press a glass on it, expect_id: nonblanching_rash_fever}
+  - {text: He has a fever and red spots that won't fade, expect_id: nonblanching_rash_fever}
+  - {text: My 6 week old has a temperature of 38.5, expect_id: fever_under_3_months, age_months: 1}
+  - {text: The baby feels hot and feverish tonight, expect_id: fever_under_3_months, age_months: 2}
+  - {text: He has had no wet nappies since this morning and the soft spot looks sunken, expect_id: severe_dehydration_infant, age_months: 7}
+  - {text: 'She is vomiting and cannot keep any milk down, hardly any wet nappies today', expect_id: severe_dehydration_infant, age_months: 5}
+  - {text: My 15 year old said she wants to die, expect_id: teen_self_harm, age_months: 180}
+  - {text: 'I found cuts on his arms, I think he has been self-harming', expect_id: teen_self_harm, age_months: 168}
+  - {text: He has been talking about ending his life, expect_id: teen_self_harm, age_months: 200}
+  - {text: 'She has stopped talking, she used to say about twenty words', expect_id: skill_regression, age_months: 30}
+  - {text: He lost the words he had and no longer waves goodbye, expect_id: skill_regression, age_months: 24}
+  - {text: He has suddenly become wobbly and keeps falling over, expect_id: new_weakness_or_unsteadiness, age_months: 60}
+  - {text: Her legs feel weak since this week and she struggles with stairs, expect_id: new_weakness_or_unsteadiness, age_months: 96}
+  - {text: 'His head is growing very fast, bigger every week', expect_id: rapid_head_growth, age_months: 8}
+  - {text: She wakes with a headache and is sick most mornings, expect_id: morning_vomiting_headache, age_months: 108}
+  - {text: He has big bruises appearing for no reason, expect_id: unexplained_bruising_bleeding, age_months: 72}
+  - {text: She gets frequent nosebleeds that won't stop and bruises all over her legs, expect_id: unexplained_bruising_bleeding, age_months: 84}
+  should_not_flag:
+  - She has no seizures and has never had a fit
+  - He had a cold and a runny nose for a week
+  - He has been very tired after school this month
+  - She is a fussy eater and only eats pasta
+  - He is fit and healthy and plays football every weekend
+  - The new shoes don't fit her any more
+  - She says her tummy hurts after eating
+  - He is a bit behind with speaking but learns new words every month
+  - She has a rash on her cheeks that fades when I press it
+  - He bumped his head on the table but cried and was fine straight after
+  - She took her medicine as prescribed this morning
+  - He drank plenty of water at the park
+  - He ate all his berries at lunch
+  - She has always been a bit clumsy and wobbly on her feet
+  - He had a nosebleed once after picking his nose
+  - He has bruises on his shins from football
+  - She lost a tooth and is very excited
+  - He stopped using his dummy last month
+  - {text: My five year old had a fever and a runny nose yesterday, age_months: 60}
+  - She gets a headache after long screen time in the afternoon
+  - He was sick after eating too much cake
+  - He gets a headache when he is hungry
+  - {text: Baby has plenty of wet nappies and is feeding well, age_months: 4}
+  - {text: She has been moody and sad since her best friend moved away, age_months: 170}
+  - My toddler held his breath during a tantrum and then cried
+  - She has no trouble breathing, just a blocked nose
+  - The head of the class praised him for his drawing
+  - {text: His soft spot looks flat and normal, age_months: 3}
+  - Her eyes are watery and she keeps rubbing them
+  - {text: The baby slept through the night and has no fever, age_months: 2}
