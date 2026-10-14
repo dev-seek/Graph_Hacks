@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Colour tokens: spec §6.1 (contrast computed against WCAG 2.2). Light theme only in v1. */
+:root {
+  --ink: #1c2333;
+  --night: #24305e;
+  --starlight: #f2b544;
+  --sage: #37705f;
+  --mist: #f7f5f0;
+  --card: #ffffff;
+  --muted: #6b6558;
+  --line: #e3ded3;
+  --border: #8a8475;
+  --urgent: #b42318;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-night: var(--night);
+  --color-starlight: var(--starlight);
+  --color-sage: var(--sage);
+  --color-mist: var(--mist);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-border: var(--border);
+  --color-urgent: var(--urgent);
+  --font-sans: var(--font-atkinson), system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, serif;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  background: var(--mist);
+  color: var(--ink);
+  font-family: var(--font-atkinson), system-ui, sans-serif;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 700;
+  color: var(--night);
+}
+
+/* Focus ring: 3 px Night on light surfaces, Starlight on Night surfaces (spec §6.2). */
+:focus-visible {
+  outline: 3px solid var(--night);
+  outline-offset: 2px;
+}
+.on-night :focus-visible {
+  outline-color: var(--starlight);
+}
