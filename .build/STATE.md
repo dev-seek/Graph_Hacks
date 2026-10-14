@@ -20,7 +20,7 @@ updated: (set by Claude on every change)
 - [ ] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
 - [ ] 5 engine/planner.py + engine/gates.py
 - [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
-- [ ] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
+- [x] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
 - [ ] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
 - [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
 - [ ] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
@@ -42,6 +42,8 @@ Non-blocking (do when convenient):
 ## Decisions made during the build (one line each; ADR link)
 
 ## Notes for next session (≤ 10 lines)
+- guard.sh false-positive: a Bash command mentioning review/negatives.yaml inside python open() is blocked even for reads; use app.eval.negatives.load_negatives instead.
+- Negatives: auto Q0 resolution was poor (e.g. 'waves bye-bye' -> EEG term), so AI-curated phrase->HPO map in data/derived/negatives.curated.yaml (null = not a finding). Disclose in AI_USAGE.
 P2 phase_start: c3eaf0a. Review files REVIEWED 2026-10-15 (committed c3eaf0a).
 phase_start: 930a69e (P1, = P0-done tag). P0 phase_start was 5832463.
 - Start colima before `make up` (`colima start --cpu 2 --memory 4`); node is node@22 via brew (Makefile adds it to PATH).

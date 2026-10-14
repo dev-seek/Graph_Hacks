@@ -1,0 +1,140 @@
+# Phrase -> HPO term for the plain-word signs in the reviewed negatives file. Drafted by Claude (AI)
+# because plain-text search alone resolved many phrases to unrelated terms. `null` = not an abnormal
+# finding (normal development, family history, context): dropped. A human glance is welcome; the
+# resolved output (negatives.resolved.yaml) lists every mapping.
+present:
+  says only a few words: HP:0000750
+  points to things she wants: null
+  waves bye-bye: null
+  says about fifteen words: null
+  speech is a bit behind other children: HP:0000750
+  one short shaking spell with a high fever: HP:0002373
+  very sleepy for a short while afterwards: HP:0002329
+  shorter than classmates: HP:0004322
+  growing steadily every year: null
+  shorter than friends: HP:0004322
+  father was a late grower: null
+  very bendy fingers and elbows: HP:0001382
+  vomiting for two days: HP:0002013
+  loose stools: HP:0002014
+  low fever: HP:0001945
+  walked on tiptoes for a few months: HP:0030051
+  achy legs in the evening: HP:0012531
+  fine in the morning: null
+  started walking late at eighteen months: HP:0002194
+  tired after school: HP:0012378
+  looks pale: HP:0000980
+  heavy periods: HP:0000132
+  throbbing headache on one side: HP:0002315
+  bright light bothers her: HP:0000613
+  mother gets migraines: null
+  spits up after feeds: HP:0002020
+  long evening crying spells: HP:0000737
+  flaky scalp: HP:0040189
+  dry cheeks: HP:0000958
+  eats only a few foods: HP:0011968
+  wets the bed at night: HP:0010677
+  many colds: HP:0002788
+  runny nose: HP:0031417
+  cough: HP:0012735
+  sneezing in spring: HP:0025095
+  itchy eyes: HP:0033841
+  fidgety in class: HP:0000752
+  easily distracted: HP:0000736
+  trips when running: HP:0009046
+  spots on forehead and cheeks: HP:0001061
+  headache around exams: HP:0002315
+  fine at weekends: null
+  dribbling: HP:0002307
+  sore gums: HP:0000230
+  grumpy at night: HP:0000737
+  dry itchy patches in elbow creases: HP:0000989
+  snores with colds: HP:0025267
+  squints at the board: HP:0000539
+  period cramps: HP:0100607
+  poor sleep before exams: HP:0002360
+  butterflies in tummy: HP:0000739
+  tantrums when told no: HP:0025160
+  cough with colds: HP:0012735
+  wheezy twice last winter: HP:0030828
+  flat feet: HP:0001763
+  hard stools every few days: HP:0002019
+  yellow tinge in the first week: HP:0000952
+  hiccups: HP:0100247
+  sneezing: HP:0025095
+  tired in the mornings: HP:0012378
+  late nights on screens: null
+  bites nails: HP:0012170
+  pulling at her ear: null
+  mild fever: HP:0011134
+  talks in his sleep: HP:0025187
+  once walked to the hall at night: HP:0025236
+  knee pain after football: HP:0030839
+absent:
+  lost any words: HP:0002371
+  stopped talking: HP:0002371
+  hearing worries: HP:0000365
+  another spell since: HP:0001250
+  developmental concerns: HP:0001263
+  poor appetite: HP:0004396
+  tummy trouble: HP:0002027
+  tiredness: HP:0012378
+  weight loss: HP:0001824
+  joint pain: HP:0002829
+  frequent dislocations: HP:0001373
+  blood in stool: HP:0002573
+  no wet nappies: null
+  stiff legs: HP:0001257
+  falling often: HP:0002359
+  swollen joints: HP:0001386
+  limping: HP:0031955
+  weakness: HP:0001324
+  clumsy falls: HP:0002359
+  fainting: HP:0001279
+  breathlessness: HP:0002094
+  vomiting every morning: HP:0002013
+  waking from sleep with pain: null
+  poor weight gain: HP:0001508
+  green vomit: null
+  fever: HP:0001945
+  not feeding: HP:0011968
+  bleeding skin: HP:0001892
+  wetting in the day: HP:0010678
+  very thirsty: HP:0001959
+  fever for weeks: HP:0001945
+  wheezing: HP:0030828
+  night cough: HP:0012735
+  staring spells: HP:0025401
+  falling behind in reading: HP:0001328
+  falling every day: HP:0002359
+  weak legs: HP:0001324
+  scarring: HP:0100699
+  low mood: HP:0000716
+  vision problems: HP:0000504
+  weeping skin: null
+  pauses in breathing: HP:0010535
+  tired in the day: HP:0012378
+  headaches: HP:0002315
+  double vision: HP:0000651
+  pain between periods: null
+  low mood for weeks: HP:0000716
+  not eating: HP:0002039
+  loss of skills: HP:0002376
+  head banging: HP:0012168
+  night waking: null
+  blue lips: HP:0034030
+  pain: HP:0012531
+  limp: HP:0031955
+  tummy swelling: HP:0001538
+  pale stools: HP:0011985
+  dark urine: HP:0040319
+  poor feeding: HP:0011968
+  night sweats: HP:0030166
+  skin picking until it bleeds: HP:0012166
+  discharge from ear: null
+  stiff neck: HP:0025258
+  daytime spells: null
+  swelling: HP:0001386
+  locking: null
+  high fever: HP:0001945
+  vomiting: HP:0002013
