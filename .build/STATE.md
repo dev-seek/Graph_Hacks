@@ -1,4 +1,4 @@
-status: needs-human
+status: running
 phase: P2
 updated: (set by Claude on every change)
 
@@ -7,14 +7,24 @@ updated: (set by Claude on every change)
 |---|---|---|---|
 | P0 | phases/P0-scaffold.md | done | CI run 38627498456 green; make check OK; test-int 2 passed; /api/health 200; GRAPH.LIST ok; review-check: only 'not yet REVIEWED' for safety_rules + negatives (stories/letters REVIEWED); FalkorDB 6.0.2 + timeouts in docs/VERIFIED.md |
 | P1 | phases/P1-knowledge.md | done | coverage 99.7% (lpo test 68.7%); lay top-3 100% verbatim / 45% sentences; make kb 120 s cold; counts in ADR-0002; test sha 223e6076…b6d5; make check+test-int green |
-| P2 | phases/P2-engine.md | todo | |
+| P2 | phases/P2-engine.md | running | |
 | P3 | phases/P3-agents-api.md | todo | |
 | P4 | phases/P4-web.md | todo | |
 | P5 | phases/P5-centre-eval.md | todo | |
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty — Claude writes ≤ 15 concrete tasks for P2 here)
+- [ ] 1 failing tests: LR table, prune, decay, NOT, noise, absent, obligate cap, gamma, D0, unlinked mass, Hypothesis invariants (engine/scoring)
+- [ ] 2 failing tests: planner (age gate, branch memory, <=2/system, no overlap, IG>=0) + gates at/below threshold
+- [ ] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
+- [ ] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
+- [ ] 5 engine/planner.py + engine/gates.py
+- [ ] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
+- [ ] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
+- [ ] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
+- [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
+- [ ] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
+- [ ] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
 
 ## Needs from human
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
@@ -32,6 +42,7 @@ Non-blocking (do when convenient):
 ## Decisions made during the build (one line each; ADR link)
 
 ## Notes for next session (≤ 10 lines)
+P2 phase_start: c3eaf0a. Review files REVIEWED 2026-10-15 (committed c3eaf0a).
 phase_start: 930a69e (P1, = P0-done tag). P0 phase_start was 5832463.
 - Start colima before `make up` (`colima start --cpu 2 --memory 4`); node is node@22 via brew (Makefile adds it to PATH).
 - web: TypeScript pinned to 6.x (typescript-eslint lacks TS 7); pnpm-workspace.yaml `allowBuilds` denies unrs-resolver.
