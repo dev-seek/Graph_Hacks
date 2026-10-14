@@ -7,7 +7,7 @@ export PATH := /opt/homebrew/opt/node@22/bin:$(PATH)
 RUN := scripts/run_logged.sh
 NYI = @echo "$(1): not yet implemented ($(2))"
 
-.PHONY: setup data kb up down check test-int llm-key-check review-check eval-smoke eval llm-contract demo-record demo-replay web e2e
+.PHONY: setup data kb up down check test-int llm-key-check review-check openapi eval-smoke eval llm-contract demo-record demo-replay web e2e
 
 setup:
 	@$(RUN) setup bash -c "uv sync && ( [ ! -f web/package.json ] || pnpm --dir web install --frozen-lockfile ) && (uv run pre-commit install || true)"
@@ -36,6 +36,9 @@ llm-key-check:
 
 review-check:
 	@uv run python scripts/review_check.py
+
+openapi:
+	@uv run python scripts/export_openapi.py
 
 eval-smoke:
 	@$(RUN) eval-smoke env PYTHONPATH=backend uv run python -m app.eval.cli

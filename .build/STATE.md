@@ -24,7 +24,7 @@ updated: (set by Claude on every change)
 - [~] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
 - [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
 - [ ] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
-- [ ] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
+- [x] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
 
 ## Needs from human
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:

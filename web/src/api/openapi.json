@@ -1,0 +1,2846 @@
+{
+  "components": {
+    "schemas": {
+      "CentreAskIn": {
+        "additionalProperties": false,
+        "properties": {
+          "question": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "title": "CentreAskIn",
+        "type": "object"
+      },
+      "CentreAskOut": {
+        "additionalProperties": false,
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "query_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Query Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "answer",
+          "query_ids"
+        ],
+        "title": "CentreAskOut",
+        "type": "object"
+      },
+      "CentreBridge": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "term_id": {
+            "title": "Term Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "term_id",
+          "name",
+          "score"
+        ],
+        "title": "CentreBridge",
+        "type": "object"
+      },
+      "CentreCase": {
+        "additionalProperties": false,
+        "properties": {
+          "age_band": {
+            "title": "Age Band",
+            "type": "string"
+          },
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnosis"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "referred",
+              "resolved"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "synthetic": {
+            "default": true,
+            "title": "Synthetic",
+            "type": "boolean"
+          },
+          "terms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Terms",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id",
+          "status",
+          "age_band",
+          "terms"
+        ],
+        "title": "CentreCase",
+        "type": "object"
+      },
+      "CentreCluster": {
+        "additionalProperties": false,
+        "properties": {
+          "cases": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Cases",
+            "type": "array"
+          },
+          "cluster_id": {
+            "title": "Cluster Id",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cluster_id",
+          "cases",
+          "size"
+        ],
+        "title": "CentreCluster",
+        "type": "object"
+      },
+      "CentreLookalike": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "clinician": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Clinician"
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnosis"
+          },
+          "protocol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol"
+          },
+          "shared_ic": {
+            "title": "Shared Ic",
+            "type": "number"
+          },
+          "shared_terms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Shared Terms",
+            "type": "array"
+          },
+          "specialty": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Specialty"
+          },
+          "tests": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tests",
+            "type": "array"
+          },
+          "turnaround_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Turnaround Days"
+          }
+        },
+        "required": [
+          "case_id",
+          "diagnosis",
+          "shared_terms",
+          "shared_ic"
+        ],
+        "title": "CentreLookalike",
+        "type": "object"
+      },
+      "CentreOverview": {
+        "additionalProperties": false,
+        "properties": {
+          "cases": {
+            "title": "Cases",
+            "type": "integer"
+          },
+          "clinicians": {
+            "title": "Clinicians",
+            "type": "integer"
+          },
+          "kb_version": {
+            "title": "Kb Version",
+            "type": "string"
+          },
+          "protocols": {
+            "title": "Protocols",
+            "type": "integer"
+          },
+          "resolved": {
+            "title": "Resolved",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cases",
+          "resolved",
+          "clinicians",
+          "protocols",
+          "kb_version"
+        ],
+        "title": "CentreOverview",
+        "type": "object"
+      },
+      "CentreRouting": {
+        "additionalProperties": false,
+        "properties": {
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "lookalikes": {
+            "items": {
+              "$ref": "#/components/schemas/CentreLookalike"
+            },
+            "title": "Lookalikes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "case_id",
+          "lookalikes"
+        ],
+        "title": "CentreRouting",
+        "type": "object"
+      },
+      "CentreWhatIfIn": {
+        "additionalProperties": false,
+        "properties": {
+          "new_kb_version": {
+            "title": "New Kb Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "new_kb_version"
+        ],
+        "title": "CentreWhatIfIn",
+        "type": "object"
+      },
+      "CentreWhatIfOut": {
+        "additionalProperties": false,
+        "properties": {
+          "affected_cases": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Affected Cases",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "affected_cases",
+          "summary"
+        ],
+        "title": "CentreWhatIfOut",
+        "type": "object"
+      },
+      "ClinicianCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "disease_id": {
+            "title": "Disease Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "opposing": {
+            "items": {
+              "$ref": "#/components/schemas/SupportingFinding"
+            },
+            "title": "Opposing",
+            "type": "array"
+          },
+          "posterior": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Posterior",
+            "type": "number"
+          },
+          "rank": {
+            "minimum": 1.0,
+            "title": "Rank",
+            "type": "integer"
+          },
+          "supporting": {
+            "items": {
+              "$ref": "#/components/schemas/SupportingFinding"
+            },
+            "title": "Supporting",
+            "type": "array"
+          }
+        },
+        "required": [
+          "disease_id",
+          "name",
+          "rank",
+          "posterior",
+          "supporting",
+          "opposing"
+        ],
+        "title": "ClinicianCandidate",
+        "type": "object"
+      },
+      "ClinicianFinding": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "source": {
+            "enum": [
+              "parent_story",
+              "parent_answer",
+              "doctor_exam",
+              "lab_or_test"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "present",
+              "absent"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "term_id": {
+            "title": "Term Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "term_id",
+          "label",
+          "status",
+          "source"
+        ],
+        "title": "ClinicianFinding",
+        "type": "object"
+      },
+      "ClinicianView": {
+        "additionalProperties": false,
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/ClinicianCandidate"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "child_age_months": {
+            "title": "Child Age Months",
+            "type": "integer"
+          },
+          "disclaimer": {
+            "default": "Decision support only, not a diagnosis. Candidates are ranked by how well recorded findings match published phenotype annotations; confirm with clinical judgement and testing.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "family_ref": {
+            "title": "Family Ref",
+            "type": "string"
+          },
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/ClinicianFinding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "gate": {
+            "$ref": "#/components/schemas/GateOut"
+          },
+          "kb_version": {
+            "title": "Kb Version",
+            "type": "string"
+          },
+          "rare_mass": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Rare Mass",
+            "type": "number"
+          },
+          "referral_draft": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referral Draft"
+          },
+          "suggested_checks": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suggested Checks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "family_ref",
+          "child_age_months",
+          "findings",
+          "rare_mass",
+          "candidates",
+          "suggested_checks",
+          "gate",
+          "kb_version"
+        ],
+        "title": "ClinicianView",
+        "type": "object"
+      },
+      "DemoJourney": {
+        "additionalProperties": false,
+        "properties": {
+          "blurb": {
+            "title": "Blurb",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "blurb"
+        ],
+        "title": "DemoJourney",
+        "type": "object"
+      },
+      "DemoStep": {
+        "additionalProperties": false,
+        "properties": {
+          "caption": {
+            "title": "Caption",
+            "type": "string"
+          },
+          "n": {
+            "title": "N",
+            "type": "integer"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "screen": {
+            "title": "Screen",
+            "type": "string"
+          }
+        },
+        "required": [
+          "n",
+          "screen",
+          "caption"
+        ],
+        "title": "DemoStep",
+        "type": "object"
+      },
+      "GateOut": {
+        "additionalProperties": false,
+        "properties": {
+          "fired": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Fired",
+            "type": "array"
+          },
+          "inputs": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "title": "Inputs",
+            "type": "object"
+          },
+          "rule": {
+            "title": "Rule",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "URGENT",
+              "REFERRAL_READY",
+              "SEE_DOCTOR",
+              "WATCH",
+              "CONTINUE"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "fired",
+          "rule",
+          "inputs"
+        ],
+        "title": "GateOut",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "Health",
+        "type": "object"
+      },
+      "KbInfo": {
+        "properties": {
+          "built_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Built At"
+          },
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "embedding_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Embedding Model"
+          },
+          "hpo_version": {
+            "title": "Hpo Version",
+            "type": "string"
+          },
+          "hpoa_version": {
+            "title": "Hpoa Version",
+            "type": "string"
+          },
+          "include_omim_iea": {
+            "default": false,
+            "title": "Include Omim Iea",
+            "type": "boolean"
+          },
+          "lpo_dropped_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lpo Dropped Rows"
+          },
+          "lpo_excluded_pmids_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lpo Excluded Pmids Count"
+          },
+          "orpha_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Orpha Version"
+          },
+          "phenopacket_store_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phenopacket Store Version"
+          },
+          "product1_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product1 Version"
+          },
+          "release": {
+            "title": "Release",
+            "type": "string"
+          }
+        },
+        "required": [
+          "release",
+          "hpo_version",
+          "hpoa_version"
+        ],
+        "title": "KbInfo",
+        "type": "object"
+      },
+      "ParentAnswer": {
+        "additionalProperties": false,
+        "properties": {
+          "qid": {
+            "title": "Qid",
+            "type": "string"
+          },
+          "value": {
+            "enum": [
+              "yes",
+              "no",
+              "unsure"
+            ],
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "qid",
+          "value"
+        ],
+        "title": "ParentAnswer",
+        "type": "object"
+      },
+      "ParentAnswersIn": {
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "$ref": "#/components/schemas/ParentAnswer"
+            },
+            "minItems": 1,
+            "title": "Answers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "answers"
+        ],
+        "title": "ParentAnswersIn",
+        "type": "object"
+      },
+      "ParentAnswersOut": {
+        "additionalProperties": false,
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/ParentState"
+          },
+          "safety": {
+            "$ref": "#/components/schemas/SafetyOut"
+          }
+        },
+        "required": [
+          "safety",
+          "next"
+        ],
+        "title": "ParentAnswersOut",
+        "type": "object"
+      },
+      "ParentConfirmIn": {
+        "additionalProperties": false,
+        "properties": {
+          "accept": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Accept",
+            "type": "array"
+          },
+          "edits": {
+            "items": {
+              "$ref": "#/components/schemas/ParentFindingEdit"
+            },
+            "title": "Edits",
+            "type": "array"
+          },
+          "reject": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reject",
+            "type": "array"
+          }
+        },
+        "title": "ParentConfirmIn",
+        "type": "object"
+      },
+      "ParentConstellation": {
+        "additionalProperties": false,
+        "description": "Findings only (never conditions): stars joined when they share a body system.",
+        "properties": {
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/ParentLine"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "stars": {
+            "items": {
+              "$ref": "#/components/schemas/ParentStar"
+            },
+            "title": "Stars",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stars",
+          "lines"
+        ],
+        "title": "ParentConstellation",
+        "type": "object"
+      },
+      "ParentDocumentIn": {
+        "additionalProperties": false,
+        "properties": {
+          "content_base64": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Base64"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename"
+          },
+          "kind": {
+            "enum": [
+              "text",
+              "pdf"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "maxLength": 20000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "ParentDocumentIn",
+        "type": "object"
+      },
+      "ParentEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "story",
+              "confirmed",
+              "answers",
+              "doctor_visit",
+              "document",
+              "gate",
+              "flag"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "kind",
+          "label"
+        ],
+        "title": "ParentEvent",
+        "type": "object"
+      },
+      "ParentExtractedFinding": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "minimum": 0.0,
+            "title": "End",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "onset_months": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Months"
+          },
+          "plain_label": {
+            "title": "Plain Label",
+            "type": "string"
+          },
+          "quote": {
+            "title": "Quote",
+            "type": "string"
+          },
+          "start": {
+            "minimum": 0.0,
+            "title": "Start",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "present",
+              "absent"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "plain_label",
+          "status",
+          "quote",
+          "start",
+          "end"
+        ],
+        "title": "ParentExtractedFinding",
+        "type": "object"
+      },
+      "ParentExtractionOut": {
+        "additionalProperties": false,
+        "properties": {
+          "extraction_to_confirm": {
+            "items": {
+              "$ref": "#/components/schemas/ParentExtractedFinding"
+            },
+            "title": "Extraction To Confirm",
+            "type": "array"
+          },
+          "safety": {
+            "$ref": "#/components/schemas/SafetyOut"
+          }
+        },
+        "required": [
+          "safety",
+          "extraction_to_confirm"
+        ],
+        "title": "ParentExtractionOut",
+        "type": "object"
+      },
+      "ParentFamilyCreated": {
+        "additionalProperties": false,
+        "properties": {
+          "family_id": {
+            "title": "Family Id",
+            "type": "string"
+          },
+          "family_token": {
+            "title": "Family Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "family_id",
+          "family_token"
+        ],
+        "title": "ParentFamilyCreated",
+        "type": "object"
+      },
+      "ParentFindingEdit": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "onset_months": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Months"
+          },
+          "plain_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plain Label"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "present",
+                  "absent"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "ParentFindingEdit",
+        "type": "object"
+      },
+      "ParentFindingView": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "onset_months": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Onset Months"
+          },
+          "plain_label": {
+            "title": "Plain Label",
+            "type": "string"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "source": {
+            "enum": [
+              "parent_story",
+              "parent_answer",
+              "doctor_exam",
+              "lab_or_test"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "present",
+              "absent"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "plain_label",
+          "status",
+          "source"
+        ],
+        "title": "ParentFindingView",
+        "type": "object"
+      },
+      "ParentLine": {
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "target"
+        ],
+        "title": "ParentLine",
+        "type": "object"
+      },
+      "ParentNextStep": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "answer_questions",
+              "see_doctor",
+              "upload_letter",
+              "wait",
+              "emergency",
+              "done"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "label"
+        ],
+        "title": "ParentNextStep",
+        "type": "object"
+      },
+      "ParentPack": {
+        "additionalProperties": false,
+        "description": "One-page doctor pack data: what was observed, what to check, questions to ask.",
+        "properties": {
+          "checks_to_ask_about": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Checks To Ask About",
+            "type": "array"
+          },
+          "child_age_months": {
+            "title": "Child Age Months",
+            "type": "integer"
+          },
+          "clinician_code": {
+            "title": "Clinician Code",
+            "type": "string"
+          },
+          "disclaimer": {
+            "default": "Constellation does not diagnose. It helps you gather information and decide when to see a doctor. Always follow your doctor's advice. In an emergency, call your local emergency number.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/ParentFindingView"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "questions_for_doctor": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Questions For Doctor",
+            "type": "array"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "clinician_code",
+          "child_age_months",
+          "summary",
+          "findings",
+          "checks_to_ask_about",
+          "questions_for_doctor",
+          "generated_at"
+        ],
+        "title": "ParentPack",
+        "type": "object"
+      },
+      "ParentQuestion": {
+        "additionalProperties": false,
+        "properties": {
+          "ask_doctor": {
+            "default": false,
+            "title": "Ask Doctor",
+            "type": "boolean"
+          },
+          "how_to_check": {
+            "title": "How To Check",
+            "type": "string"
+          },
+          "qid": {
+            "title": "Qid",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "why": {
+            "title": "Why",
+            "type": "string"
+          }
+        },
+        "required": [
+          "qid",
+          "text",
+          "why",
+          "how_to_check"
+        ],
+        "title": "ParentQuestion",
+        "type": "object"
+      },
+      "ParentRound": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "home",
+              "post_doctor"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/ParentQuestion"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "round_no": {
+            "minimum": 1.0,
+            "title": "Round No",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "round_no",
+          "kind",
+          "questions"
+        ],
+        "title": "ParentRound",
+        "type": "object"
+      },
+      "ParentStar": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "system": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "System"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "ParentStar",
+        "type": "object"
+      },
+      "ParentState": {
+        "additionalProperties": false,
+        "properties": {
+          "banner": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Banner"
+          },
+          "disclaimer": {
+            "default": "Constellation does not diagnose. It helps you gather information and decide when to see a doctor. Always follow your doctor's advice. In an emergency, call your local emergency number.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "next_step": {
+            "$ref": "#/components/schemas/ParentNextStep"
+          },
+          "phase": {
+            "enum": [
+              "story",
+              "confirm",
+              "questions",
+              "see_doctor",
+              "doctor_findings",
+              "specialist_step",
+              "watching",
+              "urgent"
+            ],
+            "title": "Phase",
+            "type": "string"
+          },
+          "round_no": {
+            "minimum": 0.0,
+            "title": "Round No",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "phase",
+          "round_no",
+          "next_step"
+        ],
+        "title": "ParentState",
+        "type": "object"
+      },
+      "ParentStoryIn": {
+        "additionalProperties": false,
+        "properties": {
+          "child_age_months": {
+            "maximum": 240.0,
+            "minimum": 0.0,
+            "title": "Child Age Months",
+            "type": "integer"
+          },
+          "sex": {
+            "anyOf": [
+              {
+                "enum": [
+                  "female",
+                  "male",
+                  "other",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sex"
+          },
+          "text": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "child_age_months"
+        ],
+        "title": "ParentStoryIn",
+        "type": "object"
+      },
+      "ParentTimeline": {
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ParentEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/ParentFindingView"
+            },
+            "title": "Findings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "findings",
+          "events"
+        ],
+        "title": "ParentTimeline",
+        "type": "object"
+      },
+      "PhenopacketOut": {
+        "additionalProperties": false,
+        "properties": {
+          "phenopacket": {
+            "additionalProperties": true,
+            "title": "Phenopacket",
+            "type": "object"
+          }
+        },
+        "required": [
+          "phenopacket"
+        ],
+        "title": "PhenopacketOut",
+        "type": "object"
+      },
+      "QueryLogEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "cypher": {
+            "title": "Cypher",
+            "type": "string"
+          },
+          "ms": {
+            "title": "Ms",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "rows": {
+            "title": "Rows",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "cypher",
+          "params",
+          "rows",
+          "ms"
+        ],
+        "title": "QueryLogEntry",
+        "type": "object"
+      },
+      "SafetyMessage": {
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "enum": [
+              "URGENT_SOON",
+              "EMERGENCY"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "plain": {
+            "title": "Plain",
+            "type": "string"
+          }
+        },
+        "required": [
+          "level",
+          "plain"
+        ],
+        "title": "SafetyMessage",
+        "type": "object"
+      },
+      "SafetyOut": {
+        "additionalProperties": false,
+        "properties": {
+          "crisis_lines": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Crisis Lines",
+            "type": "object"
+          },
+          "emergency_numbers": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Emergency Numbers",
+            "type": "object"
+          },
+          "level": {
+            "default": "none",
+            "enum": [
+              "none",
+              "URGENT_SOON",
+              "EMERGENCY"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/SafetyMessage"
+            },
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "title": "SafetyOut",
+        "type": "object"
+      },
+      "SupportingFinding": {
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "log_lr": {
+            "title": "Log Lr",
+            "type": "number"
+          },
+          "path": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Path",
+            "type": "array"
+          },
+          "term_id": {
+            "title": "Term Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "term_id",
+          "label",
+          "log_lr"
+        ],
+        "title": "SupportingFinding",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Version": {
+        "properties": {
+          "app": {
+            "title": "App",
+            "type": "string"
+          },
+          "kb": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/KbInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "kb_label": {
+            "title": "Kb Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app",
+          "kb",
+          "kb_label"
+        ],
+        "title": "Version",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Constellation API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/centre/ask": {
+      "post": {
+        "operationId": "centre_ask_api_centre_ask_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CentreAskIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreAskOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Ask",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/bridges": {
+      "get": {
+        "operationId": "centre_bridges_api_centre_bridges_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreBridge"
+                  },
+                  "title": "Response Centre Bridges Api Centre Bridges Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Bridges",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/cases/{case_id}": {
+      "get": {
+        "operationId": "centre_case_api_centre_cases__case_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "title": "Case Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreCase"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Case",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/clusters": {
+      "get": {
+        "operationId": "centre_clusters_api_centre_clusters_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreCluster"
+                  },
+                  "title": "Response Centre Clusters Api Centre Clusters Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Clusters",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/lookalikes": {
+      "get": {
+        "operationId": "centre_lookalikes_api_centre_lookalikes_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreLookalike"
+                  },
+                  "title": "Response Centre Lookalikes Api Centre Lookalikes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Lookalikes",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/overview": {
+      "get": {
+        "operationId": "centre_overview_api_centre_overview_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreOverview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Overview",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/routing/{case_id}": {
+      "get": {
+        "operationId": "centre_routing_api_centre_routing__case_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "case_id",
+            "required": true,
+            "schema": {
+              "title": "Case Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreRouting"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Routing",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/whatif": {
+      "post": {
+        "operationId": "centre_whatif_api_centre_whatif_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CentreWhatIfIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreWhatIfOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Whatif",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/clinician/{family_id}": {
+      "get": {
+        "operationId": "get_clinician_api_clinician__family_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Clinician-Code",
+            "required": true,
+            "schema": {
+              "title": "X-Clinician-Code",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicianView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Clinician",
+        "tags": [
+          "clinician"
+        ]
+      }
+    },
+    "/api/clinician/{family_id}/phenopacket": {
+      "get": {
+        "operationId": "get_phenopacket_api_clinician__family_id__phenopacket_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Clinician-Code",
+            "required": true,
+            "schema": {
+              "title": "X-Clinician-Code",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhenopacketOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Phenopacket",
+        "tags": [
+          "clinician"
+        ]
+      }
+    },
+    "/api/debug/queries": {
+      "get": {
+        "operationId": "debug_queries_api_debug_queries_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QueryLogEntry"
+                  },
+                  "title": "Response Debug Queries Api Debug Queries Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Debug Queries",
+        "tags": [
+          "debug"
+        ]
+      }
+    },
+    "/api/demo/journeys": {
+      "get": {
+        "operationId": "demo_journeys_api_demo_journeys_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DemoJourney"
+                  },
+                  "title": "Response Demo Journeys Api Demo Journeys Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Demo Journeys",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/demo/{journey}/steps": {
+      "get": {
+        "operationId": "demo_steps_api_demo__journey__steps_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "journey",
+            "required": true,
+            "schema": {
+              "title": "Journey",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DemoStep"
+                  },
+                  "title": "Response Demo Steps Api Demo  Journey  Steps Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Demo Steps",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
+    "/api/families": {
+      "post": {
+        "operationId": "create_family_api_families_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentFamilyCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Family",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}": {
+      "delete": {
+        "operationId": "delete_family_api_families__family_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delete Family",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/confirm": {
+      "post": {
+        "operationId": "post_confirm_api_families__family_id__confirm_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParentConfirmIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Confirm",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/constellation": {
+      "get": {
+        "operationId": "get_constellation_api_families__family_id__constellation_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentConstellation"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Constellation",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/documents": {
+      "post": {
+        "operationId": "post_document_api_families__family_id__documents_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParentDocumentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentExtractionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Document",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/pack": {
+      "get": {
+        "operationId": "get_pack_api_families__family_id__pack_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentPack"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Pack",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/round": {
+      "get": {
+        "operationId": "get_round_api_families__family_id__round_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentRound"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Round",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/round/{n}/answers": {
+      "post": {
+        "operationId": "post_answers_api_families__family_id__round__n__answers_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "n",
+            "required": true,
+            "schema": {
+              "title": "N",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParentAnswersIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentAnswersOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Answers",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/state": {
+      "get": {
+        "operationId": "get_state_api_families__family_id__state_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentState"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get State",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/story": {
+      "post": {
+        "operationId": "post_story_api_families__family_id__story_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParentStoryIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentExtractionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Post Story",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/families/{family_id}/timeline": {
+      "get": {
+        "operationId": "get_timeline_api_families__family_id__timeline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentTimeline"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Timeline",
+        "tags": [
+          "parent"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health"
+      }
+    },
+    "/api/version": {
+      "get": {
+        "operationId": "version_api_version_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Version"
+      }
+    }
+  }
+}
