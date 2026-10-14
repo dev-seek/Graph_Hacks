@@ -53,7 +53,7 @@ def test_graph_unavailable_maps_to_503() -> None:
     from app.engine.reasoner import GraphUnavailable
     from app.main import app
 
-    @app.get("/api/_probe_503")
+    @app.get("/api/_probe_503", include_in_schema=False)
     def _probe() -> None:
         raise GraphUnavailable("down")
 
