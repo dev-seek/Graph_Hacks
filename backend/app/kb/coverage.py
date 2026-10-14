@@ -52,6 +52,7 @@ def main() -> int:
     scored_iea = {a.disease_id for a in hp_iea.annotations if not a.negated}
     bridge = _exact_bridge(RAW / "en_product1.json.tar.gz")
     res_iea = {t for t in targets if t in scored_iea or bridge.get(t, set()) & scored_iea}
+    # Eligibility check only (aggregates); never feeds back into tuning (ADR-0003).
     # leave-publication-out: test-split diagnoses against the lpo graph (what evaluation will use)
     test_ids = set((ROOT / "eval" / "splits" / "test_ids.txt").read_text().split())
     test_cases = [c for c in cases if c.case_id in test_ids]

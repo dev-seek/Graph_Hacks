@@ -111,7 +111,7 @@ def prepare(
     for oid, name in product1.orpha.items():
         ids.setdefault(oid, name)
     for e in product1.equivalences:
-        ids.setdefault(e.omim_id, "")
+        ids.setdefault(e.omim_id, e.omim_id)
     for did in sorted(ids):
         source = did.split(":", 1)[0]
         prev: Prevalence | None = None
