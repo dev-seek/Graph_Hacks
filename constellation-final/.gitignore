@@ -1,0 +1,31 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Build-runner logs (large, may contain tool output)
+.build/logs/
+
+# Raw downloaded data (licensed; never committed)
+data/raw/
+
+# Python / Node / tooling caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+node_modules/
+.next/
+.pnpm-store/
+coverage/
+playwright-report/
+test-results/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/

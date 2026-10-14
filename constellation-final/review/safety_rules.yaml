@@ -1,0 +1,46 @@
+# STATUS: TEMPLATE — Claude drafts this in P0; the human reviews and edits it, then replaces this line with: # STATUS: REVIEWED by <name> on <date>
+# After that line says REVIEWED, Claude may read this file but a hook blocks it from editing it.
+#
+# What this is: the red-flag rules Constellation checks on every parent message, answer batch and document,
+# before anything else. Deterministic. An LLM can only ADD a flag, never remove one.
+#
+# How to draft it (Claude) and review it (human) (≈ 60–90 min):
+#   1. For each rule ID listed under `required_ids` below, write one rule in `rules:`.
+#   2. `patterns` are lower-case regexes; keep them simple and add common phrasings parents use
+#      (e.g. "fit", "seizure", "shaking and not responding"). `negations` stop false alarms ("no seizures").
+#   3. `plain` is the sentence shown to the parent (reading age ~12, no fear words, no exclamation marks).
+#   4. `source` = a public page you used (NHS, WHO, AAP, IAP, national guidance). One URL per rule.
+#   5. Delete every FILL_ME. `make review-check` fails while any FILL_ME remains or a required ID is missing.
+#   6. Write 30 short test messages that SHOULD flag and 30 that should NOT in `corpus:` (realistic parent wording).
+#
+# Levels: EMERGENCY → urgent screen, journey stops. URGENT_SOON → banner + "see a doctor in the next day or two".
+
+version: 1
+required_ids:
+  EMERGENCY: [seizure_long_or_repeated, breathing_difficulty, unresponsive, poisoning, severe_head_injury,
+              nonblanching_rash_fever, fever_under_3_months, severe_dehydration_infant, teen_self_harm]
+  URGENT_SOON: [skill_regression, new_weakness_or_unsteadiness, rapid_head_growth, morning_vomiting_headache,
+                unexplained_bruising_bleeding]
+
+crisis_lines:            # shown with teen_self_harm; verify numbers yourself
+  IN: FILL_ME
+  US: FILL_ME
+emergency_numbers:
+  IN: FILL_ME
+  EU: FILL_ME
+  US: FILL_ME
+
+rules:
+  - id: FILL_ME                      # one of required_ids
+    level: FILL_ME                   # EMERGENCY | URGENT_SOON
+    patterns: [FILL_ME]              # lower-case regexes
+    negations: [FILL_ME]             # regexes that cancel a match in the same sentence
+    hpo_ids: []                      # optional: confirmed findings that also trigger this rule
+    plain: FILL_ME                   # the sentence the parent sees
+    source: FILL_ME                  # public guidance URL
+
+corpus:
+  should_flag:                       # 30 items: {text, expect_id}
+    - {text: FILL_ME, expect_id: FILL_ME}
+  should_not_flag:                   # 30 items: plain text
+    - FILL_ME

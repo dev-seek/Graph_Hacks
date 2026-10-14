@@ -1,0 +1,26 @@
+# STATUS: TEMPLATE — Claude drafts this in P0; the human reviews and edits it, then replaces this line with: # STATUS: REVIEWED by <name> on <date>
+# After that line says REVIEWED, Claude may read this file but a hook blocks it from editing it.
+#
+# What this is: 40 made-up "common explanation" children/teens — situations that should NOT lead to a
+# rare-disease referral. They tune and test our false-alarm rate. Write them BEFORE any tuning happens
+# (they must exist when Phase 2 starts).
+#
+# How to draft it (Claude) and review it (human) (≈ 45–60 min):
+#   - 40 cases, varied ages 0–20, varied body systems. Mix truly isolated findings with 2–3 common findings.
+#   - Write signs in plain words; the build resolves them to HPO terms and writes
+#     data/derived/negatives.resolved.yaml for you to glance at (non-blocking).
+#   - expected: "no_escalation" (nothing special needed) or "see_doctor_ok" (a routine doctor visit is reasonable,
+#     but a rare-disease referral would be a false alarm).
+#   - Ideas: isolated speech delay that improves; one simple febrile seizure; familial short stature;
+#     constitutional growth delay; benign joint hypermobility; viral gastroenteritis; toe-walking that resolved;
+#     growing pains; mild motor delay that caught up; iron-deficiency fatigue in a teen; migraine in a teen.
+#   - Delete every FILL_ME. `make review-check` requires 40 valid cases.
+
+version: 1
+cases:
+  - id: neg01
+    age_months: FILL_ME
+    summary: FILL_ME                     # one line
+    present: [FILL_ME]                   # plain-language signs, e.g. "says only a few words at 24 months"
+    absent: []                           # optional plain-language signs explicitly NOT present
+    expected: FILL_ME                    # no_escalation | see_doctor_ok
