@@ -18,11 +18,11 @@ updated: (set by Claude on every change)
 - [x] 2 Python project (uv, pinned deps, lockfile), pyright/ruff/pytest config
 - [x] 3 FastAPI app: /api/health, /api/version (+tests)
 - [x] 4 docker-compose.yml with pinned FalkorDB tag + timeout config; log in VERIFIED.md
-- [ ] 5 Makefile (all targets, logs, llm-key-check) + scripts/review_check.py (+tests)
+- [x] 5 Makefile (all targets, logs, llm-key-check) + scripts/review_check.py (+tests)
 - [x] 6 docs skeleton: LICENSE, DATA_LICENSES, AI_USAGE, VERIFIED, ADR 0001, README skeleton
 - [ ] 7 Next.js skeleton (tokens, fonts, placeholder page), pnpm lockfile
 - [ ] 8 pre-commit + GitHub Actions CI
-- [ ] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
+- [x] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
 - [x] 10 draft review/negatives.yaml (40 cases)
 - [ ] 11 draft review/demo_stories.md + doctor_letters.md
 - [ ] 12 chmod hooks/scripts; AI_USAGE entries
