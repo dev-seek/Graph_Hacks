@@ -26,6 +26,8 @@ TODO(P6) — graphs, model (Mermaid), Cypher queries and algorithms (table with 
 TODO(P5/P6) — headline numbers with CIs and the honest framing
 
 ## 7. Data and credits
+Frozen test split (`eval/splits/test_ids.txt`, 7,496 cases): SHA-256 `223e60764140a0c696b991e828e742e7fe9c43293f30444494e0c3ef9791b6d5`.
+
 See [docs/DATA_LICENSES.md](docs/DATA_LICENSES.md).
 
 ## 8. Limits and what's next

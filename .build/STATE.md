@@ -23,8 +23,8 @@ updated: (set by Claude on every change)
 - [x] 7. kb builder: depth/ic/bg/cx_system, UNWIND batches, indexes, KbInfo; `make kb`; integration tests Q0/Q1/Q5 + indexes
 - [x] 8. Term resolution service + lay_phrases.yaml (50) + test; top-3 >= 80%
 - [x] 9. cx_* labels rules-only (+ batch if key), term_labels.v1.jsonl, spotcheck_100.csv
-- [ ] 10. Split script (hash by PMID, one-shot, refuses overwrite) + ADR; run; record test SHA-256
-- [ ] 11. kb_<release>_lpo build; count recorded; coverage report (>=90% resolve)
+- [x] 10. Split script (hash by PMID, one-shot, refuses overwrite) + ADR; run; record test SHA-256
+- [x] 11. kb_<release>_lpo build; count recorded; coverage report (>=90% resolve)
 - [ ] 12. /api/version (kb, HPO, Orphanet, PS, embedding) + curl check; DATA_LICENSES TODOs verbatim
 - [ ] 13. Gate: reviewer subagent, docs/explain/P1.md, AI_USAGE, phase table, tag
 

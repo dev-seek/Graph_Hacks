@@ -1,0 +1,18 @@
+{
+  "kb": "kb_20260901",
+  "include_omim_iea": false,
+  "cases": 10377,
+  "distinct_diagnoses": 780,
+  "cases_resolved": 10348,
+  "cases_resolved_pct": 99.7,
+  "diagnoses_resolved": 778,
+  "diagnoses_resolved_pct": 99.7,
+  "resolved_direct": 777,
+  "resolved_via_exact_equivalent": 1,
+  "diagnoses_with_ge5_annotations": 736,
+  "eligible_cases_resolved_and_ge5_features": 7441,
+  "lpo_test_cases": 7496,
+  "lpo_test_cases_resolved_pct": 68.7,
+  "lpo_test_eligible_cases": 3657,
+  "with_omim_iea_diagnoses_resolved_pct": 99.7
+}
