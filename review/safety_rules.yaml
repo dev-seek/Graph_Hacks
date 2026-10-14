@@ -1,7 +1,7 @@
 # STATUS: DRAFT — drafted by Claude, awaiting human review
 # Deterministic red-flag rules checked on every parent message, answer batch and document, before anything else.
 # An LLM can only ADD a flag, never remove one. Matching runs over each sentence and each pair of neighbouring sentences: a rule fires when one `patterns`
-# regex matches and no `negations` regex overlaps that match (see backend/app/safety/rules.py).
+# regex matches the sentence after any `negations` matches are blanked out (see backend/app/safety/rules.py).
 # Optional `min_age_months` / `max_age_months` gate a rule when the child's age is known (unknown age = rule active).
 #
 # Levels: EMERGENCY -> urgent screen, journey stops. URGENT_SOON -> banner + "see a doctor in the next day or two".
@@ -28,7 +28,7 @@ emergency_numbers: {IN: '112', EU: '112', US: '911'}
 rules:
 - id: seizure_long_or_repeated
   level: EMERGENCY
-  patterns: ['\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,60}?\b([5-9]|[1-9]\d+|five|ten|fifteen|twenty|half an hour)\s*(min|mins|minutes)\b', '\b([5-9]|[1-9]\d+|five|ten|fifteen|twenty)\s*(min|mins|minutes)\b.{0,60}?\b(seizures?|seizing|fits?|fitting|convuls\w*)\b', '\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,40}?\b(won''?t|will not|did not|didn''?t|not|would not|wouldn''?t)\s+(stop|stopping)\b', '\b(another|second|third|again|repeated|several|back to back|one after another)\b.{0,40}?\b(seizures?|seizing|fits?|fitting|convuls\w*)\b', '\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,40}?\b(again|another one|twice|three times|more than once)\b', '\b(shaking|jerking|twitching|stiff)\b.{0,60}?\b(not responding|unresponsive|won''?t wake|cannot wake|can''?t wake|eyes rolled)\b', \b(first|1st)\s+(seizure|fit|convulsion)\b]
+  patterns: ['\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,60}?\b([5-9]|[1-9]\d+|five|ten|fifteen|twenty|half an hour)\s*(min|mins|minutes)\b', '\b([5-9]|[1-9]\d+|five|ten|fifteen|twenty)\s*(min|mins|minutes)\b.{0,60}?\b(seizures?|seizing|fits?|fitting|convuls\w*)\b', '\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,40}?\b(won''?t|will not|did not|didn''?t|not|would not|wouldn''?t)\s+(stop|stopping)\b', '\b(another|second|third|again|repeated|several|back to back|one after another)\b.{0,40}?\b(seizures?|seizing|fits?|fitting|convuls\w*)\b', '\b(seizures?|seizing|fits?|fitting|convuls\w*)\b.{0,40}?\b(again|another one|twice|three times|more than once)\b', '\b(shaking|jerking|twitching|stiff)\b.{0,60}?\b(not responding|unresponsive|won''?t wake|cannot wake|can''?t wake|eyes rolled)\b', \b(first|1st)\s+(seizure|fit|convulsion)\b, \bstill (shaking|jerking|fitting|seizing|convulsing)\b]
   negations: ['\b(no|never|without any|hasn''?t had any|has not had any|not had any)\s+(a\s+|any\s+)?(seizures?|seizing|fits?|fitting|convuls\w*)\b', \bfit and (well|healthy)\b, '\bkeeps? fit\b', \bfit for (school|sport|sports|work|games|pe|nursery)\b, '\b(don''?t|doesn''?t|do not|does not|won''?t|didn''?t) fit\b']
   plain: This sounds like a seizure that may be long or may be happening again. Please call your local emergency number now. While you wait, lay your child on their side on a soft surface, do not put anything in their mouth, and stay with them.
   source: https://www.nhs.uk/conditions/febrile-seizures/
@@ -52,7 +52,7 @@ rules:
   source: https://www.nhs.uk/conditions/poisoning/
 - id: severe_head_injury
   level: EMERGENCY
-  patterns: ['\b(hit|banged|bumped|knocked|smashed|fell on|fell and hit|struck)\b.{0,80}?\b(head)\b.{0,80}?\b(vomit|vomited|vomiting|sick|drowsy|sleepy|confused|knocked out|unconscious|blacked out|seizure|fit|bleeding|won''?t wake|clear fluid)\b', '\b(head injury|head trauma)\b.{0,80}?\b(vomit|vomited|vomiting|drowsy|sleepy|confused|knocked out|unconscious|seizure|fit|bleeding|fluid)\b', \bknocked out\b, '\bfell (from|off)\b.{0,80}?\b(roof|balcony|window|stairs|height|tree|wall)\b.{0,80}?\bhead\b', '\bclear fluid\b.{0,80}?\b(ear|ears|nose)\b', '\bhead\b.{0,80}?\b(road accident|car accident|crash|hit by a)\b']
+  patterns: ['\b(hit|hitting|banged|bumped|knocked|smashed|fell on|fell and hit|struck)\b.{0,80}?\b(head)\b.{0,80}?\b(vomit|vomited|vomiting|sick|drowsy|sleepy|confused|knocked out|unconscious|blacked out|seizure|fit|bleeding|won''?t wake|clear fluid)\b', '\b(head injury|head trauma)\b.{0,80}?\b(vomit|vomited|vomiting|drowsy|sleepy|confused|knocked out|unconscious|seizure|fit|bleeding|fluid)\b', \bknocked out\b, '\bfell (from|off)\b.{0,80}?\b(roof|balcony|window|stairs|height|tree|wall)\b.{0,80}?\bhead\b', '\bclear fluid\b.{0,80}?\b(ear|ears|nose)\b', '\bhead\b.{0,80}?\b(road accident|car accident|crash|hit by a)\b']
   negations: [\bno (head injury|vomiting|drowsiness)\b, '\bwasn''?t knocked out\b', '\b(not|never) (been )?knocked out\b']
   plain: A knock to the head with these signs needs urgent checking. Please call your local emergency number or go to an emergency department now. Keep your child still and awake, and stay with them.
   source: https://www.nhs.uk/conditions/head-injury-and-concussion/
@@ -78,7 +78,7 @@ rules:
   source: https://www.nhs.uk/conditions/dehydration/
 - id: teen_self_harm
   level: EMERGENCY
-  patterns: ['\b(wants?|wanted|want|talks? about|talking about|talked about|thinks? about|thinking about|thought about|says (he|she|they)|saying|said)\b.{0,80}?\b(to die|kill (him|her|them)self|killing (him|her|them)self|end (his|her|their) life|ending (his|her|their) life|suicide|suicidal|better off dead|not be here|not want to be here|no reason to live)\b', '\b(self[- ]?harm|self[- ]?harming|cutting (him|her|them)self|cuts? (his|her|their) (arms?|wrists?|legs?)|hurting (him|her|them)self|hurt (him|her|them)self)\b', '\b(tried|attempted|attempt)\b.{0,80}?\b(to (kill|end|hurt)|suicide|overdose|take (his|her|their) own life)\b', '\b(took|taken) (an |a lot of )?(overdose|too many (tablets|pills))\b', \bsuicide (note|plan|attempt)\b, '\b(wants?|wanted) to (hurt|harm) (him|her|them)self\b']
+  patterns: ['\b(wants?|wanted|want|talks? about|talking about|talked about|thinks? about|thinking about|thought about|says (he|she|they)|saying|said)\b.{0,80}?\b(to die|kill (him|her|them)self|killing (him|her|them)self|end (his|her|their) life|ending (his|her|their) life|suicide|suicidal|better off dead|not be here|not want to be here|no reason to live)\b', '\b(self[- ]?harm|self[- ]?harming|cutting (him|her|them)self|cuts? (his|her|their) (arms?|wrists?|legs?)|hurting (him|her|them)self|hurt (him|her|them)self)\b', '\b(tried|attempted|attempt)\b.{0,80}?\b(to (kill|end|hurt)|suicide|overdose|take (his|her|their) own life)\b', '\b(took|taken) (an |a lot of )?(overdose|too many (tablets|pills))\b', \bsuicide (note|plan|attempt)\b, '\b(wants?|wanted) to (hurt|harm) (him|her|them)self\b', '\bcutting (his|her|their) (arms?|wrists?|legs?|thighs?)\b']
   negations: ['\b(no|never|not|without)\s+(any\s+)?(signs? of\s+)?(self[- ]?harm|suicid\w*|thoughts of (dying|suicide))\b', '\bdoesn''?t want to die\b', \bnot suicidal\b, \bsuicide squad\b]
   plain: Thank you for telling us. Your child's safety comes first. If they may be in danger right now, call your local emergency number. You can also talk to a crisis line at any time, and stay with your child until you have help.
   source: https://www.nhs.uk/nhs-services/mental-health-services/where-to-get-urgent-help-for-mental-health/
@@ -153,6 +153,7 @@ corpus:
   - {text: She had no seizures before but now a seizure for 10 minutes, expect_id: seizure_long_or_repeated}
   - {text: He swallowed bleach but took his medicine as prescribed, expect_id: poisoning}
   - {text: My 7 year old says he wants to die, expect_id: teen_self_harm, age_months: 84}
+  - {text: 'He had a seizure and no seizure activity stopped it, still shaking 15 minutes', expect_id: seizure_long_or_repeated}
   should_not_flag:
   - She has no seizures and has never had a fit
   - He had a cold and a runny nose for a week

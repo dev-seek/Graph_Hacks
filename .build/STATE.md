@@ -44,7 +44,11 @@ Non-blocking (do when convenient):
 ## Decisions made during the build (one line each; ADR link)
 
 ## Notes for next session (≤ 10 lines)
-phase_start: 5832463
-P0 remaining: task 11 (blocked by guard false positive, see Needs from human), then task 13 gate (reviewer subagent was launched; re-run it at gate). Re-check: make review-check.
-Reviewer P0 fixed (negation overlap, self-harm age gate). Open minors: CI pip-audit/pnpm audit are non-gating (make gating by P6); P1 gate must grep DATA_LICENSES.md for TODO(P1).
-Tooling: node missing on host (pnpm present); docker daemon not running at P0 start.
+phase_start(P1): P0-done tag. P0 phase_start was 5832463.
+- Start colima before `make up` (`colima start --cpu 2 --memory 4`); node is node@22 via brew (Makefile adds it to PATH).
+- web: TypeScript pinned to 6.x (typescript-eslint lacks TS 7); pnpm-workspace.yaml `allowBuilds` denies unrs-resolver.
+- `ruff format` excludes docs/ and *.md (keeps the locked spec untouched).
+- P2 must always pass `age_months` to safety `match()`; with unknown age `fever_under_3_months` fires on any "fever".
+- Safety patterns are lazy/bounded; negations only cancel overlapping spans (see test_safety_adversarial.py). review/ rules are DRAFT until the human marks them REVIEWED (needed at start of P2).
+- CI pip-audit / pnpm audit are non-gating (make gating by P6). P1 gate: `grep TODO(P1) docs/DATA_LICENSES.md` must be empty.
+- guard.sh `reviewed()` matches any first line containing "STATUS: REVIEWED"; templates therefore looked reviewed (human fixed by copying files).

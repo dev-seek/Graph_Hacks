@@ -84,26 +84,15 @@ def _normalise(text: str) -> str:
 
 
 def _fires(rule: Rule, window: str) -> bool:
-    """A pattern fires unless a negation match overlaps the pattern's own match span.
+    """A rule fires if a pattern matches what is left after the negated words are masked out.
 
-    Negations therefore only cancel the words they sit on, never an unrelated trigger elsewhere
-    in the same window. A zero-width (lookahead-only) pattern
-    is cancelled by any negation in the window.
+    Each negation blanks only the words it matches, so "no vomiting, but very drowsy" still fires on
+    "drowsy" while "no seizures" can never hide a different seizure mentioned elsewhere.
     """
-    negation_spans = [m.span() for n in rule.negations for m in re.finditer(n, window)]
-    for pattern in rule.patterns:
-        compiled = re.compile(pattern)
-        pos = 0
-        while (m := compiled.search(window, pos)) is not None:
-            start, end = m.span()
-            if start == end:
-                start, end = 0, len(window)
-            if not any(ns < end and start < ne for ns, ne in negation_spans):
-                return True
-            pos = m.start() + 1  # retry later starts so a short uncancelled match can still fire
-            if pos > len(window):
-                break
-    return False
+    masked = window
+    for negation in rule.negations:
+        masked = re.sub(negation, lambda m: " " * len(m.group(0)), masked)
+    return any(re.search(pattern, masked) for pattern in rule.patterns)
 
 
 def match(rules: list[Rule], text: str, age_months: int | None = None) -> list[Hit]:
