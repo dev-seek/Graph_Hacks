@@ -92,12 +92,17 @@ def _fires(rule: Rule, window: str) -> bool:
     """
     negation_spans = [m.span() for n in rule.negations for m in re.finditer(n, window)]
     for pattern in rule.patterns:
-        for m in re.finditer(pattern, window):
+        compiled = re.compile(pattern)
+        pos = 0
+        while (m := compiled.search(window, pos)) is not None:
             start, end = m.span()
             if start == end:
                 start, end = 0, len(window)
             if not any(ns < end and start < ne for ns, ne in negation_spans):
                 return True
+            pos = m.start() + 1  # retry later starts so a short uncancelled match can still fire
+            if pos > len(window):
+                break
     return False
 
 

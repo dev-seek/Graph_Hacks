@@ -32,6 +32,18 @@ MUST_FLAG: list[tuple[str, str, int | None]] = [
     ("His face went blue and he was gasping", "breathing_difficulty", None),
     ("Baby has a temperature of 38.5C", "fever_under_3_months", 1),
     ("Baby is 100.4F and fussy", "fever_under_3_months", 2),
+    (
+        "He is struggling to breathe, his breathing was fine this morning",
+        "breathing_difficulty",
+        None,
+    ),
+    (
+        "She had no seizures before but now a seizure for 10 minutes",
+        "seizure_long_or_repeated",
+        None,
+    ),
+    ("He swallowed bleach but took his medicine as prescribed", "poisoning", None),
+    ("My 7 year old says he wants to die", "teen_self_harm", 84),
     ("She won’t wake up, hard to rouse", "unresponsive", None),
     ("The rash doesn’t fade when pressed and she has a fever", "nonblanching_rash_fever", None),
 ]

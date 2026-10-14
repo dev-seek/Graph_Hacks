@@ -46,4 +46,5 @@ Non-blocking (do when convenient):
 ## Notes for next session (≤ 10 lines)
 phase_start: 5832463
 P0 remaining: task 11 (blocked by guard false positive, see Needs from human), then task 13 gate (reviewer subagent was launched; re-run it at gate). Re-check: make review-check.
+Reviewer P0 fixed (negation overlap, self-harm age gate). Open minors: CI pip-audit/pnpm audit are non-gating (make gating by P6); P1 gate must grep DATA_LICENSES.md for TODO(P1).
 Tooling: node missing on host (pnpm present); docker daemon not running at P0 start.
