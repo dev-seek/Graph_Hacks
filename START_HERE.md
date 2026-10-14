@@ -6,8 +6,13 @@ Everything Claude needs is in this folder: rules (`AGENTS.md`, `CLAUDE.md`), the
 Install Docker, Python 3.12 + `uv`, Node 22 + `pnpm`, `git`, `jq`, and Claude Code (`claude update`). Sign in to Claude Code. The build runs **Sonnet as the main model with Opus as its advisor** (Opus is consulted only at decision points). Don't set `DISABLE_TELEMETRY` — it switches the advisor off.
 
 ## At kickoff
-1. Create a **public** GitHub repo and clone it. Set your git name and email (`git config user.name`, `git config user.email`). Unzip this folder into the repo root, then `git add -A && git commit -m "chore: add build kit (spec, rules, work orders)" && git push`. Your git login must be able to push without a prompt (GitHub CLI `gh auth login`, or SSH).
-2. Start the build with one command: `bash scripts/autopilot.sh` (fresh Claude session per phase, stops only when it needs you). If your plan lacks `auto` permission mode: `PERMISSION_MODE=acceptEdits bash scripts/autopilot.sh`. Interactive alternative: run `claude` and type `/build`.
+1. Create a **public** GitHub repo and clone it. Set your git name and email (`git config user.name`, `git config user.email`). Make sure you can push without a prompt (`gh auth login`, or SSH).
+2. From inside the repo folder: `unzip -o ~/Downloads/constellation-kit-final.zip -d .` (files must land in the repo root: `ls -a` shows `AGENTS.md`, `CLAUDE.md`, `.claude`, `.build`). Then `git add -A && git commit -m "chore: add build kit (spec, rules, work orders)" && git push`.
+3. Start the build in one of two ways (both resume from `.build/STATE.md`; you can switch any time):
+
+**A. Watch and steer (recommended).** In the repo root run `claude --permission-mode auto` (if `auto` isn't offered on your plan: `claude --permission-mode acceptEdits` and answer prompts with "Yes, don't ask again"), then type `/build`. You see every step. To correct it, press **Esc** and type what you want ("use X instead", "skip this, do Y first"); it applies the correction, notes it, and continues. After each phase it stops with a short report: read it, then type `/clear` and `/build` for the next phase (fresh context = lower cost).
+
+**B. Autopilot (when you step away).** `bash scripts/autopilot.sh` — one fresh session per phase, live one-line feed of what Claude does, pushes after every run. **Ctrl-C** stops everything; run it again to resume. `VERBOSE=0` shows only Claude's messages.
 
 ## Your review (~45–60 min, any time before phase P2 starts)
 In phase P0 Claude drafts four files in `review/`. Open each, read it, fix anything you disagree with, then change line 1 to `# STATUS: REVIEWED by <your name> on <date>`. After that Claude can't change them. Check with `make review-check`, then commit them yourself, e.g. `git commit -am "review: approve safety rules and negatives after edits"` and push. Those commits carry your name and show your part honestly.

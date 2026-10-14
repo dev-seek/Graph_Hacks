@@ -2,7 +2,7 @@
 
 # Operating loop (Claude Code) — follow exactly
 
-You build Constellation autonomously, phase by phase, from `.build/`. The human is mostly away. Do not ask for approval between tasks or phases; stop only for the reasons in step 7.
+You build Constellation autonomously, phase by phase, from `.build/`. The human is mostly away. Do not ask for approval between tasks; end your turn only at a phase gate (step 6) or for the reasons in step 7. If the human interrupts with a correction, apply it, note it under "Decisions made during the build" if it changes direction, and continue.
 
 1. **Orient (cheap).** The session-start hook has printed `.build/STATE.md`. If it hasn't, read it. Never read whole folders. Ignore `START_HERE.md` (it's for the human). Run `git status --short`: if a previous session left uncommitted work, check it with `make check` and commit it properly (or finish it as part of the current task) before starting anything new.
 2. **Status.** `done` → print a 5-line summary and stop. `needs-human` or `blocked` → re-check the listed condition (e.g. `make review-check`); if it is now resolved, tick it, set `status: running` and continue; otherwise print the "Needs from human" section and stop. `running` → continue.
@@ -10,8 +10,7 @@ You build Constellation autonomously, phase by phase, from `.build/`. The human 
 4. **Plan once per phase** (no approval needed): record `phase_start: <git sha>` under "Notes for next session", then write the phase's task list into STATE.md "Current tasks" if it is empty, refining the work order's list into ≤ 15 concrete tasks. Then work them top to bottom.
 5. **Per task:** tests first where the work order says so → implement → `make check` (and `make test-int` if FalkorDB is touched) → tick the task in STATE.md → commit (with the STATE.md tick in the same commit) → `git push origin HEAD` (see "Git history" below). Keep "Notes for next session" ≤ 10 lines, updated when something non-obvious happens.
 6. **Phase gate:** run the gate commands in the work order; run the `reviewer` subagent on the phase diff and fix blockers; write `docs/explain/<phase>.md` (plain English) and append to `docs/AI_USAGE.md`; mark the phase done in the phase table with gate evidence; set `phase:` to the next phase and clear "Current tasks"; commit `chore(build): close <phase> gate`, then `git tag -a <phase>-done -m "<phase>: <one-line gate evidence>"` and `git push origin HEAD --follow-tags`. Then:
-   - if `AUTOPILOT=1` is set in the environment (check once with `echo $AUTOPILOT`), **end your turn** — the runner starts a fresh session for the next phase;
-   - otherwise continue straight into the next phase.
+   - **end your turn** with a phase report of at most 8 lines: what was built, gate numbers, anything that surprised you, what the next phase will do, and anything in "Needs from human". In an interactive session (`echo $AUTOPILOT` is not 1), finish with: "Type /clear, then /build to start <next phase>." (A fresh context per phase keeps cost low; the runner does the same in autopilot mode.)
 7. **Stop only when:** a `review/` file is not REVIEWED or invalid when needed (`status: needs-human`, say exactly which file and what's wrong); a locked decision is contradicted by evidence (`blocked`, cite evidence); a credential/budget/tooling problem you can't solve; three failed attempts on one problem (`blocked`). Write the reason under "Needs from human" first.
 
 ## Git history (it is the project's record — judges read it)
@@ -55,4 +54,4 @@ Every session runs with an advisor model attached (`--advisor` / `advisorModel`)
 - SessionStart: prints STATE.md (status, phase, current tasks, notes).
 - PreToolUse: blocks edits to REVIEWED files in `review/`, raw data, the frozen test split, `.env`; blocks reading `data/raw/**`. Never work around a block (no shell redirection either); record why in STATE.md.
 - PostToolUse: auto-formats edited files.
-- Stop (interactive runs only): if `status: running`, you are sent back to continue the next task.
+- Stop (interactive runs only): while the current phase has unticked tasks, you are sent back to continue; at a phase gate you may stop.
