@@ -1,0 +1,57 @@
+# FalkorDB image tag is pinned (never `latest`). Verified: docs/VERIFIED.md.
+name: constellation
+
+services:
+  falkordb:
+    image: falkordb/falkordb:6.0.2
+    restart: unless-stopped
+    environment:
+      # Query timeouts (ms). Mechanism verified in docs/VERIFIED.md.
+      FALKORDB_ARGS: "TIMEOUT_MAX 10000 TIMEOUT_DEFAULT 3000"
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    ports:
+      - "127.0.0.1:6379:6379"   # local dev only; remove in production (internal network only)
+      - "127.0.0.1:3000:3000"   # FalkorDB Browser, local dev only
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # web: stub until P4 (Next.js app in ./web). Enabled with `docker compose --profile web up`.
+  web:
+    profiles: [web]
+    image: node:22-alpine
+    command: ["sh", "-c", "echo 'web service is a stub until P4' && sleep infinity"]
+    networks: [internal]
+
+networks:
+  internal: {}
+
+volumes:
+  falkordb_data: {}
