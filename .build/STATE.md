@@ -14,7 +14,19 @@ updated: (set by Claude on every change)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty — Claude writes ≤ 15 concrete tasks for the current phase here, then ticks them)
+- [x] 1 repo map, packages, ports (5 Protocols), config/llm.yaml, .env.example
+- [x] 2 Python project (uv, pinned deps, lockfile), pyright/ruff/pytest config
+- [x] 3 FastAPI app: /api/health, /api/version (+tests)
+- [ ] 4 docker-compose.yml with pinned FalkorDB tag + timeout config; log in VERIFIED.md
+- [ ] 5 Makefile (all targets, logs, llm-key-check) + scripts/review_check.py (+tests)
+- [ ] 6 docs skeleton: LICENSE, DATA_LICENSES, AI_USAGE, VERIFIED, ADR 0001, README skeleton
+- [ ] 7 Next.js skeleton (tokens, fonts, placeholder page), pnpm lockfile
+- [ ] 8 pre-commit + GitHub Actions CI
+- [ ] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
+- [ ] 10 draft review/negatives.yaml (40 cases)
+- [ ] 11 draft review/demo_stories.md + doctor_letters.md
+- [ ] 12 chmod hooks/scripts; AI_USAGE entries
+- [ ] 13 gate: make up, health 200, GRAPH.LIST, review-check, reviewer subagent, explain doc, tag
 
 ## Needs from human
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
@@ -30,3 +42,5 @@ Non-blocking (do when convenient):
 ## Decisions made during the build (one line each; ADR link)
 
 ## Notes for next session (≤ 10 lines)
+phase_start: 5832463
+Tooling: node missing on host (pnpm present); docker daemon not running at P0 start.
