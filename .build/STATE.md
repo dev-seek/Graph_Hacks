@@ -19,7 +19,7 @@ updated: (set by Claude on every change)
 - [x] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
 - [ ] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
 - [ ] 5 engine/planner.py + engine/gates.py
-- [ ] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
+- [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
 - [ ] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
 - [ ] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
 - [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
