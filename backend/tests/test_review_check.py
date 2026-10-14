@@ -19,6 +19,10 @@ def _staged(tmp: Path) -> Path:
         if "FILL_ME" in src.read_text(encoding="utf-8"):
             src = ROOT / ".build" / "drafts" / name
         shutil.copy(src, d)
+    for f in d.iterdir():  # status-independent: force every staged copy to DRAFT
+        lines = f.read_text(encoding="utf-8").splitlines()
+        lines[0] = "# STATUS: DRAFT"
+        f.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return d
 
 
