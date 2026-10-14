@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import csv
+import hashlib
 import json
 import os
+import random
 import sys
 import time
 from datetime import UTC, datetime
@@ -37,6 +40,36 @@ def load_label_overrides() -> dict[str, TermLabel]:
             if rec.get("label", {}).get("cx_label_source") == "llm":
                 out[rec["id"]] = TermLabel.model_validate(rec["label"])
     return out
+
+
+LABEL_FIELDS = (
+    "cx_obs", "cx_min_age_months", "cx_plain_label", "cx_question", "cx_why",
+    "cx_how_to_check", "cx_lay_text", "cx_label_source",
+)  # fmt: skip
+SPOTCHECK = DERIVED / "spotcheck_100.csv"
+
+
+def write_label_artifacts(data: KbData) -> None:
+    """Cache every term label (spec §8.2) and draw the 100-term spot-check sheet once."""
+    labelled = [t for t in data.terms if "cx_obs" in t]
+    DERIVED.mkdir(parents=True, exist_ok=True)
+    with LABELS_CACHE.open("w", encoding="utf-8") as fh:
+        for t in labelled:
+            label = {k: t[k] for k in LABEL_FIELDS}
+            digest = hashlib.sha256(json.dumps([t["name"], t["synonyms"]]).encode()).hexdigest()
+            rec = {"id": t["id"], "prompt_version": "rules.v1", "input_hash": digest[:16],
+                   "model": None, "label": label}  # fmt: skip
+            fh.write(json.dumps(rec, sort_keys=True) + "\n")
+    if SPOTCHECK.exists():
+        return  # the human may already be filling it in
+    pick = random.Random(20260901).sample(labelled, 100)  # noqa: S311 - reproducible sample
+    with SPOTCHECK.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["term_id", "name", "cx_obs", "cx_min_age_months", "cx_question", "human_label"])
+        for t in pick:
+            w.writerow(
+                [t["id"], t["name"], t["cx_obs"], t["cx_min_age_months"], t["cx_question"], ""]
+            )
 
 
 def main() -> int:
@@ -92,6 +125,8 @@ def main() -> int:
             "lpo_excluded_pmids_count": len(excluded),
             "embedding_model": embedder.model_id,
         }
+        if not excluded:
+            write_label_artifacts(data)
         timings = write_graph(db, name, data, embedder, graph_info)
         print(f"{name}: {data.stats}")
         print(f"  timings(s): {timings}")
