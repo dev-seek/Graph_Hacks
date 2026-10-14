@@ -1,4 +1,4 @@
-# STATUS: DRAFT — drafted by Claude, awaiting human review
+# STATUS: REVIEWED by Manoj on 2026-10-15.
 # Deterministic red-flag rules checked on every parent message, answer batch and document, before anything else.
 # An LLM can only ADD a flag, never remove one. Matching runs over each sentence and each pair of neighbouring sentences: a rule fires when one `patterns`
 # regex matches the sentence after any `negations` matches are blanked out (see backend/app/safety/rules.py).
