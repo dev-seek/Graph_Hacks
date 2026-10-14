@@ -1,0 +1,61 @@
+[project]
+name = "constellation"
+version = "0.1.0"
+description = "Constellation: evidence-gathering helper for families of children with unexplained health problems"
+requires-python = "==3.12.*"
+dependencies = [
+    "anthropic==1.14.0",
+    "falkordb==1.8.0",
+    "fastapi==0.143.1",
+    "httpx==0.28.1",
+    "langchain-falkordb==0.2.0",
+    "langgraph==1.2.15",
+    "langgraph-checkpoint==4.3.0",
+    "pydantic==2.14.1",
+    "pyyaml==6.0.3",
+    "structlog==26.1.0",
+    "uvicorn[standard]==0.54.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend/app"]
+
+[dependency-groups]
+dev = [
+    "hypothesis==6.169.1",
+    "pip-audit==2.10.1",
+    "pyright==1.1.414",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.17.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
+markers = ["integration: needs FalkorDB (make test-int)"]
+addopts = "-m 'not integration'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["backend", "backend/tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/tests/**" = ["S101"]
+"scripts/**" = ["S101"]
+
+[tool.pyright]
+include = ["backend/app", "scripts"]
+extraPaths = ["backend"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
