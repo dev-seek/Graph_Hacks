@@ -1,11 +1,11 @@
 status: running
-phase: P0
+phase: P1
 updated: (set by Claude on every change)
 
 ## Phase table
 | Phase | Work order | Status | Gate evidence (short; link logs) |
 |---|---|---|---|
-| P0 | phases/P0-scaffold.md | todo | |
+| P0 | phases/P0-scaffold.md | done | CI run 38627498456 green; make check OK; test-int 2 passed; /api/health 200; GRAPH.LIST ok; review-check: only 'not yet REVIEWED' for safety_rules + negatives (stories/letters REVIEWED); FalkorDB 6.0.2 + timeouts in docs/VERIFIED.md |
 | P1 | phases/P1-knowledge.md | todo | |
 | P2 | phases/P2-engine.md | todo | |
 | P3 | phases/P3-agents-api.md | todo | |
@@ -14,25 +14,13 @@ updated: (set by Claude on every change)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [x] 1 repo map, packages, ports (5 Protocols), config/llm.yaml, .env.example
-- [x] 2 Python project (uv, pinned deps, lockfile), pyright/ruff/pytest config
-- [x] 3 FastAPI app: /api/health, /api/version (+tests)
-- [x] 4 docker-compose.yml with pinned FalkorDB tag + timeout config; log in VERIFIED.md
-- [x] 5 Makefile (all targets, logs, llm-key-check) + scripts/review_check.py (+tests)
-- [x] 6 docs skeleton: LICENSE, DATA_LICENSES, AI_USAGE, VERIFIED, ADR 0001, README skeleton
-- [x] 7 Next.js skeleton (tokens, fonts, placeholder page), pnpm lockfile
-- [x] 8 pre-commit + GitHub Actions CI
-- [x] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
-- [x] 10 draft review/negatives.yaml (40 cases)
-- [x] 11 draft review/demo_stories.md + doctor_letters.md
-- [x] 12 chmod hooks/scripts; AI_USAGE entries
-- [ ] 13 gate: make up, health 200, GRAPH.LIST, review-check, reviewer subagent, explain doc, tag
+(empty — Claude writes ≤ 15 concrete tasks for P1 here, then ticks them)
 
 ## Needs from human
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
 - [ ] review/safety_rules.yaml — needed at start of P2
 - [ ] review/negatives.yaml — needed at start of P2
-- [ ] review/demo_stories.md + review/doctor_letters.md — needed for demo recording in P3
+- [x] review/demo_stories.md + review/doctor_letters.md — REVIEWED (Manoj, 2026-10-15)
 Non-blocking (do when convenient):
 - [ ] data/derived/spotcheck_100.csv — fill `human_label` (appears after P1)
 - [ ] Record + voice the demo video from docs/submission/video_script.md (after P6)
