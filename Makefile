@@ -16,7 +16,7 @@ data:
 	@$(RUN) data uv run python scripts/data.py
 
 kb:
-	$(call NYI,kb,P1)
+	@$(RUN) kb env PYTHONPATH=backend uv run python -m app.kb.cli
 
 up:
 	@$(RUN) up docker compose up -d --wait falkordb api

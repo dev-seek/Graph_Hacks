@@ -20,8 +20,8 @@ updated: (set by Claude on every change)
 - [x] 4. Parsers tests-first (test-engineer): hp, hpoa+freq+OMIM/IEA, prevalence, product1, phenopackets
 - [x] 5. Parsers implemented (backend/app/kb/parsers/), `make check` green
 - [x] 6. Embedding adapter (EmbeddingPort; fastembed bge-small + deterministic fake) with vector cache
-- [ ] 7. kb builder: depth/ic/bg/cx_system, UNWIND batches, indexes, KbInfo; `make kb`; integration tests Q0/Q1/Q5 + indexes
-- [ ] 8. Term resolution service + lay_phrases.yaml (50) + test; top-3 >= 80%
+- [x] 7. kb builder: depth/ic/bg/cx_system, UNWIND batches, indexes, KbInfo; `make kb`; integration tests Q0/Q1/Q5 + indexes
+- [x] 8. Term resolution service + lay_phrases.yaml (50) + test; top-3 >= 80%
 - [ ] 9. cx_* labels rules-only (+ batch if key), term_labels.v1.jsonl, spotcheck_100.csv
 - [ ] 10. Split script (hash by PMID, one-shot, refuses overwrite) + ADR; run; record test SHA-256
 - [ ] 11. kb_<release>_lpo build; count recorded; coverage report (>=90% resolve)

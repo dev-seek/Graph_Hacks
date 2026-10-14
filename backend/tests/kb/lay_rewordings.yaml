@@ -1,0 +1,23 @@
+# Parent-style rewordings written by Claude (20): a harder, NON-gated stretch set that tests the
+# resolver on full sentences. The LLM story extraction (P3) normally does this step.
+phrases:
+  - {text: "my son is very floppy", expect: "HP:0001252"}
+  - {text: "she is not putting on weight", expect: "HP:0001508"}
+  - {text: "his head looks too big", expect: "HP:0000256"}
+  - {text: "her head is unusually small", expect: "HP:0000252"}
+  - {text: "one eye turns in", expect: "HP:0000486"}
+  - {text: "keeps vomiting after meals", expect: "HP:0002013"}
+  - {text: "constant tummy ache", expect: "HP:0002027"}
+  - {text: "joints bend further than normal", expect: "HP:0001382"}
+  - {text: "cannot see well", expect: "HP:0000505"}
+  - {text: "lens of the eye is cloudy", expect: "HP:0000518"}
+  - {text: "he walks strangely", expect: "HP:0001288"}
+  - {text: "wakes up many times at night and cannot sleep", expect: "HP:0002360"}
+  - {text: "skin and eyes look yellow", expect: "HP:0000952"}
+  - {text: "wees a lot", expect: "HP:0000103"}
+  - {text: "chokes when swallowing", expect: "HP:0002015"}
+  - {text: "constantly drooling", expect: "HP:0002307"}
+  - {text: "murmur in the heart", expect: "HP:0030148"}
+  - {text: "gets infections all the time", expect: "HP:0002719"}
+  - {text: "falls over a lot", expect: "HP:0002359"}
+  - {text: "has fits", expect: "HP:0001250"}
