@@ -1,4 +1,4 @@
-status: running
+status: needs-human
 phase: P0
 updated: (set by Claude on every change)
 
@@ -25,7 +25,7 @@ updated: (set by Claude on every change)
 - [x] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
 - [x] 10 draft review/negatives.yaml (40 cases)
 - [ ] 11 draft review/demo_stories.md + doctor_letters.md
-- [ ] 12 chmod hooks/scripts; AI_USAGE entries
+- [x] 12 chmod hooks/scripts; AI_USAGE entries
 - [ ] 13 gate: make up, health 200, GRAPH.LIST, review-check, reviewer subagent, explain doc, tag
 
 ## Needs from human
@@ -45,4 +45,5 @@ Non-blocking (do when convenient):
 
 ## Notes for next session (≤ 10 lines)
 phase_start: 5832463
+P0 remaining: task 11 (blocked by guard false positive, see Needs from human), then task 13 gate (reviewer subagent was launched; re-run it at gate). Re-check: make review-check.
 Tooling: node missing on host (pnpm present); docker daemon not running at P0 start.
