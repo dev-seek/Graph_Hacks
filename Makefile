@@ -38,7 +38,7 @@ review-check:
 	@uv run python scripts/review_check.py
 
 eval-smoke:
-	$(call NYI,eval-smoke,P5)
+	@$(RUN) eval-smoke env PYTHONPATH=backend uv run python -m app.eval.cli
 
 eval:
 	$(call NYI,eval,P5)

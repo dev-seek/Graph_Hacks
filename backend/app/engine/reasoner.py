@@ -135,6 +135,16 @@ class Reasoner:
         age_months: int | None,
         round_kind: str,
     ) -> Plan:
+        return plan_round(self.plan_input(findings, result, asked, age_months, round_kind))
+
+    def plan_input(
+        self,
+        findings: Sequence[Finding],
+        result: ScoreResult,
+        asked: set[str],
+        age_months: int | None,
+        round_kind: str,
+    ) -> PlannerInput:
         top = result.candidates[:TOP_CANDIDATES]
         annotations: dict[str, dict[str, float]] = {}
         if top:
@@ -155,7 +165,7 @@ class Reasoner:
                         str(r["question"]),
                         float(r["bg"]),
                     )
-        inp = PlannerInput(
+        return PlannerInput(
             posteriors={c.disease: c.posterior for c in top},
             p_d0=result.p_d0,
             annotations=annotations,
@@ -168,4 +178,3 @@ class Reasoner:
             round_kind="post_doctor" if round_kind == "post_doctor" else "home",
             eps=self.params.eps,
         )
-        return plan_round(inp)

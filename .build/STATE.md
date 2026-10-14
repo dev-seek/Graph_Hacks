@@ -21,7 +21,7 @@ updated: (set by Claude on every change)
 - [x] 5 engine/planner.py + engine/gates.py
 - [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
 - [x] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
-- [ ] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
+- [~] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
 - [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
 - [ ] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
 - [ ] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test

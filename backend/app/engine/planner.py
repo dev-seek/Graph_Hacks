@@ -60,6 +60,7 @@ class Plan:
     questions: list[Question] = field(default_factory=list[Question])
     suggested_tests: list[Question] = field(default_factory=list[Question])
     best_ig: dict[str, float] = field(default_factory=dict[str, float])
+    pool: list[Question] = field(default_factory=list[Question])  # every eligible question
 
 
 def entropy_bits(ps: Iterable[float]) -> float:
@@ -107,7 +108,7 @@ def _eligible(q: Askable, inp: PlannerInput) -> bool:
     return not any(_related(q.term, a, anc) for a in inp.asked)
 
 
-def _propagate(inp: PlannerInput) -> dict[str, dict[str, float]]:
+def propagate(inp: PlannerInput) -> dict[str, dict[str, float]]:
     """Per disease: every term at or above an annotation -> max annotated frequency below it."""
     out: dict[str, dict[str, float]] = {}
     for d in inp.posteriors:
@@ -133,7 +134,7 @@ def _p_yes_by_disease(
 def plan_round(inp: PlannerInput) -> Plan:
     posts = {**inp.posteriors, D0_KEY: inp.p_d0}
     scored: list[Question] = []
-    prop = _propagate(inp)
+    prop = propagate(inp)
     for term in sorted(inp.askable):
         q = inp.askable[term]
         if not _eligible(q, inp):
@@ -164,4 +165,4 @@ def plan_round(inp: PlannerInput) -> Plan:
         batch.append(s)
         per_system[s.system] = per_system.get(s.system, 0) + 1
     tests = sorted((s for s in scored if s.obs == "test"), key=rank)[:MAX_SUGGESTED_TESTS]
-    return Plan(questions=batch, suggested_tests=tests, best_ig=best)
+    return Plan(questions=batch, suggested_tests=tests, best_ig=best, pool=scored)
