@@ -17,7 +17,9 @@ from pydantic import BaseModel, Field
 
 Level = Literal["EMERGENCY", "URGENT_SOON"]
 DEFAULT_RULES_PATH = Path(__file__).resolve().parents[3] / "review" / "safety_rules.yaml"
-_SENTENCE_SPLIT = re.compile(r"[.!?;\n]+")
+# Split on sentence punctuation, but not on a "." between digits ("38.5C", "100.4F").
+_SENTENCE_SPLIT = re.compile(r"(?<!\d)\.(?!\d)|[!?;\n]+")
+_APOSTROPHES = str.maketrans({"\u2019": "'", "\u2018": "'", "\u02bc": "'", "`": "'"})
 
 
 class Rule(BaseModel):
@@ -77,18 +79,39 @@ def _age_ok(rule: Rule, age_months: int | None) -> bool:
     return not (rule.max_age_months is not None and age_months > rule.max_age_months)
 
 
+def _normalise(text: str) -> str:
+    return text.translate(_APOSTROPHES).lower()
+
+
+def _fires(rule: Rule, window: str) -> bool:
+    """A pattern fires unless a negation match overlaps the pattern's own match span.
+
+    Negations therefore only cancel the words they sit on, never an unrelated trigger elsewhere
+    in the same window. A zero-width (lookahead-only) pattern
+    is cancelled by any negation in the window.
+    """
+    negation_spans = [m.span() for n in rule.negations for m in re.finditer(n, window)]
+    for pattern in rule.patterns:
+        for m in re.finditer(pattern, window):
+            start, end = m.span()
+            if start == end:
+                start, end = 0, len(window)
+            if not any(ns < end and start < ne for ns, ne in negation_spans):
+                return True
+    return False
+
+
 def match(rules: list[Rule], text: str, age_months: int | None = None) -> list[Hit]:
-    """Return every rule that fires on `text` (lower-cased internally), most severe first."""
-    sentences = [s.strip() for s in _SENTENCE_SPLIT.split(text.lower()) if s.strip()]
+    """Return every rule that fires on `text`, most severe first.
+
+    Each sentence and each pair of neighbouring sentences is a window, so facts split across
+    sentences ("He had a seizure. It lasted 10 minutes.") are still caught.
+    """
+    sentences = [s.strip() for s in _SENTENCE_SPLIT.split(_normalise(text)) if s.strip()]
+    windows = sentences + [f"{a}. {b}" for a, b in zip(sentences, sentences[1:], strict=False)]
     hits: list[Hit] = []
     for rule in rules:
-        if not _age_ok(rule, age_months):
-            continue
-        for sentence in sentences:
-            if any(re.search(p, sentence) for p in rule.patterns) and not any(
-                re.search(n, sentence) for n in rule.negations
-            ):
-                hits.append(Hit(rule_id=rule.id, level=rule.level, plain=rule.plain))
-                break
+        if _age_ok(rule, age_months) and any(_fires(rule, w) for w in windows):
+            hits.append(Hit(rule_id=rule.id, level=rule.level, plain=rule.plain))
     hits.sort(key=lambda h: h.level != "EMERGENCY")
     return hits
