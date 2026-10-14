@@ -14,11 +14,11 @@ updated: (set by Claude on every change)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [ ] 1 failing tests: LR table, prune, decay, NOT, noise, absent, obligate cap, gamma, D0, unlinked mass, Hypothesis invariants (engine/scoring)
-- [ ] 2 failing tests: planner (age gate, branch memory, <=2/system, no overlap, IG>=0) + gates at/below threshold
+- [x] 1 failing tests: LR table, prune, decay, NOT, noise, absent, obligate cap, gamma, D0, unlinked mass, Hypothesis invariants (engine/scoring)
+- [x] 2 failing tests: planner (age gate, branch memory, <=2/system, no overlap, IG>=0) + gates at/below threshold
 - [x] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
-- [ ] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
-- [ ] 5 engine/planner.py + engine/gates.py
+- [x] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
+- [x] 5 engine/planner.py + engine/gates.py
 - [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
 - [x] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
 - [ ] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
@@ -40,6 +40,8 @@ Non-blocking (do when convenient):
 - [x] **guard.sh false positive (blocks P0 task 11):** the untouched templates `review/demo_stories.md` and `review/doctor_letters.md` have a first line containing the text "STATUS: REVIEWED" (inside the instruction "replace this line with: # STATUS: REVIEWED by …"), so `.claude/hooks/guard.sh` treats them as REVIEWED and blocks Write/Edit and shell writes. They are NOT reviewed. Finished drafts are waiting in `.build/drafts/demo_stories.md` and `.build/drafts/doctor_letters.md`. Fix: either copy them over `review/` yourself (they already start with `# STATUS: DRAFT …`), or change `reviewed()` in guard.sh to match `^# STATUS: REVIEWED by`. Note: `safety_rules.yaml` and `negatives.yaml` had the same template line; they were written with Python file writes that the guard's Bash regex did not catch (unintended). Both remain DRAFT.
 
 ## Decisions made during the build (one line each; ADR link)
+- Spec §7 invariant 'absent obligate >= x500' asserted on lr_absent only: the locked +-ln100 clip caps the combined effect at x100 (no scoring change made).
+- Candidate set = diseases from Q2a u Q2b u Q2c; priors are rescaled in engine to sum 1-pi0 over diseases with >=1 phenotype (Q2g).
 
 ## Notes for next session (≤ 10 lines)
 - guard.sh false-positive: a Bash command mentioning review/negatives.yaml inside python open() is blocked even for reads; use app.eval.negatives.load_negatives instead.

@@ -25,7 +25,7 @@ def graph():  # noqa: ANN201
 
 def test_q2a_exact_and_more_specific_propagate_upward(graph) -> None:  # noqa: ANN001
     # ORPHA:900100 has the more specific Focal seizure (0012); Seizure (0011) finds it.
-    out = rows(graph, "q2a_exact_or_specific", {"present": ["TEST:0011"]})
+    out = rows(graph, "q2a_exact_or_specific", {"fid": "TEST:0011"})
     by = {r["disease"]: r for r in out}
     assert "ORPHA:900100" in by and "OMIM:900001" in by
     assert all(r["finding"] == "TEST:0011" and r["F"] is not None for r in out)
@@ -33,7 +33,7 @@ def test_q2a_exact_and_more_specific_propagate_upward(graph) -> None:  # noqa: A
 
 
 def test_q2a_does_not_return_diseases_with_only_a_broader_annotation(graph) -> None:  # noqa: ANN001
-    out = rows(graph, "q2a_exact_or_specific", {"present": ["TEST:0012"]})
+    out = rows(graph, "q2a_exact_or_specific", {"fid": "TEST:0012"})
     assert {r["disease"] for r in out} == {"ORPHA:900100"}
 
 
@@ -49,7 +49,7 @@ def test_q2c_not_annotation_covers_present_sign(graph) -> None:  # noqa: ANN001
 
 
 def test_q2d_absent_only_for_candidates(graph) -> None:  # noqa: ANN001
-    out = rows(graph, "q2d_absent", {"absent": ["TEST:0021"], "candidates": ["OMIM:900001"]})
+    out = rows(graph, "q2d_absent", {"fid": "TEST:0021", "candidates": ["OMIM:900001"]})
     assert {r["disease"] for r in out} == {"OMIM:900001"}
     assert out[0]["F"] == pytest.approx(0.75)
 

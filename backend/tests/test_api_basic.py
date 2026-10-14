@@ -45,3 +45,17 @@ def test_version_reports_all_data_sources(monkeypatch: pytest.MonkeyPatch, tmp_p
     assert kb["hpo_version"] == "2026-09-01" and kb["orpha_version"] == "2026-06-29"
     assert kb["phenopacket_store_version"] == "0.1.27"
     assert kb["embedding_model"] == "BAAI/bge-small-en-v1.5"
+
+
+def test_graph_unavailable_maps_to_503() -> None:
+    from fastapi.testclient import TestClient
+
+    from app.engine.reasoner import GraphUnavailable
+    from app.main import app
+
+    @app.get("/api/_probe_503")
+    def _probe() -> None:
+        raise GraphUnavailable("down")
+
+    res = TestClient(app).get("/api/_probe_503")
+    assert res.status_code == 503 and "graph" in res.json()["detail"]

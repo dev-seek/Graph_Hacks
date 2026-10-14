@@ -26,3 +26,9 @@ Each entry: what was checked, how, when. Nothing is used before it is listed her
 - Vector: `CREATE VECTOR INDEX FOR (t:Term) ON (t.embedding) OPTIONS {dimension: 384, similarityFunction: 'cosine', M: 16, efConstruction: 200}` accepted. **`score` from `db.idx.vector.queryNodes` is a cosine distance (lower = closer)**: "seizure" → Seizure 0.108, Tonic seizure 0.124. Vector property is written with `vecf32($list)`.
 - `TIMEOUT_MAX` (10000 ms) also bounds write queries: a `timeout` argument above it is rejected ("cannot exceed the TIMEOUT_MAX"). The kb build therefore writes in batches (≤ 5000 rows) with `timeout=10000`; each batch finishes in < 3 s.
 - Index listing columns: `[label, [fields], {field: [types]}, ...]`; indexes on one label are merged into one row.
+
+## FalkorDB 6.0.2 query-planning quirks found in P2 (2026-10-15; tests: backend/tests/test_graph_queries_p2.py, benchmark in P2)
+- **Spec §13 Q2a/Q2b/Q2d as written take 0.7–1.2 s regardless of the finding**: the planner starts from all `HAS_PHENOTYPE` relationships and filters afterwards (`GRAPH.EXPLAIN`: `Conditional Traverse (x)<-[r]-(d)` under `Unwind`). Fix: bind the term first and force the order with `WITH DISTINCT x` before the relationship match (14 ms for 2,690 rows).
+- **`UNWIND … MATCH (f {id: fid})<-[:IS_A*0..10]-(x)` (downward var-length after UNWIND) returns zero rows** (silently). Upward var-length after UNWIND works (Q1, Q2b, Q2c, Q2e). Therefore Q2a and Q2d run once per finding with `$fid`. Results were compared against the spec form (same row counts, e.g. 2,690).
+- `WITH a, min(length(p)) AS hops MATCH (a)<-[r]-(d)` (aggregate then match) loses rows; use `WITH DISTINCT fid, a, length(p) AS hops` (Python keeps the best LR across hop counts).
+- Ancestor cache query (q3d, by depth band) loads 19,178 terms in 0.45 s.
