@@ -16,7 +16,7 @@ updated: (set by Claude on every change)
 ## Current tasks
 - [ ] 1 failing tests: LR table, prune, decay, NOT, noise, absent, obligate cap, gamma, D0, unlinked mass, Hypothesis invariants (engine/scoring)
 - [ ] 2 failing tests: planner (age gate, branch memory, <=2/system, no overlap, IG>=0) + gates at/below threshold
-- [ ] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
+- [x] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
 - [ ] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
 - [ ] 5 engine/planner.py + engine/gates.py
 - [ ] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
