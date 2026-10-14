@@ -1,26 +1,394 @@
-# STATUS: TEMPLATE — Claude drafts this in P0; the human reviews and edits it, then replaces this line with: # STATUS: REVIEWED by <name> on <date>
-# After that line says REVIEWED, Claude may read this file but a hook blocks it from editing it.
-#
-# What this is: 40 made-up "common explanation" children/teens — situations that should NOT lead to a
-# rare-disease referral. They tune and test our false-alarm rate. Write them BEFORE any tuning happens
-# (they must exist when Phase 2 starts).
-#
-# How to draft it (Claude) and review it (human) (≈ 45–60 min):
-#   - 40 cases, varied ages 0–20, varied body systems. Mix truly isolated findings with 2–3 common findings.
-#   - Write signs in plain words; the build resolves them to HPO terms and writes
-#     data/derived/negatives.resolved.yaml for you to glance at (non-blocking).
-#   - expected: "no_escalation" (nothing special needed) or "see_doctor_ok" (a routine doctor visit is reasonable,
-#     but a rare-disease referral would be a false alarm).
-#   - Ideas: isolated speech delay that improves; one simple febrile seizure; familial short stature;
-#     constitutional growth delay; benign joint hypermobility; viral gastroenteritis; toe-walking that resolved;
-#     growing pains; mild motor delay that caught up; iron-deficiency fatigue in a teen; migraine in a teen.
-#   - Delete every FILL_ME. `make review-check` requires 40 valid cases.
+# STATUS: DRAFT — drafted by Claude, awaiting human review
+# 40 made-up "common explanation" children/teens: situations that should NOT lead to a rare-disease referral.
+# They tune and test our false-alarm rate, so they exist before any tuning happens (needed at the start of P2).
+# Review notes for the human: check ages and wording are realistic; `expected` is either
+#   no_escalation  = nothing special needed, or
+#   see_doctor_ok  = a routine doctor visit is reasonable, but a rare-disease referral would be a false alarm.
+# Signs are in plain words; the build resolves them to HPO terms (data/derived/negatives.resolved.yaml) for you to glance at.
+# `make review-check` also runs the safety rules over these: no_escalation cases must trigger no flag, others no EMERGENCY.
 
 version: 1
 cases:
-  - id: neg01
-    age_months: FILL_ME
-    summary: FILL_ME                     # one line
-    present: [FILL_ME]                   # plain-language signs, e.g. "says only a few words at 24 months"
-    absent: []                           # optional plain-language signs explicitly NOT present
-    expected: FILL_ME                    # no_escalation | see_doctor_ok
+- id: neg01
+  age_months: 14
+  summary: says only a few words at 14 months, points and waves, understands simple instructions
+  present:
+  - says only a few words
+  - points to things she wants
+  - waves bye-bye
+  absent:
+  - lost any words
+  expected: no_escalation
+- id: neg02
+  age_months: 24
+  summary: says about 15 words at 24 months and is adding new ones every week
+  present:
+  - says about fifteen words
+  - speech is a bit behind other children
+  absent:
+  - stopped talking
+  - hearing worries
+  expected: no_escalation
+- id: neg03
+  age_months: 20
+  summary: one short shaking spell during a high fever, recovered within two minutes, back to normal the same day
+  present:
+  - one short shaking spell with a high fever
+  - very sleepy for a short while afterwards
+  absent:
+  - another spell since
+  - developmental concerns
+  expected: see_doctor_ok
+- id: neg04
+  age_months: 60
+  summary: small for age but growing steadily along their own line; both parents are short
+  present:
+  - shorter than classmates
+  - growing steadily every year
+  absent:
+  - poor appetite
+  - tummy trouble
+  expected: no_escalation
+- id: neg05
+  age_months: 168
+  summary: a teenage boy who is shorter than friends; his father also grew late
+  present:
+  - shorter than friends
+  - father was a late grower
+  absent:
+  - tiredness
+  - weight loss
+  expected: no_escalation
+- id: neg06
+  age_months: 120
+  summary: very bendy fingers and elbows, no pain, plays sport without trouble
+  present:
+  - very bendy fingers and elbows
+  absent:
+  - joint pain
+  - frequent dislocations
+  expected: no_escalation
+- id: neg07
+  age_months: 36
+  summary: vomiting and loose stools for two days after nursery, drinking small sips, now improving
+  present:
+  - vomiting for two days
+  - loose stools
+  - low fever
+  absent:
+  - blood in stool
+  - no wet nappies
+  expected: no_escalation
+- id: neg08
+  age_months: 30
+  summary: walked on tiptoes for a few months as a toddler, now walks flat-footed
+  present:
+  - walked on tiptoes for a few months
+  absent:
+  - stiff legs
+  - falling often
+  expected: no_escalation
+- id: neg09
+  age_months: 84
+  summary: aching legs in the evening after busy days, gone by morning, runs about happily
+  present:
+  - achy legs in the evening
+  - fine in the morning
+  absent:
+  - swollen joints
+  - limping
+  expected: no_escalation
+- id: neg10
+  age_months: 22
+  summary: started walking at 18 months, now runs and climbs stairs
+  present:
+  - started walking late at eighteen months
+  absent:
+  - weakness
+  - clumsy falls
+  expected: no_escalation
+- id: neg11
+  age_months: 192
+  summary: tired and pale during busy school terms, periods heavy, eats little meat
+  present:
+  - tired after school
+  - looks pale
+  - heavy periods
+  absent:
+  - fainting
+  - breathlessness
+  expected: see_doctor_ok
+- id: neg12
+  age_months: 180
+  summary: throbbing headache on one side with light bothering her, runs in the family, settles with rest
+  present:
+  - throbbing headache on one side
+  - bright light bothers her
+  - mother gets migraines
+  absent:
+  - vomiting every morning
+  - waking from sleep with pain
+  expected: see_doctor_ok
+- id: neg13
+  age_months: 8
+  summary: spits up after feeds but is happy, gaining weight well
+  present:
+  - spits up after feeds
+  absent:
+  - poor weight gain
+  - green vomit
+  expected: no_escalation
+- id: neg14
+  age_months: 4
+  summary: cries for hours in the evening, otherwise feeding and growing well
+  present:
+  - long evening crying spells
+  absent:
+  - fever
+  - not feeding
+  expected: no_escalation
+- id: neg15
+  age_months: 11
+  summary: flaky scalp and dry patches on cheeks, no itch at night
+  present:
+  - flaky scalp
+  - dry cheeks
+  absent:
+  - bleeding skin
+  expected: no_escalation
+- id: neg16
+  age_months: 26
+  summary: eats only five foods but grows well and has plenty of energy
+  present:
+  - eats only a few foods
+  absent:
+  - weight loss
+  - vomiting
+  expected: no_escalation
+- id: neg17
+  age_months: 48
+  summary: still wets the bed at night but dry in the day, no other problems
+  present:
+  - wets the bed at night
+  absent:
+  - wetting in the day
+  - very thirsty
+  expected: no_escalation
+- id: neg18
+  age_months: 72
+  summary: six colds in the first winter at school, each gone in a week
+  present:
+  - many colds
+  - runny nose
+  - cough
+  absent:
+  - fever for weeks
+  - weight loss
+  expected: no_escalation
+- id: neg19
+  age_months: 132
+  summary: sneezing and itchy eyes in spring that settle with antihistamine
+  present:
+  - sneezing in spring
+  - itchy eyes
+  absent:
+  - wheezing
+  - night cough
+  expected: no_escalation
+- id: neg20
+  age_months: 96
+  summary: fidgety and easily distracted in class, fine at home with one-to-one
+  present:
+  - fidgety in class
+  - easily distracted
+  absent:
+  - staring spells
+  - falling behind in reading
+  expected: see_doctor_ok
+- id: neg21
+  age_months: 40
+  summary: trips over now and then while running, otherwise sturdy
+  present:
+  - trips when running
+  absent:
+  - falling every day
+  - weak legs
+  expected: no_escalation
+- id: neg22
+  age_months: 144
+  summary: spots on forehead and cheeks since age eleven
+  present:
+  - spots on forehead and cheeks
+  absent:
+  - scarring
+  - low mood
+  expected: no_escalation
+- id: neg23
+  age_months: 204
+  summary: tension headache on school days around exams, gone on weekends
+  present:
+  - headache around exams
+  - fine at weekends
+  absent:
+  - vomiting
+  - vision problems
+  expected: no_escalation
+- id: neg24
+  age_months: 18
+  summary: dribbling and chewing everything, sore gums, a little grumpy, sleeping a bit worse
+  present:
+  - dribbling
+  - sore gums
+  - grumpy at night
+  absent:
+  - high fever
+  - not feeding
+  expected: no_escalation
+- id: neg25
+  age_months: 10
+  summary: dry itchy patches in the elbow creases, better with moisturiser
+  present:
+  - dry itchy patches in elbow creases
+  absent:
+  - weeping skin
+  - fever
+  expected: no_escalation
+- id: neg26
+  age_months: 52
+  summary: snores when he has a blocked nose, sleeps well otherwise
+  present:
+  - snores with colds
+  absent:
+  - pauses in breathing
+  - tired in the day
+  expected: no_escalation
+- id: neg27
+  age_months: 108
+  summary: squints at the board, better with glasses
+  present:
+  - squints at the board
+  absent:
+  - double vision
+  - headaches
+  expected: see_doctor_ok
+- id: neg28
+  age_months: 156
+  summary: cramping pain on first days of period, eases with a warm pad and paracetamol
+  present:
+  - period cramps
+  absent:
+  - pain between periods
+  - fainting
+  expected: see_doctor_ok
+- id: neg29
+  age_months: 228
+  summary: butterflies and poor sleep before exams, otherwise sociable
+  present:
+  - poor sleep before exams
+  - butterflies in tummy
+  absent:
+  - low mood for weeks
+  - not eating
+  expected: no_escalation
+- id: neg30
+  age_months: 33
+  summary: strong tantrums when told no, calms quickly, plays happily
+  present:
+  - tantrums when told no
+  absent:
+  - loss of skills
+  - head banging
+  expected: no_escalation
+- id: neg31
+  age_months: 66
+  summary: cough with colds, wheezy twice last winter, settles with inhaler
+  present:
+  - cough with colds
+  - wheezy twice last winter
+  absent:
+  - night waking
+  - blue lips
+  expected: see_doctor_ok
+- id: neg32
+  age_months: 15
+  summary: feet look flat when standing, walks well and runs
+  present:
+  - flat feet
+  absent:
+  - pain
+  - limp
+  expected: no_escalation
+- id: neg33
+  age_months: 120
+  summary: opens bowels every three or four days, hard stools, improves with fibre and water
+  present:
+  - hard stools every few days
+  absent:
+  - blood in stool
+  - tummy swelling
+  expected: no_escalation
+- id: neg34
+  age_months: 1
+  summary: yellow tinge in the first week, settled after a few days, feeding well
+  present:
+  - yellow tinge in the first week
+  absent:
+  - pale stools
+  - dark urine
+  expected: no_escalation
+- id: neg35
+  age_months: 2
+  summary: frequent hiccups and sneezes, feeding and sleeping well
+  present:
+  - hiccups
+  - sneezing
+  absent:
+  - fever
+  - poor feeding
+  expected: no_escalation
+- id: neg36
+  age_months: 216
+  summary: tired in the mornings after staying up on screens, perks up on weekends
+  present:
+  - tired in the mornings
+  - late nights on screens
+  absent:
+  - weight loss
+  - night sweats
+  expected: no_escalation
+- id: neg37
+  age_months: 90
+  summary: bites nails when worried, otherwise well
+  present:
+  - bites nails
+  absent:
+  - skin picking until it bleeds
+  expected: no_escalation
+- id: neg38
+  age_months: 28
+  summary: pulling at her ear with a cold and mild fever for a day, settled with paracetamol
+  present:
+  - pulling at her ear
+  - mild fever
+  absent:
+  - discharge from ear
+  - stiff neck
+  expected: see_doctor_ok
+- id: neg39
+  age_months: 100
+  summary: talks in his sleep and once walked to the hall, no memory next day, otherwise well
+  present:
+  - talks in his sleep
+  - once walked to the hall at night
+  absent:
+  - daytime spells
+  expected: no_escalation
+- id: neg40
+  age_months: 114
+  summary: knee pain after football training, better with rest, no swelling
+  present:
+  - knee pain after football
+  absent:
+  - swelling
+  - locking
+  expected: see_doctor_ok

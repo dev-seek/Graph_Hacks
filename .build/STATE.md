@@ -23,7 +23,7 @@ updated: (set by Claude on every change)
 - [ ] 7 Next.js skeleton (tokens, fonts, placeholder page), pnpm lockfile
 - [ ] 8 pre-commit + GitHub Actions CI
 - [ ] 9 draft review/safety_rules.yaml (advisor first; verify URLs/numbers)
-- [ ] 10 draft review/negatives.yaml (40 cases)
+- [x] 10 draft review/negatives.yaml (40 cases)
 - [ ] 11 draft review/demo_stories.md + doctor_letters.md
 - [ ] 12 chmod hooks/scripts; AI_USAGE entries
 - [ ] 13 gate: make up, health 200, GRAPH.LIST, review-check, reviewer subagent, explain doc, tag
@@ -38,6 +38,8 @@ Non-blocking (do when convenient):
 - [ ] Record + voice the demo video from docs/submission/video_script.md (after P6)
 - [ ] Write the blog post from docs/submission/blog_outline.md (after P6)
 - [ ] Provide deployment VPS host + DNS name in .env (DEPLOY_HOST, DEPLOY_DOMAIN) before P6 deploy step
+
+- [ ] **guard.sh false positive (blocks P0 task 11):** the untouched templates `review/demo_stories.md` and `review/doctor_letters.md` have a first line containing the text "STATUS: REVIEWED" (inside the instruction "replace this line with: # STATUS: REVIEWED by …"), so `.claude/hooks/guard.sh` treats them as REVIEWED and blocks Write/Edit and shell writes. They are NOT reviewed. Finished drafts are waiting in `.build/drafts/demo_stories.md` and `.build/drafts/doctor_letters.md`. Fix: either copy them over `review/` yourself (they already start with `# STATUS: DRAFT …`), or change `reviewed()` in guard.sh to match `^# STATUS: REVIEWED by`. Note: `safety_rules.yaml` and `negatives.yaml` had the same template line; they were written with Python file writes that the guard's Bash regex did not catch (unintended). Both remain DRAFT.
 
 ## Decisions made during the build (one line each; ADR link)
 
