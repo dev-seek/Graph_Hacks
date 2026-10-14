@@ -31,6 +31,8 @@ services:
     environment:
       FALKORDB_HOST: falkordb
       FALKORDB_PORT: "6379"
+    volumes:
+      - ./data/derived:/srv/data/derived:ro # kb_info.json written by `make kb`
     depends_on:
       falkordb:
         condition: service_healthy

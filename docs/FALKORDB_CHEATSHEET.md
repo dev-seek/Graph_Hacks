@@ -18,11 +18,11 @@ MATCH (t:Term {id: $id}) SET t.embedding = vecf32($embedding)
 CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($query_vec)) YIELD node, score
 RETURN node.id AS id, node.name AS name, score
 ```
-To test: whether `score` is a distance (lower = closer) or a similarity in the pinned version; whether `M`/`efConstruction` options are accepted. Vector search cannot be combined with property filters in the same call. Source: https://docs.falkordb.com/cypher/indexing/vector-index
+VERIFIED (6.0.2): `score` is a cosine distance (lower = closer); `M`/`efConstruction` accepted. Vector search cannot be combined with property filters in the same call. Source: https://docs.falkordb.com/cypher/indexing/vector-index
 
 ## 3. Full-text index
 ```cypher
-CALL db.idx.fulltext.createNodeIndex('Term', 'name', 'synonyms_text', 'cx_lay_text')
+CREATE FULLTEXT INDEX FOR (t:Term) ON (t.name, t.synonyms_text, t.cx_lay_text)   // VERIFIED 6.0.2; the 4-argument createNodeIndex procedure is rejected
 CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score
 RETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10
 ```
