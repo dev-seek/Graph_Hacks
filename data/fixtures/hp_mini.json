@@ -1,0 +1,182 @@
+{
+ "graphs": [
+  {
+   "id": "http://purl.obolibrary.org/obo/TEST_fixture",
+   "meta": {
+    "version": "http://purl.obolibrary.org/obo/hp/releases/2000-01-01/hp.json",
+    "basicPropertyValues": [
+     {
+      "pred": "http://www.w3.org/2002/07/owl#versionInfo",
+      "val": "2000-01-01"
+     }
+    ]
+   },
+   "nodes": [
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0001",
+     "lbl": "All",
+     "type": "CLASS"
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0002",
+     "lbl": "Phenotypic abnormality",
+     "type": "CLASS"
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0010",
+     "lbl": "Abnormality of the nervous system",
+     "type": "CLASS"
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0011",
+     "lbl": "Seizure",
+     "type": "CLASS",
+     "meta": {
+      "definition": {
+       "val": "A synthetic seizure."
+      },
+      "synonyms": [
+       {
+        "pred": "hasExactSynonym",
+        "val": "Epileptic seizure"
+       },
+       {
+        "pred": "hasExactSynonym",
+        "val": "fit",
+        "synonymType": "http://purl.obolibrary.org/obo/hp#layperson"
+       },
+       {
+        "pred": "hasExactSynonym",
+        "val": "convulsion",
+        "synonymType": "http://purl.obolibrary.org/obo/hp#layperson"
+       }
+      ],
+      "basicPropertyValues": [
+       {
+        "pred": "http://www.geneontology.org/formats/oboInOwl#hasAlternativeId",
+        "val": "TEST:0013"
+       }
+      ]
+     }
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0012",
+     "lbl": "Focal seizure",
+     "type": "CLASS",
+     "meta": {
+      "synonyms": [
+       {
+        "pred": "hasExactSynonym",
+        "val": "partial seizure"
+       }
+      ]
+     }
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0020",
+     "lbl": "Abnormality of the eye",
+     "type": "CLASS"
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0021",
+     "lbl": "Cataract",
+     "type": "CLASS",
+     "meta": {
+      "synonyms": [
+       {
+        "pred": "hasExactSynonym",
+        "val": "clouding of the lens",
+        "synonymType": "http://purl.obolibrary.org/obo/hp#layperson"
+       }
+      ]
+     }
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0030",
+     "lbl": "Abnormality of blood",
+     "type": "CLASS"
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0031",
+     "lbl": "Anemia",
+     "type": "CLASS",
+     "meta": {
+      "synonyms": [
+       {
+        "pred": "hasExactSynonym",
+        "val": "low red blood cells",
+        "synonymType": "http://purl.obolibrary.org/obo/hp#layperson"
+       }
+      ]
+     }
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0032",
+     "lbl": "obsolete Anaemia",
+     "type": "CLASS",
+     "meta": {
+      "basicPropertyValues": [
+       {
+        "pred": "http://purl.obolibrary.org/obo/IAO_0100001",
+        "val": "TEST:0031"
+       }
+      ],
+      "deprecated": true
+     }
+    },
+    {
+     "id": "http://purl.obolibrary.org/obo/TEST_0040",
+     "lbl": "Frequent infections",
+     "type": "CLASS"
+    }
+   ],
+   "edges": [
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0002",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0001"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0010",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0002"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0011",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0010"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0012",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0011"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0020",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0002"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0021",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0020"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0030",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0002"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0031",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0030"
+    },
+    {
+     "sub": "http://purl.obolibrary.org/obo/TEST_0040",
+     "pred": "is_a",
+     "obj": "http://purl.obolibrary.org/obo/TEST_0002"
+    }
+   ]
+  }
+ ]
+}

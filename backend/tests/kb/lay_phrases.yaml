@@ -1,0 +1,57 @@
+# 50 lay phrases -> expected HPO term (spec P1 task 6). Part A: HPO layperson synonyms verbatim
+# (30). Part B: parent-style rewordings written by Claude (20) — harder, they test stopword/OR
+# handling and the vector fallback. Expected ids checked against hp.json v2026-09-01.
+# Used by the integration test against the real kb; gate: top-3 hit rate >= 80%.
+phrases:
+  # Part A — verbatim layperson synonyms
+  - {text: "low muscle tone", expect: "HP:0001252"}
+  - {text: "poor weight gain", expect: "HP:0001508"}
+  - {text: "big head", expect: "HP:0000256"}
+  - {text: "small head", expect: "HP:0000252"}
+  - {text: "squint", expect: "HP:0000486"}
+  - {text: "cross-eyed", expect: "HP:0000486"}
+  - {text: "throwing up", expect: "HP:0002013"}
+  - {text: "watery stool", expect: "HP:0002014"}
+  - {text: "pain in stomach", expect: "HP:0002027"}
+  - {text: "double-jointed", expect: "HP:0001382"}
+  - {text: "flexible joints", expect: "HP:0001382"}
+  - {text: "loss of eyesight", expect: "HP:0000505"}
+  - {text: "poor vision", expect: "HP:0000505"}
+  - {text: "cloudy lens", expect: "HP:0000518"}
+  - {text: "enlarged liver", expect: "HP:0002240"}
+  - {text: "abnormal walk", expect: "HP:0001288"}
+  - {text: "difficulty in walking", expect: "HP:0001288"}
+  - {text: "trouble sleeping", expect: "HP:0002360"}
+  - {text: "difficulty sleeping", expect: "HP:0002360"}
+  - {text: "yellow skin", expect: "HP:0000952"}
+  - {text: "increased urine output", expect: "HP:0000103"}
+  - {text: "swallowing difficulty", expect: "HP:0002015"}
+  - {text: "dribbling", expect: "HP:0002307"}
+  - {text: "cleft roof of mouth", expect: "HP:0000175"}
+  - {text: "blue discoloration of the skin", expect: "HP:0000961"}
+  - {text: "pubertal delay", expect: "HP:0000823"}
+  - {text: "delayed speech", expect: "HP:0000750"}
+  - {text: "more active than typical", expect: "HP:0000752"}
+  - {text: "frequent infections", expect: "HP:0002719"}
+  - {text: "tiredness", expect: "HP:0012378"}
+  # Part B — parent-style rewordings
+  - {text: "my son is very floppy", expect: "HP:0001252"}
+  - {text: "she is not putting on weight", expect: "HP:0001508"}
+  - {text: "his head looks too big", expect: "HP:0000256"}
+  - {text: "her head is unusually small", expect: "HP:0000252"}
+  - {text: "one eye turns in", expect: "HP:0000486"}
+  - {text: "keeps vomiting after meals", expect: "HP:0002013"}
+  - {text: "constant tummy ache", expect: "HP:0002027"}
+  - {text: "joints bend further than normal", expect: "HP:0001382"}
+  - {text: "cannot see well", expect: "HP:0000505"}
+  - {text: "lens of the eye is cloudy", expect: "HP:0000518"}
+  - {text: "he walks strangely", expect: "HP:0001288"}
+  - {text: "wakes up many times at night and cannot sleep", expect: "HP:0002360"}
+  - {text: "skin and eyes look yellow", expect: "HP:0000952"}
+  - {text: "wees a lot", expect: "HP:0000103"}
+  - {text: "chokes when swallowing", expect: "HP:0002015"}
+  - {text: "constantly drooling", expect: "HP:0002307"}
+  - {text: "murmur in the heart", expect: "HP:0030148"}
+  - {text: "gets infections all the time", expect: "HP:0002719"}
+  - {text: "falls over a lot", expect: "HP:0002359"}
+  - {text: "has fits", expect: "HP:0001250"}

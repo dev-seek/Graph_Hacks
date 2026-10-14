@@ -1,0 +1,17 @@
+#description: "fixture"
+#version: 2000-01-02
+#hpo-version: http://purl.obolibrary.org/obo/hp/releases/2000-01-01/hp.json
+database_id	disease_name	qualifier	hpo_id	reference	evidence	onset	frequency	sex	modifier	aspect	biocuration
+OMIM:900001	Fixture disease one		TEST:0011	PMID:1001	PCS		HP:0040281			P	x
+OMIM:900001	Fixture disease one		TEST:0021	PMID:1001;PMID:1002	TAS	HP:0003577	3/4			P	x
+OMIM:900001	Fixture disease one	NOT	TEST:0031	PMID:1001	PCS					P	x
+OMIM:900001	Fixture disease one		TEST:0040	PMID:1001	IEA					P	x
+OMIM:900001	Fixture disease one		HP:0000006	PMID:1001	PCS					I	x
+OMIM:900001	Fixture disease one		HP:0003577	PMID:1001	PCS					C	x
+OMIM:900002	Fixture disease two		TEST:0031	PMID:1003	IEA		50%			P	x
+ORPHA:900100	Fixture orpha disease		TEST:0012	ORPHA:900100	TAS		HP:0040283			P	x
+ORPHA:900100	Fixture orpha disease		TEST:0031	ORPHA:900100	TAS		0/3			P	x
+ORPHA:900100	Fixture orpha disease		TEST:0021	ORPHA:900100	TAS		HP:0040285			P	x
+ORPHA:900100	Fixture orpha disease		TEST:0011	ORPHA:900100	TAS		5/0			P	x
+ORPHA:900100	Fixture orpha disease		TEST:0040	ORPHA:900100	TAS		HP:0040280			P	x
+DECIPHER:900	Fixture decipher		TEST:0021	DECIPHER:900	TAS		HP:0040284			P	x
