@@ -14,10 +14,10 @@ Method: coordinate descent (pi0 x eps, lambda x beta, weights, gamma, refine). O
 ## Other values (unchanged)
 - Missing HPOA frequency 0.5 (spec §5): not tuned (needs a kb rebuild).
 - `bg` floor 1e-4; `cx_system` rule per ADR-0002.
-- Doctor pack lists up to 8 exam checks plus 3 suggested tests in the simulator (a simulation setting, not tuned; 5 checks gave a lower referral sensitivity ceiling).
+- Doctor pack lists up to 8 exam checks plus 3 suggested tests in the simulator (a simulation setting chosen after seeing, on dev, that 5 checks capped referral sensitivity at about 16%; with 8 it is about 21%).
 
 ## Caveats
-Dev MRR rose from about 0.12 (spec defaults) to 0.34 on the 120 tuning cases; those cases were used for tuning, so the headline number comes from the frozen test run in P5. lambda sits at the grid edge.
+Dev MRR on the 120 tuning cases rose from 0.124 (spec defaults) to 0.341; those cases were used for tuning (in-sample). On 400 disjoint dev cases Ours reaches MRR 0.369 (see the P2 gate note in STATE.md); the headline number comes from the frozen test run in P5. lambda sits at the grid edge.
 
 ## Rule
 Nothing here may be tuned on the frozen test split. The `lpo_test_*` numbers in `coverage_P1.json` are an eligibility check only.

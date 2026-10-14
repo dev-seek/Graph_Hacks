@@ -30,8 +30,8 @@ def test_round_latency_within_budget() -> None:
     retrieve, scoring, planner = [], [], []
     for dc in cases:
         fs = [Finding(f.term_id, "present", "parent_story") for f in dc.case.present[:6]]
-        pruned = reasoner.prune(fs)
         t0 = time.perf_counter()
+        pruned = reasoner.prune(fs)
         rows = reasoner.retrieve(pruned)
         t1 = time.perf_counter()
         res = score_round(pruned, rows, reasoner.params)

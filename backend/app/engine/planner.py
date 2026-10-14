@@ -133,6 +133,9 @@ def _p_yes_by_disease(
 
 def plan_round(inp: PlannerInput) -> Plan:
     posts = {**inp.posteriors, D0_KEY: inp.p_d0}
+    total = sum(posts.values())
+    if total > 0.0:  # the top-50 plus D0 set is the planner's world: renormalise it (spec §8.1)
+        posts = {k: v / total for k, v in posts.items()}
     scored: list[Question] = []
     prop = propagate(inp)
     for term in sorted(inp.askable):

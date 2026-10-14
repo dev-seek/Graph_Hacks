@@ -468,3 +468,29 @@ def test_best_ig_ignores_terms_removed_by_filters() -> None:
     inp = build(askables, freq_a={"H1": 0.9, "H2": 0.6}, asked={"H1"})
     plan = plan_round(inp)
     assert plan.best_ig["home"] == pytest.approx(0.3867165929767751, rel=1e-9)
+
+
+def test_subnormalised_posteriors_give_the_same_plan_as_normalised() -> None:
+    from app.engine.planner import Askable, PlannerInput, plan_round
+
+    def make(scale: float) -> PlannerInput:
+        return PlannerInput(
+            posteriors={"A": 0.3 * scale, "B": 0.2 * scale},
+            p_d0=0.5 * scale,
+            annotations={"A": {"T1": 0.9}, "B": {"T2": 0.8}},
+            askable={
+                "T1": Askable("T1", "home", None, "S1", "q1", 0.05),
+                "T2": Askable("T2", "home", None, "S2", "q2", 0.05),
+            },
+            ancestors={"T1": {"T1"}, "T2": {"T2"}},
+            present=set(),
+            absent=set(),
+            asked=set(),
+            age_months=60,
+            round_kind="home",
+        )
+
+    a, b = plan_round(make(1.0)), plan_round(make(0.97))
+    assert [(q.term, round(q.ig, 12)) for q in a.questions] == [
+        (q.term, round(q.ig, 12)) for q in b.questions
+    ]

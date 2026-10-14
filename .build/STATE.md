@@ -1,4 +1,4 @@
-status: running
+status: blocked
 phase: P2
 updated: (set by Claude on every change)
 
@@ -21,12 +21,15 @@ updated: (set by Claude on every change)
 - [x] 5 engine/planner.py + engine/gates.py
 - [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
 - [x] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
-- [~] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
-- [ ] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
-- [ ] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
+- [x] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
+- [x] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
+- [x] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
 - [x] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
 
 ## Needs from human
+**P2 GATE NOT MET (blocked, 2026-10-15): "Ours > B0, B1 and B2 on top-10 after 3 rounds (with CIs)".**
+Held-out dev (400 cases disjoint from the 120 tuning cases; `.build/logs/eval-heldout.out`): top-10 B0 56.2% [51.0,61.3], B1 58.5%, B2 60.5% [55.8,65.8], Ours 60.2% [55.2,65.2]; MRR B2 0.368 vs Ours 0.369; top-1 B2 25.0 vs Ours 25.2. Paired top-10 gain: vs B0 +1.0..+7.3 pts (significant), vs B1 -1.5..+4.7, vs B2 -3.3..+2.7 (tie). Everything else in the gate passes (tests, benchmark p90 retrieve 129 ms / score 70 / plan 353; false referral 0%, false see-doctor 22.5%; safety corpus 69/69).
+Not re-tuned toward B2 (that would be tuning to the comparison). Decide one of: (a) accept an honest "matches the simple frequent-sign baseline, beats story-only and random" result and tick the gate; (b) allow a planner change (e.g. weight IG by candidate-specific discrimination) as a spec change with an ADR; (c) relax the gate wording. Write the choice under Notes and set status: running.
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
 - [ ] review/safety_rules.yaml — needed at start of P2
 - [ ] review/negatives.yaml — needed at start of P2
