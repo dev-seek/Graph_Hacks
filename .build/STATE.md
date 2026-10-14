@@ -14,7 +14,19 @@ updated: (set by Claude on every change)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty — Claude writes ≤ 15 concrete tasks for P1 here, then ticks them)
+- [ ] 1. data/manifest.yaml + `make data` (resolve release URLs from GitHub/Orphadata, SHA-256, record versions)
+- [ ] 2. Derive real file structures (hp.json, hpoa, product1, phenopackets) -> VERIFIED.md; ID normaliser
+- [ ] 3. Synthetic fixture ontology in data/fixtures/
+- [ ] 4. Parsers tests-first (test-engineer): hp, hpoa+freq+OMIM/IEA, prevalence, product1, phenopackets
+- [ ] 5. Parsers implemented (backend/app/kb/parsers/), `make check` green
+- [ ] 6. Embedding adapter (EmbeddingPort; fastembed bge-small + deterministic fake) with vector cache
+- [ ] 7. kb builder: depth/ic/bg/cx_system, UNWIND batches, indexes, KbInfo; `make kb`; integration tests Q0/Q1/Q5 + indexes
+- [ ] 8. Term resolution service + lay_phrases.yaml (50) + test; top-3 >= 80%
+- [ ] 9. cx_* labels rules-only (+ batch if key), term_labels.v1.jsonl, spotcheck_100.csv
+- [ ] 10. Split script (hash by PMID, one-shot, refuses overwrite) + ADR; run; record test SHA-256
+- [ ] 11. kb_<release>_lpo build; count recorded; coverage report (>=90% resolve)
+- [ ] 12. /api/version (kb, HPO, Orphanet, PS, embedding) + curl check; DATA_LICENSES TODOs verbatim
+- [ ] 13. Gate: reviewer subagent, docs/explain/P1.md, AI_USAGE, phase table, tag
 
 ## Needs from human
 Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
@@ -32,7 +44,7 @@ Non-blocking (do when convenient):
 ## Decisions made during the build (one line each; ADR link)
 
 ## Notes for next session (≤ 10 lines)
-phase_start(P1): P0-done tag. P0 phase_start was 5832463.
+phase_start: 930a69e (P1, = P0-done tag). P0 phase_start was 5832463.
 - Start colima before `make up` (`colima start --cpu 2 --memory 4`); node is node@22 via brew (Makefile adds it to PATH).
 - web: TypeScript pinned to 6.x (typescript-eslint lacks TS 7); pnpm-workspace.yaml `allowBuilds` denies unrs-resolver.
 - `ruff format` excludes docs/ and *.md (keeps the locked spec untouched).
