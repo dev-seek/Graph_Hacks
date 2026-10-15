@@ -18,8 +18,8 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 2a LLM port/router/fake/replay adapters + prompts + schemas + lexicon check (tests first)
 - [x] 2b anthropic adapter + `make llm-contract` (fake in CI; key unset -> "not measured")
 - [x] 3 Family graph repository + registry queries (REPLACED_BY, TermRef)
-- [ ] 4a Term resolution (Q0) + intake/safety/reasoner/gatekeeper/planner nodes
-- [ ] 4b doctor_pack/doc_reader/referral/exporter (Phenopacket v2 schema validation)/watcher/urgent + LangGraph wiring
+- [x] 4a Term resolution (Q0) + intake/safety/reasoner/gatekeeper/planner nodes
+- [x] 4b doctor_pack/doc_reader/referral/exporter (Phenopacket v2 schema validation)/watcher/urgent + LangGraph wiring
 - [ ] 5 API routes, bearer tokens (hashed), clinician codes, rate limits, parent-key test per route
 - [ ] 6 Doctor pack data, doc reader + PDF fixture, advance-6-months, scheduler, DELETE family
 - [ ] 7 Live-inspector query log + /debug/queries
