@@ -32,3 +32,21 @@ Each entry: what was checked, how, when. Nothing is used before it is listed her
 - **`UNWIND … MATCH (f {id: fid})<-[:IS_A*0..10]-(x)` (downward var-length after UNWIND) returns zero rows** (silently). Upward var-length after UNWIND works (Q1, Q2b, Q2c, Q2e). Therefore Q2a and Q2d run once per finding with `$fid`. Results were compared against the spec form (same row counts, e.g. 2,690).
 - `WITH a, min(length(p)) AS hops MATCH (a)<-[r]-(d)` (aggregate then match) loses rows; use `WITH DISTINCT fid, a, length(p) AS hops` (Python keeps the best LR across hop counts).
 - Ancestor cache query (q3d, by depth band) loads 19,178 terms in 0.45 s.
+
+## Minimal repro: UNWIND + downward variable-length match returns 0 rows (checked 2026-10-15)
+```cypher
+// setup
+CREATE (r:T {id:'r'}), (c:T {id:'c'})-[:IS_A]->(r)
+// expected 2 (r itself and c)            actual on 6.0.2: 2
+MATCH (f:T {id:'r'})<-[:IS_A*0..10]-(x:T) RETURN count(*)
+// expected 2                             actual on 6.0.2: 0
+UNWIND ['r'] AS fid MATCH (f:T {id: fid})<-[:IS_A*0..10]-(x:T) RETURN count(*)
+```
+Same 0 with `*1..10` and with no labels. Upward (`-[:IS_A*0..]->`) after UNWIND works.
+Throwaway containers (our pinned tag was not changed), run via `scratchpad/repro.py` against a 2-node graph:
+| image | module ver | UNWIND form |
+|---|---|---|
+| `falkordb/falkordb:6.0.2` (our pin) | 999999 | **0 rows (bug)** |
+| `falkordb/falkordb:edge-rs` (2026-10-15) | 999999 | **0 rows (bug)** |
+| `falkordb/falkordb:v4.22.1` (Docker Hub `latest`) | 42201 | 2 rows (correct); `*1..10` form returns 1, which is also correct |
+So the bug exists in the 6.x line through the newest edge build; the 4.22 line does not show it. Impact on us: none (Q2a/Q2d run once per finding, ADR-0008).
