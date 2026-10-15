@@ -10,11 +10,11 @@ from typing import Any
 from pydantic import BaseModel
 
 from app.llm.errors import LLMUnavailable
+from app.llm.fallbacks import clause_items
 from app.llm.port import BatchHandle, BatchItem, Message, T, TaskId
 
 Handler = Callable[[str], BaseModel]
 _INPUT = re.compile(r"<input>\n?(.*?)\n?</input>", re.DOTALL)
-_CLAUSE = re.compile(r"[^.;,!?]+")
 
 
 def unwrap_input(content: str) -> str:
@@ -24,22 +24,11 @@ def unwrap_input(content: str) -> str:
 
 def _extract_clauses(text: str, schema: type[BaseModel]) -> BaseModel:
     items: list[dict[str, Any]] = []
-    for m in _CLAUSE.finditer(text):
-        quote = m.group(0).strip()
-        if len(quote.split()) < 2:
-            continue
-        item: dict[str, Any] = {
-            "quote": quote,
-            "plain_label": " ".join(quote.split()[:8]),
-            "status": "absent"
-            if re.search(r"\b(no|not|never|without)\b", quote, re.I)
-            else "present",
-        }
+    for it in clause_items(text):
+        item = {k: it[k] for k in ("quote", "plain_label", "status")}
         if schema.__name__ == "DocExtraction":
             item["source"] = "doctor_exam"
         items.append(item)
-        if len(items) == 25:
-            break
     return schema.model_validate({"items": items})
 
 

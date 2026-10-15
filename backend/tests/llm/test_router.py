@@ -39,7 +39,7 @@ def test_off_mode_always_falls_back_without_adapter_calls() -> None:
 def test_fake_mode_returns_model_answer_and_counts_one_call() -> None:
     fake = FakeAdapter()
     r = LLMRouter(_settings(), mode="fake", adapter=fake)
-    res = r.run("extract_story", "He is floppy, and he does not walk.", StoryExtraction, _fallback)
+    res = r.run("extract_story", "He is floppy, and he has no fever.", StoryExtraction, _fallback)
     assert res.source == "llm"
     assert [i.status for i in res.value.items] == ["present", "absent"]
     assert len(fake.calls) == 1

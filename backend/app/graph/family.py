@@ -23,7 +23,7 @@ CHECKPOINT_GRAPH = "langgraph_checkpoints"
 
 
 def now() -> str:
-    return datetime.now(UTC).isoformat(timespec="seconds")
+    return datetime.now(UTC).isoformat(timespec="milliseconds")
 
 
 def new_id() -> str:
@@ -72,7 +72,15 @@ class FamilyRepo:
     # --- lifecycle ----------------------------------------------------------------------------
 
     def create(
-        self, kb_version: str, age_months: int, sex: str | None, consent: bool = False
+        self,
+        kb_version: str,
+        age_months: int,
+        sex: str | None,
+        consent: bool = False,
+        *,
+        token_hash: str | None = None,
+        clinician_code: str | None = None,
+        demo: bool = False,
     ) -> None:
         write(
             self.graph,
@@ -84,8 +92,19 @@ class FamilyRepo:
                 "consent": consent,
                 "age": age_months,
                 "sex": sex,
+                "token_hash": token_hash,
+                "code": clinician_code,
+                "demo": demo,
             },
         )
+
+    def auth(self) -> tuple[str | None, str | None]:
+        """(token_hash, clinician_code) or (None, None) when the family does not exist."""
+        r = rows(self.graph, "f_get_auth", {"id": self.family_id})
+        return (r[0]["token_hash"], r[0]["clinician_code"]) if r else (None, None)
+
+    def round_count(self, kind: str) -> int:
+        return int(rows(self.graph, "f_round_count", {"kind": kind})[0]["n"])
 
     def info(self) -> FamilyInfo | None:
         r = rows(self.graph, "f_get_family", {"id": self.family_id})
@@ -101,8 +120,8 @@ class FamilyRepo:
             x["created_at"],
         )
 
-    def set_age(self, age_months: int) -> None:
-        write(self.graph, "f_set_age", {"id": self.family_id, "age": age_months})
+    def set_age(self, age_months: int, sex: str | None = None) -> None:
+        write(self.graph, "f_set_age", {"id": self.family_id, "age": age_months, "sex": sex})
 
     def set_kb_version(self, kb_version: str) -> None:
         write(self.graph, "f_set_kb_version", {"id": self.family_id, "kb": kb_version})

@@ -10,12 +10,14 @@ from __future__ import annotations
 import re
 from typing import Any
 
+import structlog
 from falkordb import Graph
 from pydantic import BaseModel
 
 from app.graph.client import rows
 from app.llm.port import EmbeddingPort
 
+log = structlog.get_logger("kb.resolve")
 STOPWORDS = frozenset(
     """a an and are as at be been being but by can could did do does for from get gets got had has
     have having he her hers him his how i if in into is it its just keeps kept lot lots me more my
@@ -70,6 +72,10 @@ class TermResolver:
         if len(toks) > 1 and stripped != full:
             add("phrase", self._fulltext(f'"{stripped}"'), 2.0)
         add("fulltext", self._fulltext(" | ".join(toks)), 1.0)
-        vec = self._embedder.embed([QUERY_PREFIX + full])[0]
-        add("vector", rows(self._graph, "q0_vector", {"vec": vec}), 1.0)
+        try:
+            vec = self._embedder.embed([QUERY_PREFIX + full])[0]
+        except Exception:  # noqa: BLE001 (model missing/offline: degrade to full-text only)
+            log.warning("vector_search_unavailable")
+        else:
+            add("vector", rows(self._graph, "q0_vector", {"vec": vec}), 1.0)
         return sorted(ranked.values(), key=lambda r: (-r.score, r.id))[:k]
