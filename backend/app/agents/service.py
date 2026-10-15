@@ -254,6 +254,38 @@ class FamilyService:
         self._resume(family_id, {"type": "advance", "months": months})
         return self.state(family_id)
 
+    def watch_all(self) -> int:
+        """Daily watcher: re-score every active family; notify when a gate newly fires.
+
+        Does not change ages (only the "advance" action does); it catches knowledge updates and
+        findings added since the last gate. Returns how many families were notified.
+        """
+        notified = 0
+        for name in self.deps.db.list_graphs():
+            if not name.startswith("family_"):
+                continue
+            fid = name.removeprefix("family_")
+            repo = self.deps.repo(fid)
+            try:
+                phase, _ = repo.get_state()
+                if phase in ("urgent", "story", "confirm"):
+                    continue
+                before = repo.latest_gate()
+                rs = reason(self.deps, repo, persist=True)
+            except Exception:  # noqa: BLE001, S112 (one broken family must not stop the loop)
+                continue
+            if rs.gate.state in ("SEE_DOCTOR", "REFERRAL_READY") and (
+                before is None or before["kind"] != rs.gate.state
+            ):
+                self.deps.notifier.notify(
+                    fid, "gate", "New information suggests it is a good time to see a doctor."
+                )
+                repo.add_event(
+                    "gate", "A check-in suggests seeing a doctor", f"watch_{rs.snapshot_at}"
+                )
+                notified += 1
+        return notified
+
     # --- parent views --------------------------------------------------------------------------
 
     def state(self, family_id: str) -> ParentState:

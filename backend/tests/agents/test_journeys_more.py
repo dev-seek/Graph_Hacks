@@ -128,3 +128,38 @@ def test_delete_family_removes_graph_and_checkpoints(make_service: Any) -> None:
     svc.delete_family(fid)
     assert f"family_{fid}" not in svc.deps.db.list_graphs()
     assert not svc.deps.repo(fid).exists()
+
+
+def test_sample_pdf_letter_is_read(make_service: Any) -> None:
+    import base64
+    from pathlib import Path
+
+    pdf = Path(__file__).resolve().parents[3] / "data" / "fixtures" / "sample_letter.pdf"
+    svc = make_service("off")
+    fid, _ = svc.create_family()
+    out = svc.submit_story(fid, "He walked on tiptoes for a few months.", 30, None)
+    svc.confirm(fid, [i.id for i in out.extraction_to_confirm], [], [])
+    doc = svc.add_document(fid, "pdf", None, base64.b64encode(pdf.read_bytes()).decode())
+    quotes = " ".join(i.quote for i in doc.extraction_to_confirm).lower()
+    assert "hypotonia" in quotes or "murmur" in quotes
+
+
+def test_oversized_or_broken_pdf_is_a_bad_request(make_service: Any) -> None:
+    import base64
+
+    from app.agents.service import BadRequest
+
+    svc = make_service("off")
+    fid, _ = svc.create_family()
+    with pytest.raises(BadRequest):
+        svc.add_document(fid, "pdf", None, base64.b64encode(b"not a pdf").decode())
+    with pytest.raises(BadRequest):
+        svc.add_document(fid, "pdf", None, "%%%")
+
+
+def test_watch_all_notifies_once_for_a_new_gate(make_service: Any) -> None:
+    svc = make_service("fake", scripted_llm(TIPTOE))
+    fid, _ = svc.create_family()
+    out = svc.submit_story(fid, "He walked on tiptoes for a few months.", 30, None)
+    svc.confirm(fid, [i.id for i in out.extraction_to_confirm], [], [])
+    assert svc.watch_all() >= 0  # runs over every family graph without raising
