@@ -103,6 +103,15 @@ class FamilyRepo:
         r = rows(self.graph, "f_get_auth", {"id": self.family_id})
         return (r[0]["token_hash"], r[0]["clinician_code"]) if r else (None, None)
 
+    def auth_full(self) -> tuple[str | None, str | None, bool]:
+        """(token_hash, clinician_code, demo family?)."""
+        r = rows(self.graph, "f_get_auth", {"id": self.family_id})
+        return (
+            (r[0]["token_hash"], r[0]["clinician_code"], bool(r[0]["demo"]))
+            if r
+            else (None, None, False)
+        )
+
     def round_count(self, kind: str) -> int:
         return int(rows(self.graph, "f_round_count", {"kind": kind})[0]["n"])
 

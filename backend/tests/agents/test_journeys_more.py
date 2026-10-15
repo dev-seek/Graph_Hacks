@@ -11,8 +11,8 @@ from app.agents.stories import load_stories
 from app.api.schemas import ParentExtractedFinding
 from app.llm.adapters.fake import FakeAdapter
 from app.llm.schemas import DocExtraction, DocItem
-from tests.agents.conftest import requires_kb
 from tests.agents.helpers import scripted_llm
+from tests.conftest import requires_kb
 
 pytestmark = [pytest.mark.integration, requires_kb]
 TIPTOE = {"walked on tiptoes for a few months": ("HP:0030051", "home")}

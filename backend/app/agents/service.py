@@ -17,6 +17,7 @@ from typing import Any
 
 from langgraph.types import Command
 from pypdf import PdfReader
+from redis.exceptions import ResponseError
 
 from app.agents.build_graph import build_agent_graph
 from app.agents.deps import AgentDeps
@@ -116,12 +117,18 @@ class FamilyService:
 
     # --- auth ----------------------------------------------------------------------------------
 
+    def _auth(self, family_id: str) -> tuple[str | None, str | None]:
+        try:
+            return self.deps.repo(family_id).auth()
+        except ResponseError:  # no such family graph (never existed or erased)
+            return (None, None)
+
     def authenticate(self, family_id: str, token: str) -> bool:
-        stored, _ = self.deps.repo(family_id).auth()
+        stored, _ = self._auth(family_id)
         return bool(stored) and hmac.compare_digest(stored or "", hash_token(token))
 
     def clinician_ok(self, family_id: str, code: str) -> bool:
-        _, stored = self.deps.repo(family_id).auth()
+        _, stored = self._auth(family_id)
         return bool(stored) and hmac.compare_digest((stored or "").upper(), code.strip().upper())
 
     # --- lifecycle -----------------------------------------------------------------------------

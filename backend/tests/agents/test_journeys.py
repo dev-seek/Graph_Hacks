@@ -13,8 +13,8 @@ from app.engine.planner import plan_round
 from app.eval.cases import load_dev_cases
 from app.eval.cli import home_terms, make_sim
 from app.eval.runner import _pick  # noqa: PLC2701
-from tests.agents.conftest import requires_kb
 from tests.agents.helpers import scripted_llm
+from tests.conftest import requires_kb
 
 pytestmark = [pytest.mark.integration, requires_kb]
 REFERRAL_CASE = "PMID_10939567_Patient_EMD1_III_20"
