@@ -2136,6 +2136,7 @@
     },
     "/api/demo/{journey}/steps": {
       "get": {
+        "description": "Recorded steps (no model, no key needed); each step carries its graph queries.",
         "operationId": "demo_steps_api_demo__journey__steps_get",
         "parameters": [
           {

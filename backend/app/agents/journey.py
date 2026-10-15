@@ -25,9 +25,9 @@ class JourneyScript:
     story: str
     age_months: int
     sex: str | None = None
-    accept: Callable[[list[ParentExtractedFinding]], list[str]] = lambda items: [
-        i.id for i in items
-    ]
+    accept: Callable[[list[ParentExtractedFinding], dict[str, str]], list[str]] = (
+        lambda items, terms: [i.id for i in items]
+    )
     answer: Callable[[str, str], Answer] = lambda term_id, text: "unsure"
     letter: Callable[[FamilyService, str], str | None] = lambda svc, fid: None
     advance_months: int | None = None
@@ -76,6 +76,14 @@ def _step(
     )
 
 
+def _pending_terms(svc: FamilyService, fid: str) -> dict[str, str]:
+    """item id -> HPO term id for the extraction waiting for confirmation (driver-only view)."""
+    state = svc.agent.get_state({"configurable": {"thread_id": f"family_{fid}"}})
+    pending: dict[str, Any] = state.values.get("pending") or {}
+    items: list[dict[str, Any]] = pending.get("items", [])
+    return {str(i["id"]): str(i["term_id"]) for i in items}
+
+
 def run_journey(svc: FamilyService, script: JourneyScript, *, demo: bool = True) -> JourneyResult:
     fid, token = svc.create_family(demo=demo)
     res = JourneyResult(fid, token, log=QueryLog())
@@ -96,7 +104,7 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         res.final_phase = st.phase
         return res
     _step(res, "confirm", "They check what we picked up.", ex.model_dump())
-    accepted = script.accept(ex.extraction_to_confirm)
+    accepted = script.accept(ex.extraction_to_confirm, _pending_terms(svc, fid))
     rejected = [i.id for i in ex.extraction_to_confirm if i.id not in accepted]
     st = svc.confirm(fid, accepted, rejected, [])
     while st.phase == "questions" and res.rounds < script.max_rounds:
@@ -128,7 +136,7 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         if letter:
             doc = svc.add_document(fid, "text", letter, None)
             _step(res, "letter", "They add the doctor's letter and confirm it.", doc.model_dump())
-            ids = [i.id for i in doc.extraction_to_confirm]
+            ids = script.accept(doc.extraction_to_confirm, _pending_terms(svc, fid))
             st = svc.confirm(fid, ids, [], [])
             _step(
                 res,
@@ -161,7 +169,12 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
             res,
             "referral_ready",
             "Notes for a specialist are ready.",
-            {"state": final.model_dump()},
+            {
+                "state": final.model_dump(),
+                "clinician": svc.clinician(fid).model_dump(),
+                "phenopacket": svc.phenopacket(fid),
+            },
+            repo,
         )
     elif final.phase == "watching":
         _step(

@@ -36,7 +36,7 @@ def test_story_with_llm_off_completes_and_parent_can_edit(make_service: Any) -> 
     svc = make_service("off")
     st = load_stories()["Kabir"]
 
-    def accept(items: list[ParentExtractedFinding]) -> list[str]:
+    def accept(items: list[ParentExtractedFinding], terms: dict[str, str]) -> list[str]:
         return [i.id for i in items[:6]]
 
     res = run_journey(

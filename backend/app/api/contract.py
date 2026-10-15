@@ -180,12 +180,25 @@ def centre_whatif(body: s.CentreWhatIfIn) -> s.CentreWhatIfOut:
 
 @router.get("/demo/journeys", tags=["demo"])
 def demo_journeys() -> list[s.DemoJourney]:
-    _todo()
+    from app.agents.demo import JOURNEYS
+
+    return [
+        s.DemoJourney(id=jid, title=m["title"], blurb=m["blurb"]) for jid, m in JOURNEYS.items()
+    ]
 
 
 @router.get("/demo/{journey}/steps", tags=["demo"])
 def demo_steps(journey: str) -> list[s.DemoStep]:
-    _todo()
+    """Recorded steps (no model, no key needed); each step carries its graph queries."""
+    from app.agents.demo import JOURNEYS, load_demo
+
+    if journey not in JOURNEYS:
+        raise HTTPException(status_code=404, detail="no such example family")
+    try:
+        doc = load_demo(journey)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail="demo not recorded yet") from exc
+    return [s.DemoStep.model_validate(x) for x in doc["steps"]]
 
 
 @router.get("/debug/queries", tags=["debug"])

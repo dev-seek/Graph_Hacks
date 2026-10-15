@@ -50,10 +50,10 @@ llm-contract:
 	@$(RUN) llm-contract env PYTHONPATH=backend uv run python -m app.llm.contract $$([ -n "$$ANTHROPIC_API_KEY" ] && echo live || echo fake)
 
 demo-record:
-	$(call NYI,demo-record,P3)
+	@$(RUN) demo-record env PYTHONPATH=backend uv run python -m app.agents.demo_cli record
 
 demo-replay:
-	$(call NYI,demo-replay,P3)
+	@$(RUN) demo-replay env PYTHONPATH=backend LLM_MODE=replay uv run python -m app.agents.demo_cli replay
 
 web:
 	pnpm --dir web dev

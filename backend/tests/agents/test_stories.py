@@ -6,3 +6,11 @@ def test_three_demo_stories_parse() -> None:
     assert set(s) == {"Kabir", "Arjun", "Maya"}
     assert s["Arjun"].negatives_case == "neg08" and s["Maya"].age_months == 20
     assert "seizure" not in s["Maya"].story.lower() or True
+
+
+def test_letters_parse() -> None:
+    from app.agents.stories import load_letters
+
+    letters = load_letters()
+    assert set(letters) == {1, 2}
+    assert "hypotonia" in letters[1].lower() and "Well child" in letters[2]

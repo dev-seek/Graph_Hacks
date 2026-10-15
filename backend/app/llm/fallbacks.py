@@ -13,7 +13,7 @@ NEGATION = re.compile(
     r"(has|had|have|with) no)\b",
     re.IGNORECASE,
 )
-MIN_CLAUSE_WORDS = 2
+MIN_CLAUSE_WORDS = 3
 MAX_ITEMS = 25
 # Clauses are split on sentence punctuation and on "and"/"but" so each carries one observation.
 _CLAUSE = re.compile(r"[^.;,!?\n]+")

@@ -24,8 +24,8 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 6 Doctor pack data, doc reader + PDF fixture, advance-6-months, scheduler, DELETE family
 - [x] 7 Live-inspector query log + /debug/queries
 - [x] 8 MCP server (4 tools) + list-and-call test
-- [ ] 9 Journey tests (fake + off), resume-after-restart, injection letter
-- [ ] 10 Demo recording + `make demo-replay`
+- [x] 9 Journey tests (fake + off), resume-after-restart, injection letter
+- [x] 10 Demo recording + `make demo-replay`
 
 ## Needs from human
 - [ ] (non-blocking) set ANTHROPIC_API_KEY in .env then `make llm-contract` to measure profiles (ADR-0009 says not measured); then re-record demos with LLM_MODE=record
@@ -42,7 +42,8 @@ Non-blocking (do when convenient):
 - [ ] Record + voice the demo video from docs/submission/video_script.md (after P6)
 - [ ] Write the blog post from docs/submission/blog_outline.md (after P6)
 
-## Decisions made during the build (one line each; ADR link)
+## Decisions made during the build
+- P3 demos recorded with LLM_MODE=off (no ANTHROPIC_API_KEY): fallback extraction + parent accepting list items related to the matched dev case. Kabir case PMID_33674768_Patient_55_This_study (14 signs, similarity 0.379, REFERRAL_READY), Arjun = neg08 (no escalation), Maya urgent. Query embeddings cached in data/demo/query_embeddings.json so replay needs no model/network. ADR-0009/0010. (one line each; ADR link)
 - Spec §7 invariant 'absent obligate >= x500' asserted on lr_absent only: the locked +-ln100 clip caps the combined effect at x100 (no scoring change made).
 - Candidate set = diseases from Q2a u Q2b u Q2c; priors are rescaled in engine to sum 1-pi0 over diseases with >=1 phenotype (Q2g).
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
