@@ -232,6 +232,28 @@ def taus() -> int:
     return 0
 
 
+def negatives() -> int:
+    """Re-run only the negatives at the CHOSEN taus and tuned params (no re-tuning)."""
+    best = json.loads((LOGS / "tune-grid2.json").read_text())["best"]
+    chosen = json.loads((LOGS / "tune-taus.json").read_text())["chosen"]["taus"]
+    release, cases, homes = setup()
+    n_neg = len(load_resolved())
+    with Pool(8, initializer=_init, initargs=(release, cases, homes)) as pool:
+        negs = pool.map(_neg_task, [(i, best, MAX_ROUNDS) for i in range(n_neg)], chunksize=1)
+    rates = negative_rates(negs, Taus(**chosen))
+    out = {
+        "taus": chosen,
+        "n": rates.n,
+        "false_referral": rates.false_referral,
+        "false_see_doctor": rates.false_see_doctor,
+        "safety_floor_see_doctor": rates.safety_floor_see_doctor,
+    }
+    (LOGS / "negatives-recheck.json").write_text(json.dumps(out, indent=2))
+    print(json.dumps(out, indent=2))  # noqa: T201
+    return 0
+
+
 if __name__ == "__main__":
     stage_name = sys.argv[1] if len(sys.argv) > 1 else "grid"
-    sys.exit(grid() if stage_name == "grid" else taus())
+    stages = {"grid": grid, "taus": taus, "negatives": negatives}
+    sys.exit(stages[stage_name]())

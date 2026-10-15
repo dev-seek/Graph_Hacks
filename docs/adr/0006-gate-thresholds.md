@@ -20,3 +20,14 @@ Trade-off chart: `0006-tau-tradeoff.png` (each dot is one tau triple with false 
 - tau0 and tau2 sit on the edges of the sweep grid (tau0 grid 0.01-0.3, tau2 grid 0.5-0.99); wider grids were not explored.
 - At the chosen taus 30 of 120 dev positives (25%) end in WATCH ("mention at routine visit"): this is the false-reassurance side of raising tau0 from 0.05. 25 reach REFERRAL_READY, 65 SEE_DOCTOR. Among negatives 31/40 WATCH, 9/40 SEE_DOCTOR, 0 referral.
 - tau0 = 0.30 means "routine visit" is advised when rare_mass is below 30% after two rounds with no flags; the safety rules still override.
+
+## Update 2026-10-15: negatives re-check after 6 accepted phrase-map corrections
+The human accepted 6 corrections to `data/derived/negatives.curated.yaml` (low fever, achy legs, elbow-crease patches, squints at board, ear pulling, green vomit). `negatives.resolved.yaml` was regenerated and the 40 negatives re-run at the chosen taus (0.30/0.40/0.50) and tuned scoring values, with no re-tuning (`python -m app.eval.tune negatives`, log `.build/logs/negatives-recheck.json`).
+
+| | before | after |
+|---|---|---|
+| false referral | 0% | 0% |
+| false see-doctor | 22.5% (9/40) | 20.0% (8/40) |
+| safety floor (see doctor from safety rules alone) | 0/40 | 0/40 |
+
+Both stay inside the pre-declared limits (10% / 30%).

@@ -168,8 +168,8 @@ cases:
     alternatives: []
     via: curated
   - phrase: low fever
-    term: HP:0001945
-    name: Fever
+    term: HP:0011134
+    name: Low-grade fever
     alternatives: []
     via: curated
   absent:
@@ -210,8 +210,8 @@ cases:
   expected: no_escalation
   present:
   - phrase: achy legs in the evening
-    term: HP:0012531
-    name: Pain
+    term: HP:0012514
+    name: Lower limb pain
     alternatives: []
     via: curated
   - phrase: fine in the morning
@@ -330,10 +330,10 @@ cases:
     alternatives: []
     via: curated
   - phrase: green vomit
-    term: null
-    name: null
+    term: HP:0034754
+    name: Bilious emesis
     alternatives: []
-    via: dropped
+    via: curated
 - id: neg14
   age_months: 4
   summary: cries for hours in the evening, otherwise feeding and growing well
@@ -606,8 +606,8 @@ cases:
   expected: no_escalation
   present:
   - phrase: dry itchy patches in elbow creases
-    term: HP:0000989
-    name: Pruritus
+    term: HP:0000964
+    name: Eczematoid dermatitis
     alternatives: []
     via: curated
   absent:
@@ -648,8 +648,8 @@ cases:
   expected: see_doctor_ok
   present:
   - phrase: squints at the board
-    term: HP:0000539
-    name: Abnormality of refraction
+    term: HP:0000545
+    name: Myopia
     alternatives: []
     via: curated
   absent:
@@ -894,10 +894,10 @@ cases:
   expected: see_doctor_ok
   present:
   - phrase: pulling at her ear
-    term: null
-    name: null
+    term: HP:0030766
+    name: Ear pain
     alternatives: []
-    via: dropped
+    via: curated
   - phrase: mild fever
     term: HP:0011134
     name: Low-grade fever
