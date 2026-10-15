@@ -15,7 +15,7 @@ WORKER = Path(__file__).parent / "restart_worker.py"
 
 
 def _run(mode: str, thread: str) -> str:
-    out = subprocess.run(
+    out = subprocess.run(  # noqa: S603 (fixed argv, our own worker script)
         [sys.executable, str(WORKER), mode, thread],
         capture_output=True,
         text=True,

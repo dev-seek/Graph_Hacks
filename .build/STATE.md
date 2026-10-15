@@ -14,7 +14,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [ ] 1 Spike: LangGraph interrupt/resume + FalkorDBSaver, restart survival (VERIFIED.md)
+- [x] 1 Spike: LangGraph interrupt/resume + FalkorDBSaver, restart survival (VERIFIED.md)
 - [ ] 2a LLM port/router/fake/replay adapters + prompts + schemas + lexicon check (tests first)
 - [ ] 2b anthropic adapter + `make llm-contract` (fake in CI; key unset -> "not measured")
 - [ ] 3 Family graph repository + registry queries (REPLACED_BY, TermRef)
