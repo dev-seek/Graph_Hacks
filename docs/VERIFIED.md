@@ -50,3 +50,10 @@ Throwaway containers (our pinned tag was not changed), run via `scratchpad/repro
 | `falkordb/falkordb:edge-rs` (2026-10-15) | 999999 | **0 rows (bug)** |
 | `falkordb/falkordb:v4.22.1` (Docker Hub `latest`) | 42201 | 2 rows (correct); `*1..10` form returns 1, which is also correct |
 So the bug exists in the 6.x line through the newest edge build; the 4.22 line does not show it. Impact on us: none (Q2a/Q2d run once per finding, ADR-0008).
+
+## LangGraph interrupt + FalkorDBSaver across a process restart (P3 task 1, 2026-10-15)
+Versions: langgraph 1.2.15, langgraph-checkpoint 4.3.0, langchain-falkordb 0.2.0 (as locked in `uv.lock`).
+- Import: `from langchain_falkordb.checkpoint import FalkorDBSaver`; ctor `FalkorDBSaver(host=, port=, database="langgraph_checkpoints")`.
+- Storage: **one shared graph** (default `langgraph_checkpoints`) with node labels for checkpoints, blobs and writes, each carrying `thread_id` (range-indexed). It does NOT create `family_<id>` graphs, so there is no name clash with family graphs. Erasure therefore needs a delete keyed by `thread_id` in that graph (registry Cypher; we do not call `prune`/`delete_for_runs`/`copy_thread`).
+- Process A (`invoke` until `interrupt()`, then exit) and process B (fresh saver + fresh compiled graph): `get_state` shows `next=('ask',)` with the pending interrupt value; `invoke(Command(resume="yes"))` completes; `saver.list(cfg, limit=5)` returns 4 checkpoints. Test: `backend/tests/agents/test_checkpoint_restart.py` (integration, two real subprocesses).
+- A resumed node re-runs from its first line, so nodes keep LLM calls/writes out of the node that calls `interrupt()`.
