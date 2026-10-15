@@ -1,13 +1,13 @@
-status: blocked
+status: running
 phase: P2
-updated: (set by Claude on every change)
+updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Phase table
 | Phase | Work order | Status | Gate evidence (short; link logs) |
 |---|---|---|---|
 | P0 | phases/P0-scaffold.md | done | CI run 38627498456 green; make check OK; test-int 2 passed; /api/health 200; GRAPH.LIST ok; review-check: only 'not yet REVIEWED' for safety_rules + negatives (stories/letters REVIEWED); FalkorDB 6.0.2 + timeouts in docs/VERIFIED.md |
 | P1 | phases/P1-knowledge.md | done | coverage 99.7% (lpo test 68.7%); lay top-3 100% verbatim / 45% sentences; make kb 120 s cold; counts in ADR-0002; test sha 223e6076…b6d5; make check+test-int green |
-| P2 | phases/P2-engine.md | running | |
+| P2 | phases/P2-engine.md | running | gate outcome decided by human: option (a), see Decisions |
 | P3 | phases/P3-agents-api.md | todo | |
 | P4 | phases/P4-web.md | todo | |
 | P5 | phases/P5-centre-eval.md | todo | |
@@ -25,37 +25,40 @@ updated: (set by Claude on every change)
 - [x] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
 - [x] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
 - [x] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
+- [ ] 12 Guard fix (human-approved): in .claude/hooks/guard.sh change reviewed() to `head -n 1 "$1" | grep -Eq "^# STATUS: REVIEWED by"` so template/instruction lines no longer count as REVIEWED. Add a small test (template line → allowed, `# STATUS: DRAFT …` → allowed, `# STATUS: REVIEWED by X on D` → blocked). Commit on its own.
+- [ ] 13 Negatives re-check: the human accepted 6 corrections in data/derived/negatives.curated.yaml (low fever→HP:0011134, achy legs→HP:0012514, elbow-crease patches→HP:0000964, squints at board→HP:0000545, ear pulling→HP:0030766, green vomit (absent)→HP:0034754). Commit that file as-is; regenerate negatives.resolved.yaml; re-run the negatives evaluation at the CHOSEN thresholds (no re-tuning). Update false-referral / false-see-doctor in ADR-0006 with old → new numbers. If false referral > 10% or false see-doctor > 30%, set status: needs-human with the numbers and stop.
+- [ ] 14 Benchmark: commit the pending edit (prune included in the timed path); re-run it with nothing else using the CPU (no tuning/eval running); record p90s in the phase table. If it misses budget, report the numbers; do not loosen the budget.
+- [ ] 15 Q2 rewrite: add/confirm an integration test proving the rewritten Q2a-d return the same rows as the spec §13 versions on the small kb; write an ADR "Q2 rewritten for performance (spec deviation)" with before/after timings and the equivalence test link.
+- [ ] 16 FalkorDB UNWIND issue: write a minimal standalone repro (≤ 20 lines Cypher + expected vs actual) in docs/VERIFIED.md. Re-run it on the newest FalkorDB release in a throwaway container (do not change our pinned tag). Write under Needs from human whether it still reproduces there, so the human can decide to file it upstream.
+- [ ] 17 ADR-0007 "P2 gate outcome": held-out table with CIs; gate as worded NOT met vs B1/B2; human chose (a); no re-tuning toward B2, no planner change; negatives numbers after task 13; how this is reported in README and P5. Same framing in docs/explain/P2.md.
+- [ ] 18 docs/AI_USAGE.md (P2 section), stated plainly: negatives phrase->HPO map drafted by Claude (build session), IDs checked by Claude (planning chat) against HPO 2026-09-01, 6 corrections accepted by the human (no claim that the human hand-checked every line); two commits landed with make check red and were fixed in the next commit (no history rewrite); planner and gate tests written alongside the implementation, not strictly first; safety_rules.yaml and negatives.yaml drafts were written by a Python file write the guard did not intercept while still DRAFT (no REVIEWED file was changed); the guard bug and its fix (task 12).
+- [ ] 19 Close the gate: reviewer subagent on c3eaf0a..HEAD and fix blockers; docs/explain/P2.md; phase table row P2 = done with evidence; set phase: P3 and clear Current tasks; commit, tag P2-done, push; end turn with the phase report.
 
 ## Needs from human
-**P2 GATE NOT MET (blocked, 2026-10-15): "Ours > B0, B1 and B2 on top-10 after 3 rounds (with CIs)".**
-Held-out dev (400 cases disjoint from the 120 tuning cases; `.build/logs/eval-heldout.out`): top-10 B0 56.2% [51.0,61.3], B1 58.5%, B2 60.5% [55.8,65.8], Ours 60.2% [55.2,65.2]; MRR B2 0.368 vs Ours 0.369; top-1 B2 25.0 vs Ours 25.2. Paired top-10 gain: vs B0 +1.0..+7.3 pts (significant), vs B1 -1.5..+4.7, vs B2 -3.3..+2.7 (tie). Everything else in the gate passes (tests, benchmark p90 retrieve 129 ms / score 70 / plan 353; false referral 0%, false see-doctor 22.5%; safety corpus 69/69).
-Not re-tuned toward B2 (that would be tuning to the comparison). Decide one of: (a) accept an honest "matches the simple frequent-sign baseline, beats story-only and random" result and tick the gate; (b) allow a planner change (e.g. weight IG by candidate-specific discrimination) as a spec change with an ADR; (c) relax the gate wording. Write the choice under Notes and set status: running.
-Blocking (Claude stops if not REVIEWED when needed) — Claude drafts all four in P0; you review, edit, and change line 1 to `# STATUS: REVIEWED by <name> on <date>`:
-- [ ] review/safety_rules.yaml — needed at start of P2
-- [ ] review/negatives.yaml — needed at start of P2
+Blocking: none right now.
+- [x] P2 gate decision: option (a) (Manoj, 2026-10-15) — see Decisions.
+- [x] review/safety_rules.yaml + review/negatives.yaml — REVIEWED (Manoj, 2026-10-15, commit c3eaf0a)
 - [x] review/demo_stories.md + review/doctor_letters.md — REVIEWED (Manoj, 2026-10-15)
+- [x] guard.sh false positive: human approved the fix (task 12).
+- [x] negatives.curated.yaml: 6 corrections accepted by Manoj (task 13).
 Non-blocking (do when convenient):
-- [ ] data/derived/spotcheck_100.csv — fill `human_label` (appears after P1)
+- [ ] data/derived/spotcheck_100.csv — fill `human_label`
+- [ ] File the FalkorDB UNWIND issue upstream if task 14 says it still reproduces on the newest release
+- [ ] Provide deployment VPS host + DNS name in .env (DEPLOY_HOST, DEPLOY_DOMAIN) before P6 deploy step
 - [ ] Record + voice the demo video from docs/submission/video_script.md (after P6)
 - [ ] Write the blog post from docs/submission/blog_outline.md (after P6)
-- [ ] Provide deployment VPS host + DNS name in .env (DEPLOY_HOST, DEPLOY_DOMAIN) before P6 deploy step
-
-- [x] **guard.sh false positive (blocks P0 task 11):** the untouched templates `review/demo_stories.md` and `review/doctor_letters.md` have a first line containing the text "STATUS: REVIEWED" (inside the instruction "replace this line with: # STATUS: REVIEWED by …"), so `.claude/hooks/guard.sh` treats them as REVIEWED and blocks Write/Edit and shell writes. They are NOT reviewed. Finished drafts are waiting in `.build/drafts/demo_stories.md` and `.build/drafts/doctor_letters.md`. Fix: either copy them over `review/` yourself (they already start with `# STATUS: DRAFT …`), or change `reviewed()` in guard.sh to match `^# STATUS: REVIEWED by`. Note: `safety_rules.yaml` and `negatives.yaml` had the same template line; they were written with Python file writes that the guard's Bash regex did not catch (unintended). Both remain DRAFT.
 
 ## Decisions made during the build (one line each; ADR link)
 - Spec §7 invariant 'absent obligate >= x500' asserted on lr_absent only: the locked +-ln100 clip caps the combined effect at x100 (no scoring change made).
 - Candidate set = diseases from Q2a u Q2b u Q2c; priors are rescaled in engine to sum 1-pi0 over diseases with >=1 phenotype (Q2g).
+- P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
-- guard.sh false-positive: a Bash command mentioning review/negatives.yaml inside python open() is blocked even for reads; use app.eval.negatives.load_negatives instead.
-- Negatives: auto Q0 resolution was poor (e.g. 'waves bye-bye' -> EEG term), so AI-curated phrase->HPO map in data/derived/negatives.curated.yaml (null = not a finding). Disclose in AI_USAGE.
-P2 phase_start: c3eaf0a. Review files REVIEWED 2026-10-15 (committed c3eaf0a).
-phase_start: 930a69e (P1, = P0-done tag). P0 phase_start was 5832463.
-- Start colima before `make up` (`colima start --cpu 2 --memory 4`); node is node@22 via brew (Makefile adds it to PATH).
-- web: TypeScript pinned to 6.x (typescript-eslint lacks TS 7); pnpm-workspace.yaml `allowBuilds` denies unrs-resolver.
-- `ruff format` excludes docs/ and *.md (keeps the locked spec untouched).
-- P2 must always pass `age_months` to safety `match()`; with unknown age `fever_under_3_months` fires on any "fever".
-- Safety patterns are lazy/bounded; negations only cancel overlapping spans (see test_safety_adversarial.py). review/ rules are DRAFT until the human marks them REVIEWED (needed at start of P2).
-- CI pip-audit / pnpm audit are non-gating (make gating by P6). P1 gate: `grep TODO(P1) docs/DATA_LICENSES.md` must be empty.
-- guard.sh `reviewed()` matches any first line containing "STATUS: REVIEWED"; templates therefore looked reviewed (human fixed by copying files).
-- P1 handoff: planner must filter askable terms (cx_obs defaults to home); P3 phrasing check must ban disease-flavoured words (-oid/-ism, eponyms) in cx_question (reviewer #7). Start P2 only after review/safety_rules.yaml + negatives.yaml are REVIEWED.
+cut: 4
+- phase_start: P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a (review files REVIEWED and committed there).
+- negatives.curated.yaml: AI-drafted; IDs machine-checked vs HPO 2026-09-01 (all valid, none obsolete); 6 corrections accepted by Manoj 2026-10-15 (see task 13).
+- Local env: `colima start --cpu 2 --memory 4` before `make up`; node@22 via brew (Makefile adds PATH); TypeScript pinned 6.x; pnpm-workspace `allowBuilds` denies unrs-resolver; `ruff format` excludes docs/ and *.md.
+- Safety: always pass `age_months` to match() (unknown age makes `fever_under_3_months` fire on any "fever"); patterns lazy/bounded; negations cancel only overlapping spans (test_safety_adversarial.py).
+- guard.sh may still block a Bash command that merely mentions a review/ file next to `>` (e.g. `->` in python); read review files via app.eval.negatives.load_negatives or the Read tool.
+- For P3: phrasing check must ban disease-flavoured words (-oid/-ism, eponyms) in cx_question (P1 reviewer #7); planner must filter askable terms (cx_obs defaults to home).
+- CI pip-audit / pnpm audit are non-gating until P6 (make gating there).

@@ -1,7 +1,9 @@
-# Phrase -> HPO term for the plain-word signs in the reviewed negatives file. Drafted by Claude (AI)
-# because plain-text search alone resolved many phrases to unrelated terms. `null` = not an abnormal
-# finding (normal development, family history, context): dropped. A human glance is welcome; the
-# resolved output (negatives.resolved.yaml) lists every mapping.
+# Phrase -> HPO term for the plain-word signs in the reviewed negatives file. `null` = not an abnormal
+# finding (normal development, family history, context) or no fitting HPO term: dropped.
+# Drafted by Claude (AI, build session) because plain-text search alone resolved many phrases to unrelated terms.
+# Checked by Claude (AI, planning chat) against HPO release 2026-09-01: every ID exists and none is obsolete;
+# 6 mappings corrected (low fever, achy legs, elbow-crease patches, squints at board, ear pulling, green vomit).
+# Corrections accepted by Manoj on 2026-10-15. The resolved output (negatives.resolved.yaml) lists every mapping.
 present:
   says only a few words: HP:0000750
   points to things she wants: null
@@ -17,9 +19,9 @@ present:
   very bendy fingers and elbows: HP:0001382
   vomiting for two days: HP:0002013
   loose stools: HP:0002014
-  low fever: HP:0001945
+  low fever: HP:0011134
   walked on tiptoes for a few months: HP:0030051
-  achy legs in the evening: HP:0012531
+  achy legs in the evening: HP:0012514
   fine in the morning: null
   started walking late at eighteen months: HP:0002194
   tired after school: HP:0012378
@@ -48,9 +50,9 @@ present:
   dribbling: HP:0002307
   sore gums: HP:0000230
   grumpy at night: HP:0000737
-  dry itchy patches in elbow creases: HP:0000989
+  dry itchy patches in elbow creases: HP:0000964
   snores with colds: HP:0025267
-  squints at the board: HP:0000539
+  squints at the board: HP:0000545
   period cramps: HP:0100607
   poor sleep before exams: HP:0002360
   butterflies in tummy: HP:0000739
@@ -65,7 +67,7 @@ present:
   tired in the mornings: HP:0012378
   late nights on screens: null
   bites nails: HP:0012170
-  pulling at her ear: null
+  pulling at her ear: HP:0030766
   mild fever: HP:0011134
   talks in his sleep: HP:0025187
   once walked to the hall at night: HP:0025236
@@ -95,7 +97,7 @@ absent:
   vomiting every morning: HP:0002013
   waking from sleep with pain: null
   poor weight gain: HP:0001508
-  green vomit: null
+  green vomit: HP:0034754
   fever: HP:0001945
   not feeding: HP:0011968
   bleeding skin: HP:0001892
