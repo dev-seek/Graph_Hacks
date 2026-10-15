@@ -15,8 +15,8 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Current tasks
 - [x] 1 Spike: LangGraph interrupt/resume + FalkorDBSaver, restart survival (VERIFIED.md)
-- [ ] 2a LLM port/router/fake/replay adapters + prompts + schemas + lexicon check (tests first)
-- [ ] 2b anthropic adapter + `make llm-contract` (fake in CI; key unset -> "not measured")
+- [x] 2a LLM port/router/fake/replay adapters + prompts + schemas + lexicon check (tests first)
+- [x] 2b anthropic adapter + `make llm-contract` (fake in CI; key unset -> "not measured")
 - [ ] 3 Family graph repository + registry queries (REPLACED_BY, TermRef)
 - [ ] 4a Term resolution (Q0) + intake/safety/reasoner/gatekeeper/planner nodes
 - [ ] 4b doctor_pack/doc_reader/referral/exporter (Phenopacket v2 schema validation)/watcher/urgent + LangGraph wiring
@@ -28,6 +28,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [ ] 10 Demo recording + `make demo-replay`
 
 ## Needs from human
+- [ ] (non-blocking) set ANTHROPIC_API_KEY in .env then `make llm-contract` to measure profiles (ADR-0009 says not measured); then re-record demos with LLM_MODE=record
 Blocking: none right now.
 - [x] P2 gate decision: option (a) (Manoj, 2026-10-15) — see Decisions.
 - [x] review/safety_rules.yaml + review/negatives.yaml — REVIEWED (Manoj, 2026-10-15, commit c3eaf0a)

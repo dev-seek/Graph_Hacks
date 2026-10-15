@@ -47,7 +47,7 @@ eval:
 	$(call NYI,eval,P5)
 
 llm-contract:
-	$(call NYI,llm-contract,P3)
+	@$(RUN) llm-contract env PYTHONPATH=backend uv run python -m app.llm.contract $$([ -n "$$ANTHROPIC_API_KEY" ] && echo live || echo fake)
 
 demo-record:
 	$(call NYI,demo-record,P3)

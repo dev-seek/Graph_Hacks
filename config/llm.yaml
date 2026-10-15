@@ -1,10 +1,10 @@
 mode: ${LLM_MODE:-replay}            # off | fake | replay | record | live
 profiles:
-  fast:          {model: claude-haiku-5-5,  max_output_tokens: 1200}
-  fast_advised:  {model: claude-haiku-5-5,  max_output_tokens: 1500,
+  fast:          {model: claude-haiku-4-5,  max_output_tokens: 1200}
+  fast_advised:  {model: claude-haiku-4-5,  max_output_tokens: 1500,
                   advisor: {model: claude-sonnet-5-5, max_uses: 1, max_tokens: 2048}}
   smart:         {model: claude-sonnet-5-5, max_output_tokens: 2000}
-  batch_fast:    {model: claude-haiku-5-5,  max_output_tokens: 3000, batch: true}
+  batch_fast:    {model: claude-haiku-4-5,  max_output_tokens: 3000, batch: true}
   batch_smart:   {model: claude-sonnet-5-5, max_output_tokens: 3000, batch: true}
 candidates:                          # what the contract suite compares per task (cheapest passing wins)
   extract_story:        [fast, fast_advised, smart]

@@ -17,4 +17,4 @@ def test_llm_config_models_only_in_yaml() -> None:
     import yaml
 
     cfg = yaml.safe_load(Path("config/llm.yaml").read_text())
-    assert cfg["profiles"]["fast"]["model"] == "claude-haiku-5-5"
+    assert cfg["profiles"]["fast"]["model"] == "claude-haiku-4-5"
