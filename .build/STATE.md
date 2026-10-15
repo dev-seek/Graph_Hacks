@@ -21,9 +21,9 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 4a Term resolution (Q0) + intake/safety/reasoner/gatekeeper/planner nodes
 - [x] 4b doctor_pack/doc_reader/referral/exporter (Phenopacket v2 schema validation)/watcher/urgent + LangGraph wiring
 - [x] 5 API routes, bearer tokens (hashed), clinician codes, rate limits, parent-key test per route
-- [ ] 6 Doctor pack data, doc reader + PDF fixture, advance-6-months, scheduler, DELETE family
+- [x] 6 Doctor pack data, doc reader + PDF fixture, advance-6-months, scheduler, DELETE family
 - [x] 7 Live-inspector query log + /debug/queries
-- [ ] 8 MCP server (4 tools) + list-and-call test
+- [x] 8 MCP server (4 tools) + list-and-call test
 - [ ] 9 Journey tests (fake + off), resume-after-restart, injection letter
 - [ ] 10 Demo recording + `make demo-replay`
 
