@@ -13,6 +13,8 @@ from typing import Any, Literal
 
 from app.agents.service import FamilyService
 from app.api.schemas import ParentExtractedFinding
+from app.graph.client import QueryLog, set_query_log
+from app.graph.family import FamilyRepo
 
 Answer = Literal["yes", "no", "unsure"]
 MAX_ROUNDS = 6
@@ -39,17 +41,52 @@ class JourneyResult:
     steps: list[dict[str, Any]] = field(default_factory=list[dict[str, Any]])
     final_phase: str = ""
     rounds: int = 0
+    log: QueryLog | None = None
+    seen: int = 0
 
 
-def _step(res: JourneyResult, screen: str, caption: str, payload: dict[str, Any]) -> None:
+def _step(
+    res: JourneyResult,
+    screen: str,
+    caption: str,
+    payload: dict[str, Any],
+    repo: FamilyRepo | None = None,
+) -> None:
+    """Append a step with the graph queries that ran since the previous step (live inspector)."""
+    queries: list[dict[str, Any]] = []
+    if res.log is not None:
+        queries = [
+            {
+                "name": e.name,
+                "cypher": e.cypher,
+                "params": e.params,
+                "rows": e.rows,
+                "ms": round(e.ms, 2),
+            }
+            for e in res.log.entries[res.seen :]
+        ]
+        res.seen = len(res.log.entries)
+    body = dict(payload)
+    body["queries"] = queries
+    gate = repo.latest_gate() if repo is not None else None
+    if gate:
+        body["gate"] = {"state": gate["kind"], "rule": gate["rule"], "inputs": gate["inputs"]}
     res.steps.append(
-        {"n": len(res.steps) + 1, "screen": screen, "caption": caption, "payload": payload}
+        {"n": len(res.steps) + 1, "screen": screen, "caption": caption, "payload": body}
     )
 
 
 def run_journey(svc: FamilyService, script: JourneyScript, *, demo: bool = True) -> JourneyResult:
     fid, token = svc.create_family(demo=demo)
-    res = JourneyResult(fid, token)
+    res = JourneyResult(fid, token, log=QueryLog())
+    set_query_log(res.log)
+    try:
+        return _run(svc, script, res, fid)
+    finally:
+        set_query_log(None)
+
+
+def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str) -> JourneyResult:
     repo = svc.deps.repo(fid)
     ex = svc.submit_story(fid, script.story, script.age_months, script.sex)
     _step(res, "story", "The parent tells their story.", {"safety": ex.safety.model_dump()})
@@ -93,7 +130,13 @@ def run_journey(svc: FamilyService, script: JourneyScript, *, demo: bool = True)
             _step(res, "letter", "They add the doctor's letter and confirm it.", doc.model_dump())
             ids = [i.id for i in doc.extraction_to_confirm]
             st = svc.confirm(fid, ids, [], [])
-            _step(res, "after_letter", "The doctor's findings join the picture.", st.model_dump())
+            _step(
+                res,
+                "after_letter",
+                "The doctor's findings join the picture.",
+                st.model_dump(),
+                repo,
+            )
             while st.phase == "questions" and res.rounds < script.max_rounds:
                 rnd = svc.round(fid)
                 res.rounds += 1
