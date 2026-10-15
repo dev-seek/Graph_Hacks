@@ -1,5 +1,5 @@
 status: running
-phase: P2
+phase: P3
 updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Phase table
@@ -7,32 +7,14 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 |---|---|---|---|
 | P0 | phases/P0-scaffold.md | done | CI run 38627498456 green; make check OK; test-int 2 passed; /api/health 200; GRAPH.LIST ok; review-check: only 'not yet REVIEWED' for safety_rules + negatives (stories/letters REVIEWED); FalkorDB 6.0.2 + timeouts in docs/VERIFIED.md |
 | P1 | phases/P1-knowledge.md | done | coverage 99.7% (lpo test 68.7%); lay top-3 100% verbatim / 45% sentences; make kb 120 s cold; counts in ADR-0002; test sha 223e6076…b6d5; make check+test-int green |
-| P2 | phases/P2-engine.md | running | gate outcome decided by human: option (a), see Decisions |
+| P2 | phases/P2-engine.md | done | held-out 400 dev: top-10 Ours 60.2% vs B0 56.2 / B1 58.5 / B2 60.5 (gate as worded NOT met, human option a, ADR-0007); negatives false referral 0%, false see-doctor 20%; safety corpus 60/60; bench p90 retrieve 80 / score 31 / plan 98 ms; make check + test-int green |
 | P3 | phases/P3-agents-api.md | todo | |
 | P4 | phases/P4-web.md | todo | |
 | P5 | phases/P5-centre-eval.md | todo | |
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [x] 1 failing tests: LR table, prune, decay, NOT, noise, absent, obligate cap, gamma, D0, unlinked mass, Hypothesis invariants (engine/scoring)
-- [x] 2 failing tests: planner (age gate, branch memory, <=2/system, no overlap, IG>=0) + gates at/below threshold
-- [x] 3 Query registry Q2a-d, Q3 (+Q4) with integration tests on small kb
-- [x] 4 engine/scoring.py pure functions over rows; reasoner fails closed (503) w/o FalkorDB
-- [x] 5 engine/planner.py + engine/gates.py
-- [x] 6 Safety engine: load/validate rules, corpus 60/60, LLM safety_extra add-only
-- [x] 7 Resolve negatives.yaml via Q0 -> data/derived/negatives.resolved.yaml
-- [x] 8 eval simulator + B0/B1/B2 + metrics w/ bootstrap CIs + make eval-smoke
-- [x] 9 Tuning on dev + negatives; ADRs 0003-0006 + trade-off PNG
-- [x] 10 Benchmark per round (Q1+Q2<300ms, score<100ms, planner<500ms)
-- [x] 11 Freeze api/schemas.py, export OpenAPI, recursive parent-key test
-- [x] 12 Guard fix (human-approved): in .claude/hooks/guard.sh change reviewed() to `head -n 1 "$1" | grep -Eq "^# STATUS: REVIEWED by"` so template/instruction lines no longer count as REVIEWED. Add a small test (template line → allowed, `# STATUS: DRAFT …` → allowed, `# STATUS: REVIEWED by X on D` → blocked). Commit on its own.
-- [x] 13 Negatives re-check: the human accepted 6 corrections in data/derived/negatives.curated.yaml (low fever→HP:0011134, achy legs→HP:0012514, elbow-crease patches→HP:0000964, squints at board→HP:0000545, ear pulling→HP:0030766, green vomit (absent)→HP:0034754). Commit that file as-is; regenerate negatives.resolved.yaml; re-run the negatives evaluation at the CHOSEN thresholds (no re-tuning). Update false-referral / false-see-doctor in ADR-0006 with old → new numbers. If false referral > 10% or false see-doctor > 30%, set status: needs-human with the numbers and stop.
-- [x] 14 Benchmark: commit the pending edit (prune included in the timed path); re-run it with nothing else using the CPU (no tuning/eval running); record p90s in the phase table. If it misses budget, report the numbers; do not loosen the budget.
-- [x] 15 Q2 rewrite: add/confirm an integration test proving the rewritten Q2a-d return the same rows as the spec §13 versions on the small kb; write an ADR "Q2 rewritten for performance (spec deviation)" with before/after timings and the equivalence test link.
-- [x] 16 FalkorDB UNWIND issue: write a minimal standalone repro (≤ 20 lines Cypher + expected vs actual) in docs/VERIFIED.md. Re-run it on the newest FalkorDB release in a throwaway container (do not change our pinned tag). Write under Needs from human whether it still reproduces there, so the human can decide to file it upstream.
-- [x] 17 ADR-0007 "P2 gate outcome": held-out table with CIs; gate as worded NOT met vs B1/B2; human chose (a); no re-tuning toward B2, no planner change; negatives numbers after task 13; how this is reported in README and P5. Same framing in docs/explain/P2.md.
-- [x] 18 docs/AI_USAGE.md (P2 section), stated plainly: negatives phrase->HPO map drafted by Claude (build session), IDs checked by Claude (planning chat) against HPO 2026-09-01, 6 corrections accepted by the human (no claim that the human hand-checked every line); two commits landed with make check red and were fixed in the next commit (no history rewrite); planner and gate tests written alongside the implementation, not strictly first; safety_rules.yaml and negatives.yaml drafts were written by a Python file write the guard did not intercept while still DRAFT (no REVIEWED file was changed); the guard bug and its fix (task 12).
-- [ ] 19 Close the gate: reviewer subagent on c3eaf0a..HEAD and fix blockers; docs/explain/P2.md; phase table row P2 = done with evidence; set phase: P3 and clear Current tasks; commit, tag P2-done, push; end turn with the phase report.
+(empty; plan P3 at its start)
 
 ## Needs from human
 Blocking: none right now.
@@ -55,7 +37,8 @@ Non-blocking (do when convenient):
 
 ## Notes for next session (≤ 10 lines)
 cut: 4
-- phase_start: P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a (review files REVIEWED and committed there).
+- P2 review: no blockers; fixed inline Cypher (negatives.py) + bounded Q2c/Q2e. Open minor: confirm test-int/eval round latency with 15+ findings in P3; parent-view string-value check in P3.
+- phase_start: P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a · P3 = P2-done tag (review files REVIEWED and committed there).
 - negatives.curated.yaml: AI-drafted; IDs machine-checked vs HPO 2026-09-01 (all valid, none obsolete); 6 corrections accepted by Manoj 2026-10-15 (see task 13).
 - Local env: `colima start --cpu 2 --memory 4` before `make up`; node@22 via brew (Makefile adds PATH); TypeScript pinned 6.x; pnpm-workspace `allowBuilds` denies unrs-resolver; `ruff format` excludes docs/ and *.md.
 - Safety: always pass `age_months` to match() (unknown age makes `fever_under_3_months` fire on any "fever"); patterns lazy/bounded; negations cancel only overlapping spans (test_safety_adversarial.py).
