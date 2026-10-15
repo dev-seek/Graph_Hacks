@@ -5,7 +5,7 @@ tool=$(jq -r '.tool_name // empty' <<<"$input")
 path=$(jq -r '.tool_input.file_path // empty' <<<"$input")
 cmd=$(jq -r '.tool_input.command // empty' <<<"$input")
 block(){ echo "Blocked by guard: $1 (AGENTS.md non-negotiables). Record why you needed it in .build/STATE.md instead of working around it." >&2; exit 2; }
-reviewed(){ [ -f "$1" ] && head -n 1 "$1" | grep -q "STATUS: REVIEWED"; }
+reviewed(){ [ -f "$1" ] && head -n 1 "$1" | grep -Eq "^# STATUS: REVIEWED by"; }
 case "$tool" in
   Read)
     case "$path" in */data/raw/*) block "reading raw data files floods context; inspect with head -c or a small script";; esac ;;
