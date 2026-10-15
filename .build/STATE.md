@@ -14,7 +14,18 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty; plan P3 at its start)
+- [ ] 1 Spike: LangGraph interrupt/resume + FalkorDBSaver, restart survival (VERIFIED.md)
+- [ ] 2a LLM port/router/fake/replay adapters + prompts + schemas + lexicon check (tests first)
+- [ ] 2b anthropic adapter + `make llm-contract` (fake in CI; key unset -> "not measured")
+- [ ] 3 Family graph repository + registry queries (REPLACED_BY, TermRef)
+- [ ] 4a Term resolution (Q0) + intake/safety/reasoner/gatekeeper/planner nodes
+- [ ] 4b doctor_pack/doc_reader/referral/exporter (Phenopacket v2 schema validation)/watcher/urgent + LangGraph wiring
+- [ ] 5 API routes, bearer tokens (hashed), clinician codes, rate limits, parent-key test per route
+- [ ] 6 Doctor pack data, doc reader + PDF fixture, advance-6-months, scheduler, DELETE family
+- [ ] 7 Live-inspector query log + /debug/queries
+- [ ] 8 MCP server (4 tools) + list-and-call test
+- [ ] 9 Journey tests (fake + off), resume-after-restart, injection letter
+- [ ] 10 Demo recording + `make demo-replay`
 
 ## Needs from human
 Blocking: none right now.
@@ -38,7 +49,7 @@ Non-blocking (do when convenient):
 ## Notes for next session (≤ 10 lines)
 cut: 4
 - P2 review: no blockers; fixed inline Cypher (negatives.py) + bounded Q2c/Q2e. Open minor: confirm test-int/eval round latency with 15+ findings in P3; parent-view string-value check in P3.
-- phase_start: P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a · P3 = P2-done tag (review files REVIEWED and committed there).
+- phase_start: P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a · P3 230f8bd (= P2-done tag) (review files REVIEWED and committed there).
 - negatives.curated.yaml: AI-drafted; IDs machine-checked vs HPO 2026-09-01 (all valid, none obsolete); 6 corrections accepted by Manoj 2026-10-15 (see task 13).
 - Local env: `colima start --cpu 2 --memory 4` before `make up`; node@22 via brew (Makefile adds PATH); TypeScript pinned 6.x; pnpm-workspace `allowBuilds` denies unrs-resolver; `ruff format` excludes docs/ and *.md.
 - Safety: always pass `age_months` to match() (unknown age makes `fever_under_3_months` fire on any "fever"); patterns lazy/bounded; negations cancel only overlapping spans (test_safety_adversarial.py).
