@@ -107,18 +107,19 @@ def load_resolved(path: Path = RESOLVED_PATH) -> list[ResolvedNegative]:
 
 
 def main() -> None:
-    from app.graph.client import connect
+    from app.graph.client import connect, rows
+    from app.kb.info import load_kb_info
     from app.kb.resolve import TermResolver
     from app.llm.adapters.embedding import get_embedder
 
-    graph = connect().select_graph("kb_20260901")
+    info = load_kb_info()
+    if info is None:
+        raise SystemExit("no kb built; run `make kb` first")
+    graph = connect().select_graph(info.release)
     embedder = get_embedder("bge", ROOT / "data" / "derived" / "embeddings.bge.bin")
     curated = load_curated()
     ids = sorted({t for sect in curated.values() for t in sect.values() if t})
-    res: Any = graph.ro_query(
-        "MATCH (t:Term) WHERE t.id IN $ids RETURN t.id, t.name", {"ids": ids}, timeout=3000
-    )
-    names = {str(r[0]): str(r[1]) for r in res.result_set}
+    names = {str(r["id"]): str(r["name"]) for r in rows(graph, "q2h_term_names", {"ids": ids})}
     missing = [t for t in ids if t not in names]
     if missing:
         raise SystemExit(f"curated terms missing from kb: {missing}")
