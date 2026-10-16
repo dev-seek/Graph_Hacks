@@ -18,6 +18,8 @@ step "pytest (unit)"  uv run pytest -q
 if [ -f web/package.json ]; then
   step "web lint"       pnpm --dir web lint
   step "web typecheck"  pnpm --dir web typecheck
+  step "web api types"  pnpm --dir web check:types-sync
+  step "web unit tests" pnpm --dir web test
 fi
 if [ $fail -ne 0 ]; then
   echo "check FAILED. Last log lines:"; tail -n 15 "$log"; exit 1

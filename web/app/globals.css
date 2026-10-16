@@ -78,13 +78,15 @@ h3 {
   }
 }
 
-a {
-  color: var(--night);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.on-night a {
-  color: var(--card);
+@layer base {
+  a {
+    color: var(--night);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .on-night a {
+    color: var(--card);
+  }
 }
 .skip-link {
   position: absolute;

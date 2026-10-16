@@ -26,7 +26,7 @@ export function Constellation({ data }: { data: Data }) {
         aria-label={
           n === 0
             ? "Your constellation is empty so far. Each thing you confirm becomes a star."
-            : `Your constellation: ${n} ${n === 1 ? "star" : "stars"}, one for each thing you have confirmed.`
+            : `Your constellation: ${n} ${n === 1 ? "star" : "stars"}, one for each thing you've confirmed.`
         }
         className="w-full rounded-2xl bg-night"
       >

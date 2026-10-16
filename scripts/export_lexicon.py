@@ -11,7 +11,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 
@@ -25,6 +25,8 @@ MIN_LEN = int(os.environ.get("LEXICON_MIN_LEN", "8"))
 
 def build() -> list[str]:
     info = load_kb_info()
+    if info is None:
+        raise SystemExit("no knowledge base built: run `make kb`")
     g = connect().select_graph(info.release)
     names = {str(r["name"]).strip() for r in rows(g, "q_all_disease_names", {}) if r["name"]}
     return sorted(n for n in names if len(n) >= MIN_LEN)
@@ -38,10 +40,10 @@ def parent_strings(doc: dict[str, Any]) -> list[str]:
         if isinstance(x, str):
             out.append(x)
         elif isinstance(x, list):
-            for i in x:
+            for i in cast("list[Any]", x):
                 walk(i)
         elif isinstance(x, dict):
-            for k, v in x.items():
+            for k, v in cast("dict[str, Any]", x).items():
                 if k not in {"queries", "gate", "clinician", "phenopacket", "params", "cypher"}:
                     walk(v)
 

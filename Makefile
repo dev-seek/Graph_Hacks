@@ -62,4 +62,4 @@ web:
 	pnpm --dir web dev
 
 e2e:
-	$(call NYI,e2e,P4)
+	@$(RUN) e2e pnpm --dir web e2e

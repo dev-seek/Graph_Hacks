@@ -15,16 +15,16 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Current tasks
 - [x] 1. Web tooling: pinned deps (openapi-typescript, vitest, RTL, playwright, axe, cytoscape, lucide, qrcode), /api rewrite, generated types + sync check, VERIFIED.md entries
-- [ ] 2. copy.ts (all §6.4/§6.5 strings) + shared layout shell, header with "How it works", disclaimer footer
+- [x] 2. copy.ts (all §6.4/§6.5 strings) + shared layout shell, header with "How it works", disclaimer footer
 - [x] 3. Lexicon probe: disease-name lexicon from FalkorDB vs recorded demo parent payloads; ADR if collisions (rule 1)
-- [ ] 4. Landing `/`, `/start` (consent-lite, example story), `/help`, `/about`
-- [ ] 5. Journey: `/j/[id]` home, token handling, confirm, round/[n] (aria-live), constellation SVG
-- [ ] 6. Doctor step, timeline, printable `/j/[id]/pack` (A4+Letter overlap, QR with fragment code)
-- [ ] 7. `/clinician/[id]` (§6.5 disclaimer verbatim, candidates, paths, checks, referral, Phenopacket download)
-- [ ] 8. `/demo` step-through + judge panel (Cypher/rows/ms/gate, cytoscape from recorded data only)
-- [ ] 9. Guided tours (parent/clinician/centre), `/centre` honest empty state
-- [ ] 10. Banned-word + disease-name unit test over parent strings and demo payloads
-- [ ] 11. Vitest components; Playwright journeys, keyboard, 360px, axe; `make e2e`
+- [x] 4. Landing `/`, `/start` (consent-lite, example story), `/help`, `/about`
+- [x] 5. Journey: `/j/[id]` home, token handling, confirm, round/[n] (aria-live), constellation SVG
+- [x] 6. Doctor step, timeline, printable `/j/[id]/pack` (A4+Letter overlap, QR with fragment code)
+- [x] 7. `/clinician/[id]` (§6.5 disclaimer verbatim, candidates, paths, checks, referral, Phenopacket download)
+- [x] 8. `/demo` step-through + judge panel (Cypher/rows/ms/gate, cytoscape from recorded data only)
+- [x] 9. Guided tours (parent/clinician/centre), `/centre` honest empty state
+- [x] 10. Banned-word + disease-name unit test over parent strings and demo payloads
+- [x] 11. Vitest components; Playwright journeys, keyboard, 360px, axe; `make e2e`
 - [ ] 12. copy-a11y-reviewer pass; fix question wording/captions in backend; re-record demos
 - [ ] 13. Lighthouse >=95, screenshots 360/1280 into docs/explain/P4-screens/, gate, explain doc, AI_USAGE
 
@@ -52,6 +52,7 @@ Non-blocking (do when convenient):
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
+- P4: no-key (LLM_MODE=off) story reader only splits clauses and often resolves junk, so free narratives end at "watching" with no rounds; example story on /start is a short phrase list that works without a key. With a key (extract_story by Claude) free text should work: unmeasured. Demo Kabir questions read "Have you noticed Farsightedness…" and pack checks repeat one generic line: fix in backend wording (task 12). e2e: `make e2e` starts its own API (:8010, LLM_MODE=off) + prod web (:3100); needs `make up` for FalkorDB. Fixed: unquoted `off` in config/llm.yaml loaded as False.
 - P3 handoff: demos recorded with LLM_MODE=off (no key); re-record with `LLM_MODE=record make demo-record` after `make llm-contract` once a key exists. Question copy is rules-only P1 text ("Have you noticed X in your child?"): copy-a11y-reviewer in P4. Parent-askable filter = ADR-0011 (held-out eval not re-run).
 - Fragile: AgentState keeps only plain dicts; the single `await_event` node must stay interrupt-only; family writes must stay MERGE on stable ids. MCP http transport has no auth: run it on localhost only (document in README, P6). Behind a proxy set CREATE_LIMIT_PER_HOUR. Daily watcher: WATCHER_INTERVAL_S (off by default). Two real KB versions + centre graph still to do (P5).
 cut: 4

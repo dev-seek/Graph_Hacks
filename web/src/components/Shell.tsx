@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { PARENT_DISCLAIMER } from "@/copy";
+import { HpoStatement, OrphaCitation, useVersions } from "./Attribution";
 
 export function Header() {
   const path = usePathname() ?? "/";
@@ -44,12 +45,18 @@ export function Header() {
 }
 
 export function Footer() {
+  const v = useVersions();
   return (
     <footer className="no-print mt-12 border-t border-line bg-card">
       <div className="mx-auto max-w-4xl space-y-3 px-4 py-6 text-sm text-muted">
         <p>{PARENT_DISCLAIMER}</p>
         <p>
-          Built on the Human Phenotype Ontology, Orphanet and the GA4GH Phenopacket Store.{" "}
+          <HpoStatement version={v.hpo} />
+        </p>
+        <p>
+          <OrphaCitation version={v.orpha} /> Prevalence classes were converted to approximate numeric priors.
+        </p>
+        <p>
           <Link href="/about">Sources, limits and AI use</Link>
         </p>
       </div>
