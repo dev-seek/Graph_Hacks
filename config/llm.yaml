@@ -1,4 +1,4 @@
-mode: ${LLM_MODE:-replay}            # off | fake | replay | record | live
+mode: "${LLM_MODE:-replay}"          # off | fake | replay | record | live
 profiles:
   fast:          {model: claude-haiku-4-5,  max_output_tokens: 1200}
   fast_advised:  {model: claude-haiku-4-5,  max_output_tokens: 1500,
