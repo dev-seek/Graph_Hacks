@@ -14,7 +14,8 @@
     "gen:types": "openapi-typescript src/api/openapi.json -o src/api/schema.d.ts",
     "check:types-sync": "openapi-typescript src/api/openapi.json -o /tmp/schema.check.d.ts >/dev/null && diff -q src/api/schema.d.ts /tmp/schema.check.d.ts",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "cytoscape": "3.34.3",
@@ -40,6 +41,7 @@
     "eslint": "10.12.0",
     "eslint-config-next": "16.4.0",
     "jsdom": "30.1.2",
+    "lighthouse": "13.5.0",
     "openapi-typescript": "7.13.0",
     "postcss": "8.5.30",
     "tailwindcss": "4.3.3",
