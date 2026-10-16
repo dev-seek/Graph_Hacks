@@ -36,7 +36,8 @@ export default function Demo() {
         )}
       </Loaded>
       <p className="text-muted">
-        Judges: add <code>?judge=1</code> to a journey to see the live FalkorDB inspector beside it.
+        Want to see how it works underneath? Open a family, then choose &ldquo;Show the FalkorDB
+        inspector&rdquo;.
       </p>
     </div>
   );

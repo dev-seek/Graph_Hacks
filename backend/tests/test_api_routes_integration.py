@@ -105,10 +105,11 @@ def test_http_journey_is_parent_safe_and_clinician_sees_candidates(client: TestC
 
     blob = json.dumps(seen).lower()
     assert forbidden_keys(seen) == []
-    names = [
+    signs = {str(r["name"]).lower() for r in rows(svc.deps.kb, "q_all_term_names", {})}
+    names = [  # a disease named exactly like an HPO sign is a sign (ADR-0012)
         str(r["name"]).lower()
         for r in rows(svc.deps.kb, "q_all_disease_names", {})
-        if len(str(r["name"])) >= 10
+        if len(str(r["name"])) >= 10 and str(r["name"]).lower() not in signs
     ]
     leaked = [n for n in names if n in blob]
     assert not leaked, leaked[:5]

@@ -17,6 +17,7 @@ export default function Home() {
             {HERO.secondary}
           </ButtonLink>
         </div>
+        <p className="mt-3 text-sm">The example families are made up. No real child&apos;s details are used.</p>
       </section>
 
       <section aria-labelledby="how" className="mt-10">

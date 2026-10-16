@@ -6,7 +6,7 @@ import { Suspense, use, useState } from "react";
 import { ClinicianBody } from "@/components/ClinicianBody";
 import { Inspector } from "@/components/Inspector";
 import { Loaded, useLoad } from "@/components/Journey";
-import { Button, Card, Notice } from "@/components/ui";
+import { Button, ButtonLink, Card, Notice } from "@/components/ui";
 import type { DemoStep } from "@/lib/api";
 import { engineView, parentView } from "@/lib/demo";
 import { DEMO_BANNER, NO_ESCALATION, PARENT_DISCLAIMER, URGENT } from "@/copy";
@@ -24,9 +24,9 @@ function StepBody({ step }: { step: DemoStep }) {
       ) : null}
       {v.items.length > 0 ? (
         <Card aria-labelledby="d-items">
-          <h3 id="d-items" className="text-lg">
+          <h2 id="d-items" className="text-lg">
             What we picked up
-          </h3>
+          </h2>
           <ul className="mt-2 space-y-2">
             {v.items.map((i) => (
               <li key={i.id}>
@@ -39,9 +39,9 @@ function StepBody({ step }: { step: DemoStep }) {
       ) : null}
       {v.questions.length > 0 ? (
         <Card aria-labelledby="d-q">
-          <h3 id="d-q" className="text-lg">
+          <h2 id="d-q" className="text-lg">
             Round {v.roundNo}
-          </h3>
+          </h2>
           <ol className="mt-2 list-decimal space-y-3 pl-5">
             {v.questions.map((q) => (
               <li key={q.qid}>
@@ -54,9 +54,9 @@ function StepBody({ step }: { step: DemoStep }) {
       ) : null}
       {v.answers.length > 0 ? (
         <Card aria-labelledby="d-a">
-          <h3 id="d-a" className="text-lg">
+          <h2 id="d-a" className="text-lg">
             Their answers
-          </h3>
+          </h2>
           <p className="mt-2">
             {v.answers.filter((a) => a.value === "yes").length} yes ·{" "}
             {v.answers.filter((a) => a.value === "no").length} no ·{" "}
@@ -66,9 +66,9 @@ function StepBody({ step }: { step: DemoStep }) {
       ) : null}
       {v.pack ? (
         <Card aria-labelledby="d-p">
-          <h3 id="d-p" className="text-lg">
+          <h2 id="d-p" className="text-lg">
             The one-page summary
-          </h3>
+          </h2>
           <p className="mt-2">{v.pack.summary}</p>
         </Card>
       ) : null}
@@ -115,9 +115,9 @@ function Player({ journey }: { journey: string }) {
             </div>
             <div className={judge ? "grid gap-6 lg:grid-cols-2" : ""}>
               <div className="space-y-4">
-                <h1 className="text-2xl" aria-live="polite">
-                  {step.caption}
-                </h1>
+                <div aria-live="polite">
+                  <h1 className="text-2xl">{step.caption}</h1>
+                </div>
                 <StepBody step={step} />
                 {e.clinician ? (
                   <section aria-labelledby="demo-clin" className="rounded-2xl border-2 border-night p-4" data-view="clinician">
@@ -134,6 +134,11 @@ function Player({ journey }: { journey: string }) {
                   <Button onClick={() => setI(Math.min(steps.length - 1, i + 1))} disabled={i >= steps.length - 1}>
                     Next
                   </Button>
+                  {i >= steps.length - 1 ? (
+                    <ButtonLink href="/start" tone="secondary">
+                      Start with your own story
+                    </ButtonLink>
+                  ) : null}
                 </div>
                 <p className="text-sm text-muted">{PARENT_DISCLAIMER}</p>
               </div>

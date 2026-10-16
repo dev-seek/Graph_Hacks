@@ -10,7 +10,6 @@ const norm = (s: string) => s.replace(/[“”]/g, '"').replace(/[‘’]/g, "'"
 describe("mandatory and key copy match spec §6.4–6.5 verbatim", () => {
   const verbatim: [string, string][] = [
     ["hero h1", copy.HERO.h1],
-    ["hero sub", copy.HERO.sub],
     ["primary CTA", copy.HERO.primary],
     ["secondary CTA", copy.HERO.secondary],
     ["trust strip", copy.TRUST_STRIP],

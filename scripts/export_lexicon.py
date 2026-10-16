@@ -29,7 +29,10 @@ def build() -> list[str]:
         raise SystemExit("no knowledge base built: run `make kb`")
     g = connect().select_graph(info.release)
     names = {str(r["name"]).strip() for r in rows(g, "q_all_disease_names", {}) if r["name"]}
-    return sorted(n for n in names if len(n) >= MIN_LEN)
+    # A disease named exactly like an HPO sign ("Cleft palate") is a sign when it appears in a
+    # parent's words: those names are not forbidden (ADR-0012). Every other disease name is.
+    signs = {str(r["name"]).strip().lower() for r in rows(g, "q_all_term_names", {}) if r["name"]}
+    return sorted(n for n in names if len(n) >= MIN_LEN and n.lower() not in signs)
 
 
 def parent_strings(doc: dict[str, Any]) -> list[str]:

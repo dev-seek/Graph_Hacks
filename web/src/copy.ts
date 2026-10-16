@@ -3,7 +3,8 @@
 
 export const HERO = {
   h1: "Connect the dots no single appointment can see.",
-  sub: "When your child's health worries don't add up, Constellation helps you gather the details that matter, know when to see a doctor, and bring a clear summary so they can see the whole picture.",
+  // Shortened from spec §6.4 by the copy reviewer (one 34-word sentence was over the 20-word rule).
+  sub: "When your child's health worries don't add up, we help you gather the details that matter. We tell you when to see a doctor. You bring a clear summary, so the doctor can see the whole picture.",
   primary: "Start with your story",
   secondary: "See an example family (2 min)",
 };

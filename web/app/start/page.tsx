@@ -90,7 +90,7 @@ export default function Start() {
           <label htmlFor={ids.years} className="block font-bold">
             How old is your child, in years?
           </label>
-          <p className="text-sm text-muted">
+          <p id={`${ids.years}-hint`} className="text-sm text-muted">
             A rough age is fine. For a baby, use 0.5 for six months.
           </p>
           <input
@@ -100,7 +100,13 @@ export default function Start() {
             onChange={(e) => setYears(e.target.value)}
             className="mt-1 min-h-11 w-32 rounded-lg border-2 border-border bg-card px-3"
             required
+            aria-describedby={`${ids.years}-hint`}
           />
+          {years && !ageOk ? (
+            <p role="alert" className="text-sm text-urgent">
+              Please enter an age from 0 to 20.
+            </p>
+          ) : null}
         </div>
         <div>
           <label htmlFor={ids.story} className="block font-bold">
@@ -147,6 +153,11 @@ export default function Start() {
             Use an example story
           </Button>
         </div>
+        {!ageOk || !text.trim() ? (
+          <p className="text-sm text-muted">
+            Add your child&apos;s age and a few words about what you&apos;ve noticed to go on.
+          </p>
+        ) : null}
       </form>
     </div>
   );

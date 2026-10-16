@@ -156,6 +156,7 @@ def kabir_script(svc: FamilyService, dc: DevCase) -> JourneyScript:
     sim = make_sim(dc, svc.deps.reasoner)
     known = [f.term_id for f in dc.case.present] + [f.term_id for f in dc.case.excluded]
     return JourneyScript(
+        name="Kabir",
         story=st.story,
         age_months=st.age_months,
         sex="male",
@@ -176,6 +177,7 @@ def arjun_script(svc: FamilyService) -> tuple[JourneyScript, str]:
     sim = SimParent([SimFeature(t) for t in present], excluded, anc, no_rate=0.1, seed=7)
     return (
         JourneyScript(
+            name="Arjun",
             story=st.story,
             age_months=st.age_months,
             sex="male",
@@ -189,7 +191,7 @@ def arjun_script(svc: FamilyService) -> tuple[JourneyScript, str]:
 
 def maya_script() -> JourneyScript:
     st = load_stories()["Maya"]
-    return JourneyScript(story=st.story, age_months=st.age_months, sex="female")
+    return JourneyScript(name="Maya", story=st.story, age_months=st.age_months, sex="female")
 
 
 def _record(

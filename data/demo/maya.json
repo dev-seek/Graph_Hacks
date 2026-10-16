@@ -8,55 +8,55 @@
  "llm_mode": "off",
  "steps": [
   {
-   "caption": "The parent tells their story.",
+   "caption": "Here Maya's parent describes what they have noticed, in their own words.",
    "n": 1,
    "payload": {
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.36,
+      "ms": 0.34,
       "name": "f_get_family",
       "params": {
-       "id": "6103084703dc47b8"
+       "id": "0b8cdff477d24756"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.34,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "6103084703dc47b8"
+       "id": "0b8cdff477d24756"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nSET c.age_months_at_start = $age, c.sex = coalesce($sex, c.sex)\nRETURN c.age_months_at_start AS age",
-      "ms": 0.42,
+      "ms": 0.58,
       "name": "f_set_age",
       "params": {
        "age": 20,
-       "id": "6103084703dc47b8",
+       "id": "0b8cdff477d24756",
        "sex": "female"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (s:Story {text_hash: $hash})\nON CREATE SET s.at = $at\nRETURN s.text_hash AS hash",
-      "ms": 0.46,
+      "ms": 0.29,
       "name": "f_add_story",
       "params": {
-       "at": "2026-10-16T02:18:38.283+00:00",
+       "at": "2026-10-16T02:52:48.826+00:00",
        "hash": "156e068c52b2181115cb9b16635d12b557e852150a00eb0205cf47eed3e115cc"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (f:Flag {rule_id: $rule_id, quote_hash: $qhash})\nON CREATE SET f.level = $level, f.at = $at, f.quote = $quote\nRETURN f.rule_id AS rule_id",
-      "ms": 0.41,
+      "ms": 0.37,
       "name": "f_add_flag",
       "params": {
-       "at": "2026-10-16T02:18:38.286+00:00",
+       "at": "2026-10-16T02:52:48.828+00:00",
        "level": "EMERGENCY",
        "qhash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
        "quote": "<redacted>",
@@ -66,10 +66,10 @@
      },
      {
       "cypher": "MERGE (f:Flag {rule_id: $rule_id, quote_hash: $qhash})\nON CREATE SET f.level = $level, f.at = $at, f.quote = $quote\nRETURN f.rule_id AS rule_id",
-      "ms": 0.36,
+      "ms": 0.35,
       "name": "f_add_flag",
       "params": {
-       "at": "2026-10-16T02:18:38.286+00:00",
+       "at": "2026-10-16T02:52:48.829+00:00",
        "level": "EMERGENCY",
        "qhash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
        "quote": "<redacted>",
@@ -79,10 +79,10 @@
      },
      {
       "cypher": "MERGE (e:Event {id: $id})\nON CREATE SET e.kind = $kind, e.label = $label, e.at = $at\nRETURN e.id AS id",
-      "ms": 0.35,
+      "ms": 0.33,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-16T02:18:38.287+00:00",
+       "at": "2026-10-16T02:52:48.829+00:00",
        "id": "story_156e068c52b2",
        "kind": "story",
        "label": "<redacted>"
@@ -91,10 +91,10 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.31,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "6103084703dc47b8"
+       "id": "0b8cdff477d24756"
       },
       "rows": 1
      },
@@ -103,8 +103,8 @@
       "ms": 0.32,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-16T02:18:38.287+00:00",
-       "id": "6103084703dc47b8",
+       "at": "2026-10-16T02:52:48.830+00:00",
+       "id": "0b8cdff477d24756",
        "phase": "urgent",
        "round_no": 0
       },
@@ -138,7 +138,7 @@
    "screen": "story"
   },
   {
-   "caption": "A safety rule fires first; nothing else happens.",
+   "caption": "A safety rule reads the story first and stops everything else: this needs help now.",
    "n": 2,
    "payload": {
     "banner": "This needs urgent medical help. Call your local emergency number now (112 in India and Europe, 911 in the US) or go to the nearest emergency department. Your answers are saved \u2014 come back when your child is safe.",
@@ -151,19 +151,19 @@
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.35,
+      "ms": 0.32,
       "name": "f_get_family",
       "params": {
-       "id": "6103084703dc47b8"
+       "id": "0b8cdff477d24756"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.32,
+      "ms": 0.3,
       "name": "f_get_state",
       "params": {
-       "id": "6103084703dc47b8"
+       "id": "0b8cdff477d24756"
       },
       "rows": 1
      },

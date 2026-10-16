@@ -4,7 +4,7 @@ import QRCode from "qrcode";
 import { use, useEffect, useState } from "react";
 import { Printer } from "lucide-react";
 import { Loaded, WithToken, useLoad } from "@/components/Journey";
-import { Button } from "@/components/ui";
+import { Button, ButtonLink } from "@/components/ui";
 import { fam, type Pack } from "@/lib/api";
 import { useMounted } from "@/lib/hooks";
 import { PARENT_DISCLAIMER } from "@/copy";
@@ -127,6 +127,11 @@ function PackPage({ id, token }: { id: string; token: string }) {
       <Loaded load={load} what="your doctor pack">
         {(p) => <Sheet id={id} pack={p} />}
       </Loaded>
+      <div className="no-print">
+        <ButtonLink href={`/j/${id}/doctor`} tone="secondary">
+          Back to your doctor step
+        </ButtonLink>
+      </div>
     </div>
   );
 }

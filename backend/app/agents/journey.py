@@ -24,6 +24,7 @@ MAX_ROUNDS = 6
 class JourneyScript:
     story: str
     age_months: int
+    name: str = "The child"
     sex: str | None = None
     accept: Callable[[list[ParentExtractedFinding], dict[str, str]], list[str]] = (
         lambda items, terms: [i.id for i in items]
@@ -97,20 +98,42 @@ def run_journey(svc: FamilyService, script: JourneyScript, *, demo: bool = True)
 def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str) -> JourneyResult:
     repo = svc.deps.repo(fid)
     ex = svc.submit_story(fid, script.story, script.age_months, script.sex)
-    _step(res, "story", "The parent tells their story.", {"safety": ex.safety.model_dump()})
+    _step(
+        res,
+        "story",
+        f"Here {script.name}'s parent describes what they have noticed, in their own words.",
+        {"safety": ex.safety.model_dump()},
+    )
     if ex.safety.level == "EMERGENCY":
         st = svc.state(fid)
-        _step(res, "urgent", "A safety rule fires first; nothing else happens.", st.model_dump())
+        _step(
+            res,
+            "urgent",
+            "A safety rule reads the story first and stops everything else: this needs help now.",
+            st.model_dump(),
+        )
         res.final_phase = st.phase
         return res
-    _step(res, "confirm", "They check what we picked up.", ex.model_dump())
+    _step(
+        res,
+        "confirm",
+        "Before anything is used, the parent checks what we understood. "
+        "Nothing counts until they agree.",
+        ex.model_dump(),
+    )
     accepted = script.accept(ex.extraction_to_confirm, _pending_terms(svc, fid))
     rejected = [i.id for i in ex.extraction_to_confirm if i.id not in accepted]
     st = svc.confirm(fid, accepted, rejected, [])
     while st.phase == "questions" and res.rounds < script.max_rounds:
         rnd = svc.round(fid)
         res.rounds += 1
-        _step(res, "round", f"A few short questions (round {rnd.round_no}).", rnd.model_dump())
+        _step(
+            res,
+            "round",
+            f"Round {rnd.round_no}: a few short questions, chosen because they best "
+            "tell the remaining possibilities apart.",
+            rnd.model_dump(),
+        )
         terms = {r["qid"]: r["term_id"] for r in repo.round(rnd.round_no)}
         answers = [
             {"qid": q.qid, "value": script.answer(terms[q.qid], q.text)} for q in rnd.questions
@@ -120,7 +143,8 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         _step(
             res,
             "answers",
-            "They answer; the next step follows.",
+            f"{script.name}'s parent answers yes, no or not sure. "
+            "Each answer changes what is asked next.",
             {"answers": answers, "next": st.model_dump()},
         )
         if out["safety"].level == "EMERGENCY":
@@ -129,19 +153,25 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         _step(
             res,
             "see_doctor",
-            "It is a good time to see a doctor.",
+            "Enough has come together to say it is a good time to see a doctor, "
+            "with a one-page summary to bring.",
             {"pack": svc.pack(fid).model_dump(), "state": st.model_dump()},
         )
         letter = script.letter(svc, fid)
         if letter:
             doc = svc.add_document(fid, "text", letter, None)
-            _step(res, "letter", "They add the doctor's letter and confirm it.", doc.model_dump())
+            _step(
+                res,
+                "letter",
+                "After the visit, the parent adds the doctor's letter and checks what we read.",
+                doc.model_dump(),
+            )
             ids = script.accept(doc.extraction_to_confirm, _pending_terms(svc, fid))
             st = svc.confirm(fid, ids, [], [])
             _step(
                 res,
                 "after_letter",
-                "The doctor's findings join the picture.",
+                "The doctor's findings join the picture and the decision is made again.",
                 st.model_dump(),
                 repo,
             )
@@ -159,7 +189,8 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         _step(
             res,
             "watch",
-            f"{script.advance_months} months later the picture is refreshed.",
+            f"{script.advance_months} months later the check-in runs again "
+            "and the picture is refreshed.",
             st.model_dump(),
         )
     final = svc.state(fid)
@@ -168,7 +199,8 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         _step(
             res,
             "referral_ready",
-            "Notes for a specialist are ready.",
+            "The pattern now fits strongly enough that notes and a file "
+            "for a specialist are ready.",
             {
                 "state": final.model_dump(),
                 "clinician": svc.clinician(fid).model_dump(),
@@ -180,7 +212,8 @@ def _run(svc: FamilyService, script: JourneyScript, res: JourneyResult, fid: str
         _step(
             res,
             "no_escalation",
-            "Nothing needs a special appointment right now.",
+            f"For {script.name}, nothing needs a special appointment right now: "
+            "watch, and mention it at a routine visit.",
             final.model_dump(),
         )
     return res

@@ -59,7 +59,7 @@ function Upload({ id, token }: { id: string; token: string }) {
           Use this text
         </Button>
         <label className="font-bold">
-          <span className="sr-only">Upload a PDF letter</span>
+          <span className="block">Or upload a PDF letter</span>
           <input
             ref={file}
             type="file"

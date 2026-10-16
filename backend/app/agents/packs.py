@@ -10,6 +10,7 @@ from google.protobuf import json_format
 from phenopackets import Phenopacket
 
 from app.agents.deps import AgentDeps
+from app.agents.phrasing import lower_first
 from app.agents.reasoning import DOCTOR_SOURCES, Reasoning
 from app.api.schemas import ParentFindingView, ParentPack
 from app.graph.client import rows
@@ -53,11 +54,13 @@ def doctor_pack(deps: AgentDeps, repo: FamilyRepo, rs: Reasoning, code: str) -> 
     exams = sorted((q for q in rs.plan.pool if q.obs == "exam"), key=lambda q: (-q.ig, q.term))
     tests = rs.plan.suggested_tests
     copy = _lay_texts(deps, [q.term for q in exams[:MAX_CHECKS]] + [q.term for q in tests])
-    checks = [
-        str(copy[q.term]["how"] or copy[q.term]["question"] or q.text)
-        for q in exams[:MAX_CHECKS]
-        if q.term in copy
-    ]
+    checks = list(
+        dict.fromkeys(
+            f"Whether a doctor can look for: {lower_first(str(copy[q.term]['plain'] or q.text))}"
+            for q in exams[:MAX_CHECKS]
+            if q.term in copy
+        )
+    )
     asks = [
         f"Would a check for “{copy[q.term]['plain'] or q.text}” be useful?"
         for q in tests[:MAX_QUESTIONS]

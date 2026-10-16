@@ -8,55 +8,55 @@
  "llm_mode": "off",
  "steps": [
   {
-   "caption": "The parent tells their story.",
+   "caption": "Here Arjun's parent describes what they have noticed, in their own words.",
    "n": 1,
    "payload": {
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.38,
+      "ms": 0.34,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nSET c.age_months_at_start = $age, c.sex = coalesce($sex, c.sex)\nRETURN c.age_months_at_start AS age",
-      "ms": 0.42,
+      "ms": 0.27,
       "name": "f_set_age",
       "params": {
        "age": 30,
-       "id": "ff476071c1c04d4a",
+       "id": "ed11c7be04704de3",
        "sex": "male"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (s:Story {text_hash: $hash})\nON CREATE SET s.at = $at\nRETURN s.text_hash AS hash",
-      "ms": 0.3,
+      "ms": 0.34,
       "name": "f_add_story",
       "params": {
-       "at": "2026-10-16T02:18:37.889+00:00",
+       "at": "2026-10-16T02:52:48.430+00:00",
        "hash": "7b33ea51825c41cfb38d1e46dd8dca5e3df54ab3361289a73f6f187871a88b9d"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (e:Event {id: $id})\nON CREATE SET e.kind = $kind, e.label = $label, e.at = $at\nRETURN e.id AS id",
-      "ms": 0.38,
+      "ms": 0.4,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-16T02:18:37.891+00:00",
+       "at": "2026-10-16T02:52:48.432+00:00",
        "id": "story_7b33ea51825c",
        "kind": "story",
        "label": "<redacted>"
@@ -65,169 +65,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.33,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.31,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.39,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.6,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.35,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.31,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.38,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.48,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.25,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.3,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.54,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.32,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.32,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 2
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.52,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.3,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.29,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.32,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 2
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.52,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.31,
+      "ms": 0.34,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -254,7 +92,7 @@
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.55,
+      "ms": 0.69,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
@@ -263,7 +101,97 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.3,
+      "ms": 0.31,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.33,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.4,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.61,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.32,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.31,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.64,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.33,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.31,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 2
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.56,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.31,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -286,11 +214,11 @@
       "params": {
        "q": "<redacted>"
       },
-      "rows": 3
+      "rows": 2
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.51,
+      "ms": 0.6,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
@@ -299,7 +227,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.31,
+      "ms": 0.32,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -308,7 +236,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.29,
+      "ms": 0.3,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -317,12 +245,48 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.34,
+      "ms": 0.37,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
       },
       "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.57,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.3,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.3,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.33,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 3
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
@@ -335,15 +299,6 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.3,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
       "ms": 0.29,
       "name": "q0_fulltext",
       "params": {
@@ -353,7 +308,52 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.32,
+      "ms": 0.3,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.38,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.58,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.28,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.25,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.31,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -362,7 +362,7 @@
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.48,
+      "ms": 0.55,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
@@ -371,7 +371,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.29,
+      "ms": 0.26,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -380,7 +380,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.27,
+      "ms": 0.28,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -389,7 +389,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.41,
+      "ms": 0.45,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -398,12 +398,30 @@
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.52,
+      "ms": 0.61,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
       },
       "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.3,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.28,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
@@ -412,29 +430,11 @@
       "params": {
        "q": "<redacted>"
       },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.29,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.36,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
       "rows": 10
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.5,
+      "ms": 0.56,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
@@ -452,7 +452,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.31,
+      "ms": 0.28,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -461,7 +461,7 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.39,
+      "ms": 0.42,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -470,7 +470,7 @@
      },
      {
       "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.51,
+      "ms": 0.53,
       "name": "q0_vector",
       "params": {
        "vec": "<redacted>"
@@ -480,42 +480,6 @@
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
       "ms": 0.31,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.29,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 0
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.41,
-      "name": "q0_fulltext",
-      "params": {
-       "q": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
-      "ms": 0.49,
-      "name": "q0_vector",
-      "params": {
-       "vec": "<redacted>"
-      },
-      "rows": 10
-     },
-     {
-      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.3,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -533,7 +497,43 @@
      },
      {
       "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
-      "ms": 0.36,
+      "ms": 0.43,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.vector.queryNodes('Term', 'embedding', 10, vecf32($vec)) YIELD node, score\nRETURN node.id AS id, node.name AS name, score",
+      "ms": 0.53,
+      "name": "q0_vector",
+      "params": {
+       "vec": "<redacted>"
+      },
+      "rows": 10
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.33,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.3,
+      "name": "q0_fulltext",
+      "params": {
+       "q": "<redacted>"
+      },
+      "rows": 0
+     },
+     {
+      "cypher": "CALL db.idx.fulltext.queryNodes('Term', $q) YIELD node, score\nRETURN node.id AS id, node.name AS name, score ORDER BY score DESC LIMIT 10",
+      "ms": 0.38,
       "name": "q0_fulltext",
       "params": {
        "q": "<redacted>"
@@ -551,20 +551,20 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.32,
+      "ms": 0.3,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nSET f.phase = $phase, f.round_no = $round_no, f.updated_at = $at\nRETURN f.phase AS phase",
-      "ms": 0.34,
+      "ms": 0.33,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-16T02:18:37.913+00:00",
-       "id": "ff476071c1c04d4a",
+       "at": "2026-10-16T02:52:48.454+00:00",
+       "id": "ed11c7be04704de3",
        "phase": "confirm",
        "round_no": 0
       },
@@ -581,7 +581,7 @@
    "screen": "story"
   },
   {
-   "caption": "They check what we picked up.",
+   "caption": "Before anything is used, the parent checks what we understood. Nothing counts until they agree.",
    "n": 2,
    "payload": {
     "extraction_to_confirm": [
@@ -723,7 +723,7 @@
    "screen": "confirm"
   },
   {
-   "caption": "A few short questions (round 1).",
+   "caption": "Round 1: a few short questions, chosen because they best tell the remaining possibilities apart.",
    "n": 3,
    "payload": {
     "kind": "home",
@@ -733,22 +733,22 @@
       "ms": 0.35,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name",
-      "ms": 0.37,
+      "ms": 0.46,
       "name": "q2h_term_names",
       "params": {
        "ids": [
@@ -765,7 +765,7 @@
      },
      {
       "cypher": "MATCH (t:Term)-[:IS_A]->(p:Term)\nWHERE t.id IN $ids AND p.id IN $ids\nRETURN t.id AS child, p.id AS parent",
-      "ms": 0.31,
+      "ms": 0.33,
       "name": "q6_termref_edges",
       "params": {
        "ids": [
@@ -782,7 +782,7 @@
      },
      {
       "cypher": "UNWIND $terms AS t\nMERGE (n:TermRef {id: t.id})\nSET n.name = t.name\nRETURN count(n) AS n",
-      "ms": 0.34,
+      "ms": 0.35,
       "name": "f_upsert_termrefs",
       "params": {
        "terms": [
@@ -854,10 +854,10 @@
      },
      {
       "cypher": "MERGE (f:Finding {id: $id})\nON CREATE SET f.term_id = $term_id, f.plain_label = $label, f.status = $status,\n              f.source = $source, f.onset_months = $onset, f.recorded_at = $at, f.active = true\nMERGE (t:TermRef {id: $term_id})\nMERGE (f)-[:OBSERVED_AS]->(t)\nMERGE (e:Evidence {id: $ev_id})\nON CREATE SET e.kind = $ev_kind, e.quote = $quote, e.start = $start, e.end = $end, e.at = $at\nMERGE (f)-[:SUPPORTED_BY]->(e)\nRETURN f.id AS id",
-      "ms": 0.46,
+      "ms": 0.47,
       "name": "f_add_finding",
       "params": {
-       "at": "2026-10-16T02:18:37.921+00:00",
+       "at": "2026-10-16T02:52:48.463+00:00",
        "end": 87,
        "ev_id": "ev_fd_7b33ea51825c_s1",
        "ev_kind": "story",
@@ -874,7 +874,7 @@
      },
      {
       "cypher": "MATCH (e:Evidence {id: $ev_id})\nMATCH (s:Story {text_hash: $hash})\nMERGE (e)-[:IN_STORY]->(s)\nRETURN e.id AS id",
-      "ms": 0.37,
+      "ms": 0.36,
       "name": "f_link_evidence_story",
       "params": {
        "ev_id": "ev_fd_7b33ea51825c_s1",
@@ -884,10 +884,10 @@
      },
      {
       "cypher": "MERGE (e:Event {id: $id})\nON CREATE SET e.kind = $kind, e.label = $label, e.at = $at\nRETURN e.id AS id",
-      "ms": 0.35,
+      "ms": 0.33,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-16T02:18:37.922+00:00",
+       "at": "2026-10-16T02:52:48.463+00:00",
        "id": "conf_7b33ea51825c41cfb38d1e46dd8dca5e3df54ab3361289a73f6f187871a88b9d",
        "kind": "confirmed",
        "label": "<redacted>"
@@ -896,16 +896,16 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.48,
+      "ms": 0.36,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Finding)\nWHERE f.active = true OR $include_inactive\nOPTIONAL MATCH (f)-[:SUPPORTED_BY]->(e:Evidence)\nRETURN f.id AS id, f.term_id AS term_id, f.plain_label AS label, f.status AS status,\n       f.source AS source, f.onset_months AS onset, f.recorded_at AS at, f.active AS active,\n       e.quote AS quote, e.start AS start, e.end AS end\nORDER BY f.recorded_at, f.id",
-      "ms": 0.36,
+      "ms": 0.34,
       "name": "f_list_findings",
       "params": {
        "include_inactive": false
@@ -914,7 +914,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, d.prior AS prior, max(r.freq) AS F",
-      "ms": 0.95,
+      "ms": 0.93,
       "name": "q2a_exact_or_specific",
       "params": {
        "fid": "HP:0030051"
@@ -934,7 +934,7 @@
      },
      {
       "cypher": "UNWIND $present AS fid\nMATCH (f:Term {id: fid})-[:IS_A*0..20]->(a:Term)\nWITH DISTINCT fid, a\nMATCH (a)<-[r:LACKS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN DISTINCT fid AS finding, d.id AS disease, d.prior AS prior",
-      "ms": 0.41,
+      "ms": 0.42,
       "name": "q2c_not_present",
       "params": {
        "present": [
@@ -963,7 +963,7 @@
      },
      {
       "cypher": "MATCH (d:Disease)-[r:HAS_PHENOTYPE]->(t:Term)\nWHERE d.id IN $top AND ID(r) >= 0\nRETURN d.id AS disease, t.id AS term, r.freq AS freq",
-      "ms": 9.6,
+      "ms": 9.87,
       "name": "q3a_annotations",
       "params": {
        "top": [
@@ -1023,7 +1023,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $askable\nRETURN t.id AS id, t.cx_obs AS obs, t.cx_min_age_months AS min_age, t.cx_system AS system, t.cx_question AS question, t.bg AS bg, t.depth AS depth, t.cx_lay_text AS lay, t.cx_plain_label AS plain",
-      "ms": 31.09,
+      "ms": 31.04,
       "name": "q3b_askable",
       "params": {
        "askable": "<list of 2254>"
@@ -1032,14 +1032,14 @@
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.49,
+      "ms": 0.61,
       "name": "f_list_flags",
       "params": {},
       "rows": 0
      },
      {
       "cypher": "MATCH (r:Round {kind: $kind})\nRETURN count(r) AS n",
-      "ms": 0.33,
+      "ms": 0.36,
       "name": "f_round_count",
       "params": {
        "kind": "home"
@@ -1048,7 +1048,7 @@
      },
      {
       "cypher": "MATCH (d:Disease) WHERE d.id IN $ids\nRETURN d.id AS id, d.name AS name",
-      "ms": 0.38,
+      "ms": 0.43,
       "name": "q8_disease_names",
       "params": {
        "ids": [
@@ -1068,19 +1068,19 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.31,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (s:Snapshot {round: $round, at: $at})\nON CREATE SET s.kb_version = $kb, s.rare_mass = $rare_mass, s.n_findings = $n_findings\nRETURN s.round AS round",
-      "ms": 0.51,
+      "ms": 0.41,
       "name": "f_add_snapshot",
       "params": {
-       "at": "2026-10-16T02:18:37.995+00:00",
+       "at": "2026-10-16T02:52:48.537+00:00",
        "kb": "kb_20260901",
        "n_findings": 1,
        "rare_mass": 0.11844459441914967,
@@ -1090,10 +1090,10 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $at})\nUNWIND $cands AS c\nMERGE (d:DiseaseRef {id: c.id})\nSET d.name = c.name\nMERGE (s)-[r:CANDIDATE {rank: c.rank}]->(d)\nSET r.post = c.post\nRETURN count(c) AS n",
-      "ms": 0.54,
+      "ms": 0.52,
       "name": "f_add_candidates",
       "params": {
-       "at": "2026-10-16T02:18:37.995+00:00",
+       "at": "2026-10-16T02:52:48.537+00:00",
        "cands": [
         {
          "id": "ORPHA:117",
@@ -1162,40 +1162,40 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $snap_at})\nCREATE (g:Gate {id: $id, kind: $kind, at: $at, inputs_json: $inputs, rule: $rule})\nCREATE (g)-[:BASED_ON]->(s)\nRETURN g.id AS id",
-      "ms": 0.41,
+      "ms": 0.4,
       "name": "f_add_gate",
       "params": {
-       "at": "2026-10-16T02:18:37.996+00:00",
-       "id": "8d3582c215f64510acde1fc6c45639cd",
+       "at": "2026-10-16T02:52:48.538+00:00",
+       "id": "800fd424dd62426ea6fcd69de6c27988",
        "inputs": "{\"best_exam_test_ig\": 0.09223446305113503, \"best_home_ig\": 0.11191112961615368, \"emergency\": false, \"home_rounds_done\": 0, \"n_doctor_test_findings\": 0, \"rare_mass\": 0.11844459441914967, \"tau0\": 0.3, \"tau1\": 0.4, \"tau2\": 0.5, \"top10_rare_share\": 0.45604005300300465, \"urgent_soon\": false}",
        "kind": "CONTINUE",
        "round": 0,
        "rule": "no gate fired",
-       "snap_at": "2026-10-16T02:18:37.995+00:00"
+       "snap_at": "2026-10-16T02:52:48.537+00:00"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.36,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.24,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round)\nRETURN r.n AS n, r.kind AS kind\nORDER BY r.n DESC LIMIT 1",
-      "ms": 0.21,
+      "ms": 0.32,
       "name": "f_latest_round",
       "params": {},
       "rows": 0
@@ -1217,10 +1217,10 @@
      },
      {
       "cypher": "MERGE (r:Round {n: $n})\nON CREATE SET r.kind = $kind, r.asked_at = $at\nRETURN r.n AS n",
-      "ms": 0.38,
+      "ms": 0.41,
       "name": "f_add_round",
       "params": {
-       "at": "2026-10-16T02:18:37.999+00:00",
+       "at": "2026-10-16T02:52:48.541+00:00",
        "kind": "home",
        "n": 1
       },
@@ -1228,7 +1228,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.4,
+      "ms": 0.46,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -1264,7 +1264,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.37,
+      "ms": 0.36,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -1282,7 +1282,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.35,
+      "ms": 0.32,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -1300,7 +1300,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.36,
+      "ms": 0.3,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -1318,11 +1318,11 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nSET f.phase = $phase, f.round_no = $round_no, f.updated_at = $at\nRETURN f.phase AS phase",
-      "ms": 0.33,
+      "ms": 0.29,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-16T02:18:38.001+00:00",
-       "id": "ff476071c1c04d4a",
+       "at": "2026-10-16T02:52:48.543+00:00",
+       "id": "ed11c7be04704de3",
        "phase": "questions",
        "round_no": 1
       },
@@ -1330,50 +1330,50 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.32,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.32,
+      "ms": 0.3,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.25,
+      "ms": 0.28,
       "name": "f_list_flags",
       "params": {},
       "rows": 0
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.29,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.28,
+      "ms": 0.3,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.47,
+      "ms": 0.45,
       "name": "f_list_round",
       "params": {
        "n": 1
@@ -1386,35 +1386,35 @@
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q1_0",
-      "text": "Have you noticed Muscle weakness in your child?",
+      "text": "Have you noticed muscle weakness in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q1_1",
-      "text": "Have you noticed Abnormally shaped muscle in your child?",
+      "text": "Have you noticed abnormally shaped muscle in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q1_2",
-      "text": "Have you noticed Behavioral changes in your child?",
+      "text": "Have you noticed behavioral changes in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q1_3",
-      "text": "Have you noticed Trouble sleeping in your child?",
+      "text": "Have you noticed trouble sleeping in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q1_4",
-      "text": "Have you noticed Muscle ache in your child?",
+      "text": "Have you noticed muscle ache in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      }
     ],
@@ -1423,7 +1423,7 @@
    "screen": "round"
   },
   {
-   "caption": "They answer; the next step follows.",
+   "caption": "Arjun's parent answers yes, no or not sure. Each answer changes what is asked next.",
    "n": 4,
    "payload": {
     "answers": [
@@ -1461,7 +1461,7 @@
     "queries": [
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.4,
+      "ms": 0.42,
       "name": "f_list_round",
       "params": {
        "n": 1
@@ -1470,19 +1470,19 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.33,
+      "ms": 0.34,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.3,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
@@ -1497,16 +1497,16 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.25,
+      "ms": 0.36,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.42,
+      "ms": 0.34,
       "name": "f_list_round",
       "params": {
        "n": 1
@@ -1515,7 +1515,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name, t.cx_plain_label AS plain, t.cx_question AS question,\n       t.cx_why AS why, t.cx_how_to_check AS how, t.cx_obs AS obs, t.cx_system AS system",
-      "ms": 0.32,
+      "ms": 0.36,
       "name": "q7_question_copy",
       "params": {
        "ids": [
@@ -1534,20 +1534,8 @@
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q1_0",
-       "at": "2026-10-16T02:18:38.010+00:00",
+       "at": "2026-10-16T02:52:48.552+00:00",
        "qid": "q1_0",
-       "value": "unsure"
-      },
-      "rows": 1
-     },
-     {
-      "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.35,
-      "name": "f_record_answer",
-      "params": {
-       "aid": "ans_q1_1",
-       "at": "2026-10-16T02:18:38.010+00:00",
-       "qid": "q1_1",
        "value": "unsure"
       },
       "rows": 1
@@ -1557,8 +1545,20 @@
       "ms": 0.37,
       "name": "f_record_answer",
       "params": {
+       "aid": "ans_q1_1",
+       "at": "2026-10-16T02:52:48.552+00:00",
+       "qid": "q1_1",
+       "value": "unsure"
+      },
+      "rows": 1
+     },
+     {
+      "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
+      "ms": 0.36,
+      "name": "f_record_answer",
+      "params": {
        "aid": "ans_q1_2",
-       "at": "2026-10-16T02:18:38.010+00:00",
+       "at": "2026-10-16T02:52:48.553+00:00",
        "qid": "q1_2",
        "value": "unsure"
       },
@@ -1566,7 +1566,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name",
-      "ms": 0.33,
+      "ms": 0.34,
       "name": "q2h_term_names",
       "params": {
        "ids": [
@@ -1598,7 +1598,7 @@
      },
      {
       "cypher": "UNWIND $terms AS t\nMERGE (n:TermRef {id: t.id})\nSET n.name = t.name\nRETURN count(n) AS n",
-      "ms": 0.35,
+      "ms": 0.36,
       "name": "f_upsert_termrefs",
       "params": {
        "terms": [
@@ -1632,7 +1632,7 @@
      },
      {
       "cypher": "UNWIND $edges AS e\nMATCH (a:TermRef {id: e.child})\nMATCH (b:TermRef {id: e.parent})\nMERGE (a)-[:IS_A]->(b)\nRETURN count(e) AS n",
-      "ms": 0.37,
+      "ms": 0.38,
       "name": "f_link_termref_edges",
       "params": {
        "edges": [
@@ -1662,10 +1662,10 @@
      },
      {
       "cypher": "MERGE (f:Finding {id: $id})\nON CREATE SET f.term_id = $term_id, f.plain_label = $label, f.status = $status,\n              f.source = $source, f.onset_months = $onset, f.recorded_at = $at, f.active = true\nMERGE (t:TermRef {id: $term_id})\nMERGE (f)-[:OBSERVED_AS]->(t)\nMERGE (e:Evidence {id: $ev_id})\nON CREATE SET e.kind = $ev_kind, e.quote = $quote, e.start = $start, e.end = $end, e.at = $at\nMERGE (f)-[:SUPPORTED_BY]->(e)\nRETURN f.id AS id",
-      "ms": 0.4,
+      "ms": 0.39,
       "name": "f_add_finding",
       "params": {
-       "at": "2026-10-16T02:18:38.012+00:00",
+       "at": "2026-10-16T02:52:48.555+00:00",
        "end": null,
        "ev_id": "ev_fa_q1_3",
        "ev_kind": "answer",
@@ -1682,11 +1682,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.36,
+      "ms": 0.35,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q1_3",
-       "at": "2026-10-16T02:18:38.013+00:00",
+       "at": "2026-10-16T02:52:48.555+00:00",
        "qid": "q1_3",
        "value": "no"
       },
@@ -1694,7 +1694,7 @@
      },
      {
       "cypher": "MATCH (a:Answer {id: $aid})\nMATCH (f:Finding {id: $fid})\nMERGE (a)-[:PRODUCED]->(f)\nRETURN f.id AS id",
-      "ms": 0.37,
+      "ms": 0.36,
       "name": "f_link_answer_finding",
       "params": {
        "aid": "ans_q1_3",
@@ -1704,11 +1704,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.34,
+      "ms": 0.33,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q1_4",
-       "at": "2026-10-16T02:18:38.013+00:00",
+       "at": "2026-10-16T02:52:48.556+00:00",
        "qid": "q1_4",
        "value": "unsure"
       },
@@ -1719,7 +1719,7 @@
       "ms": 0.33,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-16T02:18:38.014+00:00",
+       "at": "2026-10-16T02:52:48.556+00:00",
        "id": "ans_round_1",
        "kind": "answers",
        "label": "<redacted>"
@@ -1728,10 +1728,10 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.41,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
@@ -1746,7 +1746,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, d.prior AS prior, max(r.freq) AS F",
-      "ms": 0.86,
+      "ms": 0.91,
       "name": "q2a_exact_or_specific",
       "params": {
        "fid": "HP:0030051"
@@ -1755,7 +1755,7 @@
      },
      {
       "cypher": "UNWIND $present AS fid\nMATCH p = (f:Term {id: fid})-[:IS_A*1..4]->(a:Term)\nWHERE a.depth >= 3\nWITH DISTINCT fid, a, length(p) AS hops\nMATCH (a)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN fid AS finding, d.id AS disease, d.prior AS prior, a.id AS via, r.freq AS freq, a.bg AS bg_via, hops",
-      "ms": 6.61,
+      "ms": 6.59,
       "name": "q2b_broader",
       "params": {
        "present": [
@@ -1766,7 +1766,7 @@
      },
      {
       "cypher": "UNWIND $present AS fid\nMATCH (f:Term {id: fid})-[:IS_A*0..20]->(a:Term)\nWITH DISTINCT fid, a\nMATCH (a)<-[r:LACKS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN DISTINCT fid AS finding, d.id AS disease, d.prior AS prior",
-      "ms": 0.4,
+      "ms": 0.43,
       "name": "q2c_not_present",
       "params": {
        "present": [
@@ -1811,14 +1811,14 @@
      },
      {
       "cypher": "MATCH (q:Question)\nRETURN q.term_id AS term_id",
-      "ms": 0.33,
+      "ms": 0.34,
       "name": "f_asked_terms",
       "params": {},
       "rows": 5
      },
      {
       "cypher": "MATCH (d:Disease)-[r:HAS_PHENOTYPE]->(t:Term)\nWHERE d.id IN $top AND ID(r) >= 0\nRETURN d.id AS disease, t.id AS term, r.freq AS freq",
-      "ms": 85.04,
+      "ms": 86.01,
       "name": "q3a_annotations",
       "params": {
        "top": [
@@ -1878,7 +1878,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $askable\nRETURN t.id AS id, t.cx_obs AS obs, t.cx_min_age_months AS min_age, t.cx_system AS system, t.cx_question AS question, t.bg AS bg, t.depth AS depth, t.cx_lay_text AS lay, t.cx_plain_label AS plain",
-      "ms": 29.68,
+      "ms": 30.28,
       "name": "q3b_askable",
       "params": {
        "askable": "<list of 2188>"
@@ -1887,7 +1887,7 @@
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.5,
+      "ms": 0.53,
       "name": "f_list_flags",
       "params": {},
       "rows": 0
@@ -1923,19 +1923,19 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.34,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (s:Snapshot {round: $round, at: $at})\nON CREATE SET s.kb_version = $kb, s.rare_mass = $rare_mass, s.n_findings = $n_findings\nRETURN s.round AS round",
-      "ms": 0.43,
+      "ms": 0.38,
       "name": "f_add_snapshot",
       "params": {
-       "at": "2026-10-16T02:18:38.165+00:00",
+       "at": "2026-10-16T02:52:48.709+00:00",
        "kb": "kb_20260901",
        "n_findings": 2,
        "rare_mass": 0.10454763848568793,
@@ -1945,10 +1945,10 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $at})\nUNWIND $cands AS c\nMERGE (d:DiseaseRef {id: c.id})\nSET d.name = c.name\nMERGE (s)-[r:CANDIDATE {rank: c.rank}]->(d)\nSET r.post = c.post\nRETURN count(c) AS n",
-      "ms": 0.48,
+      "ms": 0.47,
       "name": "f_add_candidates",
       "params": {
-       "at": "2026-10-16T02:18:38.165+00:00",
+       "at": "2026-10-16T02:52:48.709+00:00",
        "cands": [
         {
          "id": "ORPHA:117",
@@ -2017,47 +2017,47 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $snap_at})\nCREATE (g:Gate {id: $id, kind: $kind, at: $at, inputs_json: $inputs, rule: $rule})\nCREATE (g)-[:BASED_ON]->(s)\nRETURN g.id AS id",
-      "ms": 0.36,
+      "ms": 0.35,
       "name": "f_add_gate",
       "params": {
-       "at": "2026-10-16T02:18:38.166+00:00",
-       "id": "8e2866b59f4c4e749d1eb2ea48072b6f",
+       "at": "2026-10-16T02:52:48.710+00:00",
+       "id": "19e3031ff95244eebc8a626af21d5ec0",
        "inputs": "{\"best_exam_test_ig\": 0.06379518463142342, \"best_home_ig\": 0.05884433513683707, \"emergency\": false, \"home_rounds_done\": 1, \"n_doctor_test_findings\": 0, \"rare_mass\": 0.10454763848568793, \"tau0\": 0.3, \"tau1\": 0.4, \"tau2\": 0.5, \"top10_rare_share\": 0.46302695814505807, \"urgent_soon\": false}",
        "kind": "CONTINUE",
        "round": 1,
        "rule": "no gate fired",
-       "snap_at": "2026-10-16T02:18:38.165+00:00"
+       "snap_at": "2026-10-16T02:52:48.709+00:00"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.38,
+      "ms": 0.36,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.27,
+      "ms": 0.24,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round)\nRETURN r.n AS n, r.kind AS kind\nORDER BY r.n DESC LIMIT 1",
-      "ms": 0.29,
+      "ms": 0.24,
       "name": "f_latest_round",
       "params": {},
       "rows": 1
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name, t.cx_plain_label AS plain, t.cx_question AS question,\n       t.cx_why AS why, t.cx_how_to_check AS how, t.cx_obs AS obs, t.cx_system AS system",
-      "ms": 0.37,
+      "ms": 0.35,
       "name": "q7_question_copy",
       "params": {
        "ids": [
@@ -2072,10 +2072,10 @@
      },
      {
       "cypher": "MERGE (r:Round {n: $n})\nON CREATE SET r.kind = $kind, r.asked_at = $at\nRETURN r.n AS n",
-      "ms": 0.35,
+      "ms": 0.31,
       "name": "f_add_round",
       "params": {
-       "at": "2026-10-16T02:18:38.168+00:00",
+       "at": "2026-10-16T02:52:48.712+00:00",
        "kind": "home",
        "n": 2
       },
@@ -2083,7 +2083,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.4,
+      "ms": 0.36,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -2101,7 +2101,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.4,
+      "ms": 0.37,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -2119,7 +2119,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.36,
+      "ms": 0.4,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -2137,7 +2137,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.38,
+      "ms": 0.4,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -2155,7 +2155,7 @@
      },
      {
       "cypher": "MATCH (r:Round {n: $n})\nMERGE (q:Question {id: $qid})\nON CREATE SET q.term_id = $term_id, q.text = $text, q.observability = $obs, q.ig = $ig,\n              q.why = $why, q.how_to_check = $how, q.ask_doctor = $ask_doctor, q.pos = $pos\nMERGE (r)-[:ASKED]->(q)\nRETURN q.id AS id",
-      "ms": 0.35,
+      "ms": 0.36,
       "name": "f_add_question",
       "params": {
        "ask_doctor": false,
@@ -2173,11 +2173,11 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nSET f.phase = $phase, f.round_no = $round_no, f.updated_at = $at\nRETURN f.phase AS phase",
-      "ms": 0.32,
+      "ms": 0.34,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-16T02:18:38.170+00:00",
-       "id": "ff476071c1c04d4a",
+       "at": "2026-10-16T02:52:48.714+00:00",
+       "id": "ed11c7be04704de3",
        "phase": "questions",
        "round_no": 2
       },
@@ -2185,10 +2185,10 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.35,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
@@ -2197,7 +2197,7 @@
       "ms": 0.31,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
@@ -2213,32 +2213,32 @@
    "screen": "answers"
   },
   {
-   "caption": "A few short questions (round 2).",
+   "caption": "Round 2: a few short questions, chosen because they best tell the remaining possibilities apart.",
    "n": 5,
    "payload": {
     "kind": "home",
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.31,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.41,
+      "ms": 0.42,
       "name": "f_list_round",
       "params": {
        "n": 2
@@ -2251,35 +2251,35 @@
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q2_0",
-      "text": "Have you noticed Mouth sore in your child?",
+      "text": "Have you noticed mouth sore in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q2_1",
-      "text": "Have you noticed Migraine in your child?",
+      "text": "Have you noticed migraine in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q2_2",
-      "text": "Have you noticed Nodule below the skin in your child?",
+      "text": "Have you noticed nodule below the skin in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q2_3",
-      "text": "Have you noticed Vision issue in your child?",
+      "text": "Have you noticed vision issue in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      },
      {
       "ask_doctor": false,
       "how_to_check": "Think about the last few weeks; if unsure, say so and watch for it.",
       "qid": "q2_4",
-      "text": "Have you noticed Limited joint motion in your child?",
+      "text": "Have you noticed limited joint motion in your child?",
       "why": "This is a sign that doctors ask about when looking for a cause."
      }
     ],
@@ -2288,7 +2288,7 @@
    "screen": "round"
   },
   {
-   "caption": "They answer; the next step follows.",
+   "caption": "Arjun's parent answers yes, no or not sure. Each answer changes what is asked next.",
    "n": 6,
    "payload": {
     "answers": [
@@ -2338,22 +2338,22 @@
       "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.32,
+      "ms": 0.31,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.39,
+      "ms": 0.41,
       "name": "f_list_round",
       "params": {
        "n": 2
@@ -2362,16 +2362,16 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.36,
+      "ms": 0.44,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (r:Round {n: $n})-[:ASKED]->(q:Question)\nOPTIONAL MATCH (q)-[:ANSWERED]->(a:Answer)\nRETURN r.kind AS kind, q.id AS qid, q.term_id AS term_id, q.text AS text, q.why AS why,\n       q.how_to_check AS how, q.ask_doctor AS ask_doctor, q.observability AS obs, q.ig AS ig,\n       a.value AS answer\nORDER BY q.pos",
-      "ms": 0.37,
+      "ms": 0.34,
       "name": "f_list_round",
       "params": {
        "n": 2
@@ -2380,7 +2380,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name, t.cx_plain_label AS plain, t.cx_question AS question,\n       t.cx_why AS why, t.cx_how_to_check AS how, t.cx_obs AS obs, t.cx_system AS system",
-      "ms": 0.37,
+      "ms": 0.32,
       "name": "q7_question_copy",
       "params": {
        "ids": [
@@ -2395,11 +2395,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.4,
+      "ms": 0.3,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q2_0",
-       "at": "2026-10-16T02:18:38.180+00:00",
+       "at": "2026-10-16T02:52:48.723+00:00",
        "qid": "q2_0",
        "value": "unsure"
       },
@@ -2407,7 +2407,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name",
-      "ms": 0.33,
+      "ms": 0.3,
       "name": "q2h_term_names",
       "params": {
        "ids": [
@@ -2423,7 +2423,7 @@
      },
      {
       "cypher": "MATCH (t:Term)-[:IS_A]->(p:Term)\nWHERE t.id IN $ids AND p.id IN $ids\nRETURN t.id AS child, p.id AS parent",
-      "ms": 0.35,
+      "ms": 0.33,
       "name": "q6_termref_edges",
       "params": {
        "ids": [
@@ -2439,7 +2439,7 @@
      },
      {
       "cypher": "UNWIND $terms AS t\nMERGE (n:TermRef {id: t.id})\nSET n.name = t.name\nRETURN count(n) AS n",
-      "ms": 0.36,
+      "ms": 0.34,
       "name": "f_upsert_termrefs",
       "params": {
        "terms": [
@@ -2473,7 +2473,7 @@
      },
      {
       "cypher": "UNWIND $edges AS e\nMATCH (a:TermRef {id: e.child})\nMATCH (b:TermRef {id: e.parent})\nMERGE (a)-[:IS_A]->(b)\nRETURN count(e) AS n",
-      "ms": 0.39,
+      "ms": 0.36,
       "name": "f_link_termref_edges",
       "params": {
        "edges": [
@@ -2503,10 +2503,10 @@
      },
      {
       "cypher": "MERGE (f:Finding {id: $id})\nON CREATE SET f.term_id = $term_id, f.plain_label = $label, f.status = $status,\n              f.source = $source, f.onset_months = $onset, f.recorded_at = $at, f.active = true\nMERGE (t:TermRef {id: $term_id})\nMERGE (f)-[:OBSERVED_AS]->(t)\nMERGE (e:Evidence {id: $ev_id})\nON CREATE SET e.kind = $ev_kind, e.quote = $quote, e.start = $start, e.end = $end, e.at = $at\nMERGE (f)-[:SUPPORTED_BY]->(e)\nRETURN f.id AS id",
-      "ms": 0.39,
+      "ms": 0.38,
       "name": "f_add_finding",
       "params": {
-       "at": "2026-10-16T02:18:38.181+00:00",
+       "at": "2026-10-16T02:52:48.725+00:00",
        "end": null,
        "ev_id": "ev_fa_q2_1",
        "ev_kind": "answer",
@@ -2523,11 +2523,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.36,
+      "ms": 0.34,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q2_1",
-       "at": "2026-10-16T02:18:38.182+00:00",
+       "at": "2026-10-16T02:52:48.725+00:00",
        "qid": "q2_1",
        "value": "no"
       },
@@ -2535,7 +2535,7 @@
      },
      {
       "cypher": "MATCH (a:Answer {id: $aid})\nMATCH (f:Finding {id: $fid})\nMERGE (a)-[:PRODUCED]->(f)\nRETURN f.id AS id",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_link_answer_finding",
       "params": {
        "aid": "ans_q2_1",
@@ -2545,11 +2545,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.34,
+      "ms": 0.32,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q2_2",
-       "at": "2026-10-16T02:18:38.182+00:00",
+       "at": "2026-10-16T02:52:48.726+00:00",
        "qid": "q2_2",
        "value": "unsure"
       },
@@ -2557,7 +2557,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.name AS name",
-      "ms": 0.32,
+      "ms": 0.29,
       "name": "q2h_term_names",
       "params": {
        "ids": [
@@ -2572,7 +2572,7 @@
      },
      {
       "cypher": "MATCH (t:Term)-[:IS_A]->(p:Term)\nWHERE t.id IN $ids AND p.id IN $ids\nRETURN t.id AS child, p.id AS parent",
-      "ms": 0.33,
+      "ms": 0.3,
       "name": "q6_termref_edges",
       "params": {
        "ids": [
@@ -2587,7 +2587,7 @@
      },
      {
       "cypher": "UNWIND $terms AS t\nMERGE (n:TermRef {id: t.id})\nSET n.name = t.name\nRETURN count(n) AS n",
-      "ms": 0.34,
+      "ms": 0.32,
       "name": "f_upsert_termrefs",
       "params": {
        "terms": [
@@ -2617,7 +2617,7 @@
      },
      {
       "cypher": "UNWIND $edges AS e\nMATCH (a:TermRef {id: e.child})\nMATCH (b:TermRef {id: e.parent})\nMERGE (a)-[:IS_A]->(b)\nRETURN count(e) AS n",
-      "ms": 0.38,
+      "ms": 0.35,
       "name": "f_link_termref_edges",
       "params": {
        "edges": [
@@ -2643,10 +2643,10 @@
      },
      {
       "cypher": "MERGE (f:Finding {id: $id})\nON CREATE SET f.term_id = $term_id, f.plain_label = $label, f.status = $status,\n              f.source = $source, f.onset_months = $onset, f.recorded_at = $at, f.active = true\nMERGE (t:TermRef {id: $term_id})\nMERGE (f)-[:OBSERVED_AS]->(t)\nMERGE (e:Evidence {id: $ev_id})\nON CREATE SET e.kind = $ev_kind, e.quote = $quote, e.start = $start, e.end = $end, e.at = $at\nMERGE (f)-[:SUPPORTED_BY]->(e)\nRETURN f.id AS id",
-      "ms": 0.4,
+      "ms": 0.36,
       "name": "f_add_finding",
       "params": {
-       "at": "2026-10-16T02:18:38.184+00:00",
+       "at": "2026-10-16T02:52:48.728+00:00",
        "end": null,
        "ev_id": "ev_fa_q2_3",
        "ev_kind": "answer",
@@ -2663,11 +2663,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.34,
+      "ms": 0.33,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q2_3",
-       "at": "2026-10-16T02:18:38.185+00:00",
+       "at": "2026-10-16T02:52:48.728+00:00",
        "qid": "q2_3",
        "value": "no"
       },
@@ -2675,7 +2675,7 @@
      },
      {
       "cypher": "MATCH (a:Answer {id: $aid})\nMATCH (f:Finding {id: $fid})\nMERGE (a)-[:PRODUCED]->(f)\nRETURN f.id AS id",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_link_answer_finding",
       "params": {
        "aid": "ans_q2_3",
@@ -2685,11 +2685,11 @@
      },
      {
       "cypher": "MATCH (q:Question {id: $qid})\nMERGE (a:Answer {id: $aid})\nON CREATE SET a.value = $value, a.at = $at\nMERGE (q)-[:ANSWERED]->(a)\nRETURN a.id AS id",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_record_answer",
       "params": {
        "aid": "ans_q2_4",
-       "at": "2026-10-16T02:18:38.185+00:00",
+       "at": "2026-10-16T02:52:48.729+00:00",
        "qid": "q2_4",
        "value": "unsure"
       },
@@ -2697,10 +2697,10 @@
      },
      {
       "cypher": "MERGE (e:Event {id: $id})\nON CREATE SET e.kind = $kind, e.label = $label, e.at = $at\nRETURN e.id AS id",
-      "ms": 0.33,
+      "ms": 0.31,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-16T02:18:38.186+00:00",
+       "at": "2026-10-16T02:52:48.729+00:00",
        "id": "ans_round_2",
        "kind": "answers",
        "label": "<redacted>"
@@ -2709,16 +2709,16 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.49,
+      "ms": 0.4,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Finding)\nWHERE f.active = true OR $include_inactive\nOPTIONAL MATCH (f)-[:SUPPORTED_BY]->(e:Evidence)\nRETURN f.id AS id, f.term_id AS term_id, f.plain_label AS label, f.status AS status,\n       f.source AS source, f.onset_months AS onset, f.recorded_at AS at, f.active AS active,\n       e.quote AS quote, e.start AS start, e.end AS end\nORDER BY f.recorded_at, f.id",
-      "ms": 0.33,
+      "ms": 0.32,
       "name": "f_list_findings",
       "params": {
        "include_inactive": false
@@ -2727,7 +2727,7 @@
      },
      {
       "cypher": "UNWIND $absent AS aid\nMATCH (t:Term {id: aid})-[:IS_A*1..]->(a:Term)\nWHERE a.id IN $absent\nRETURN DISTINCT t.id AS redundant",
-      "ms": 0.29,
+      "ms": 0.3,
       "name": "q1b_redundant_absent",
       "params": {
        "absent": [
@@ -2740,7 +2740,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, d.prior AS prior, max(r.freq) AS F",
-      "ms": 0.91,
+      "ms": 0.87,
       "name": "q2a_exact_or_specific",
       "params": {
        "fid": "HP:0030051"
@@ -2749,7 +2749,7 @@
      },
      {
       "cypher": "UNWIND $present AS fid\nMATCH p = (f:Term {id: fid})-[:IS_A*1..4]->(a:Term)\nWHERE a.depth >= 3\nWITH DISTINCT fid, a, length(p) AS hops\nMATCH (a)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN fid AS finding, d.id AS disease, d.prior AS prior, a.id AS via, r.freq AS freq, a.bg AS bg_via, hops",
-      "ms": 6.58,
+      "ms": 6.55,
       "name": "q2b_broader",
       "params": {
        "present": [
@@ -2760,7 +2760,7 @@
      },
      {
       "cypher": "UNWIND $present AS fid\nMATCH (f:Term {id: fid})-[:IS_A*0..20]->(a:Term)\nWITH DISTINCT fid, a\nMATCH (a)<-[r:LACKS_PHENOTYPE]-(d:Disease)\nWHERE ID(r) >= 0\nRETURN DISTINCT fid AS finding, d.id AS disease, d.prior AS prior",
-      "ms": 0.4,
+      "ms": 0.42,
       "name": "q2c_not_present",
       "params": {
        "present": [
@@ -2771,7 +2771,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE d.id IN $candidates AND ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, max(r.freq) AS F",
-      "ms": 8.0,
+      "ms": 7.33,
       "name": "q2d_absent",
       "params": {
        "candidates": "<list of 760>",
@@ -2781,7 +2781,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE d.id IN $candidates AND ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, max(r.freq) AS F",
-      "ms": 0.91,
+      "ms": 0.98,
       "name": "q2d_absent",
       "params": {
        "candidates": "<list of 760>",
@@ -2791,7 +2791,7 @@
      },
      {
       "cypher": "MATCH (f:Term {id: $fid})<-[:IS_A*0..10]-(x:Term)\nWITH DISTINCT x\nMATCH (x)<-[r:HAS_PHENOTYPE]-(d:Disease)\nWHERE d.id IN $candidates AND ID(r) >= 0\nRETURN $fid AS finding, d.id AS disease, max(r.freq) AS F",
-      "ms": 2.88,
+      "ms": 2.85,
       "name": "q2d_absent",
       "params": {
        "candidates": "<list of 760>",
@@ -2815,7 +2815,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $ids\nRETURN t.id AS id, t.bg AS bg, t.cx_system AS system, t.ic AS ic",
-      "ms": 0.35,
+      "ms": 0.34,
       "name": "q2f_term_meta",
       "params": {
        "ids": [
@@ -2829,14 +2829,14 @@
      },
      {
       "cypher": "MATCH (q:Question)\nRETURN q.term_id AS term_id",
-      "ms": 0.36,
+      "ms": 0.33,
       "name": "f_asked_terms",
       "params": {},
       "rows": 10
      },
      {
       "cypher": "MATCH (d:Disease)-[r:HAS_PHENOTYPE]->(t:Term)\nWHERE d.id IN $top AND ID(r) >= 0\nRETURN d.id AS disease, t.id AS term, r.freq AS freq",
-      "ms": 9.33,
+      "ms": 9.26,
       "name": "q3a_annotations",
       "params": {
        "top": [
@@ -2896,7 +2896,7 @@
      },
      {
       "cypher": "MATCH (t:Term) WHERE t.id IN $askable\nRETURN t.id AS id, t.cx_obs AS obs, t.cx_min_age_months AS min_age, t.cx_system AS system, t.cx_question AS question, t.bg AS bg, t.depth AS depth, t.cx_lay_text AS lay, t.cx_plain_label AS plain",
-      "ms": 29.33,
+      "ms": 29.61,
       "name": "q3b_askable",
       "params": {
        "askable": "<list of 2155>"
@@ -2905,14 +2905,14 @@
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.53,
+      "ms": 0.47,
       "name": "f_list_flags",
       "params": {},
       "rows": 0
      },
      {
       "cypher": "MATCH (r:Round {kind: $kind})\nRETURN count(r) AS n",
-      "ms": 0.35,
+      "ms": 0.31,
       "name": "f_round_count",
       "params": {
        "kind": "home"
@@ -2921,7 +2921,7 @@
      },
      {
       "cypher": "MATCH (d:Disease) WHERE d.id IN $ids\nRETURN d.id AS id, d.name AS name",
-      "ms": 0.4,
+      "ms": 0.37,
       "name": "q8_disease_names",
       "params": {
        "ids": [
@@ -2941,10 +2941,10 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.32,
+      "ms": 0.33,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
@@ -2953,7 +2953,7 @@
       "ms": 0.39,
       "name": "f_add_snapshot",
       "params": {
-       "at": "2026-10-16T02:18:38.270+00:00",
+       "at": "2026-10-16T02:52:48.813+00:00",
        "kb": "kb_20260901",
        "n_findings": 4,
        "rare_mass": 0.09050350442660637,
@@ -2963,10 +2963,10 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $at})\nUNWIND $cands AS c\nMERGE (d:DiseaseRef {id: c.id})\nSET d.name = c.name\nMERGE (s)-[r:CANDIDATE {rank: c.rank}]->(d)\nSET r.post = c.post\nRETURN count(c) AS n",
-      "ms": 0.49,
+      "ms": 0.5,
       "name": "f_add_candidates",
       "params": {
-       "at": "2026-10-16T02:18:38.270+00:00",
+       "at": "2026-10-16T02:52:48.813+00:00",
        "cands": [
         {
          "id": "ORPHA:603",
@@ -3035,35 +3035,35 @@
      },
      {
       "cypher": "MATCH (s:Snapshot {round: $round, at: $snap_at})\nCREATE (g:Gate {id: $id, kind: $kind, at: $at, inputs_json: $inputs, rule: $rule})\nCREATE (g)-[:BASED_ON]->(s)\nRETURN g.id AS id",
-      "ms": 0.36,
+      "ms": 0.35,
       "name": "f_add_gate",
       "params": {
-       "at": "2026-10-16T02:18:38.271+00:00",
-       "id": "af7363db27de4f898fe34cbf374cbafb",
+       "at": "2026-10-16T02:52:48.814+00:00",
+       "id": "d0594a85077241bd8573d66cb2fa4d12",
        "inputs": "{\"best_exam_test_ig\": 0.06319459026808172, \"best_home_ig\": 0.030695549531124078, \"emergency\": false, \"home_rounds_done\": 2, \"n_doctor_test_findings\": 0, \"rare_mass\": 0.09050350442660637, \"tau0\": 0.3, \"tau1\": 0.4, \"tau2\": 0.5, \"top10_rare_share\": 0.4412798649630251, \"urgent_soon\": false}",
        "kind": "WATCH",
        "round": 2,
        "rule": "G3: rare_mass < tau0 after >= 2 home rounds",
-       "snap_at": "2026-10-16T02:18:38.270+00:00"
+       "snap_at": "2026-10-16T02:52:48.813+00:00"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.6,
+      "ms": 0.36,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nSET f.phase = $phase, f.round_no = $round_no, f.updated_at = $at\nRETURN f.phase AS phase",
-      "ms": 0.49,
+      "ms": 0.39,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-16T02:18:38.272+00:00",
-       "id": "ff476071c1c04d4a",
+       "at": "2026-10-16T02:52:48.815+00:00",
+       "id": "ed11c7be04704de3",
        "phase": "watching",
        "round_no": 2
       },
@@ -3071,25 +3071,25 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.29,
+      "ms": 0.36,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.26,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.27,
+      "ms": 0.29,
       "name": "f_list_flags",
       "params": {},
       "rows": 0
@@ -3099,7 +3099,7 @@
    "screen": "answers"
   },
   {
-   "caption": "Nothing needs a special appointment right now.",
+   "caption": "For Arjun, nothing needs a special appointment right now: watch, and mention it at a routine visit.",
    "n": 7,
    "payload": {
     "banner": null,
@@ -3112,25 +3112,25 @@
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.27,
+      "ms": 0.33,
       "name": "f_get_family",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.27,
+      "ms": 0.3,
       "name": "f_get_state",
       "params": {
-       "id": "ff476071c1c04d4a"
+       "id": "ed11c7be04704de3"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.26,
+      "ms": 0.3,
       "name": "f_list_flags",
       "params": {},
       "rows": 0

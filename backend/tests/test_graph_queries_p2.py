@@ -83,3 +83,8 @@ def test_q4_path_up_and_down(graph) -> None:  # noqa: ANN001
     assert up[0]["path"][0] == "TEST:0012" and up[0]["path"][-2:] == ["TEST:0011", "OMIM:900001"]
     down = rows(graph, "q4b_explain_path_down", {"finding": "TEST:0011", "disease": "ORPHA:900100"})
     assert down[0]["path"][0] == "TEST:0011" and down[0]["path"][-1] == "ORPHA:900100"
+
+
+def test_q_all_term_names_lists_every_term(graph) -> None:  # noqa: ANN001
+    names = {str(r["name"]) for r in rows(graph, "q_all_term_names", {})}
+    assert "Seizure" in names and len(names) >= 5

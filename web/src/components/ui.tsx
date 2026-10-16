@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TriangleAlert } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
 const base =
@@ -52,10 +53,13 @@ export function Card({
 export function Notice({
   tone = "info",
   title,
+  live,
   children,
 }: {
   tone?: "info" | "urgent";
   title?: string;
+  /** Announce to screen readers when it appears (errors, urgent). Static notices stay quiet. */
+  live?: boolean;
   children: ReactNode;
 }) {
   const cls =
@@ -64,11 +68,16 @@ export function Notice({
       : "border-border bg-card text-ink";
   return (
     <div
-      role={tone === "urgent" ? "alert" : "status"}
+      role={tone === "urgent" || live ? "alert" : undefined}
       className={`rounded-xl border-2 p-4 ${cls}`}
     >
       {title ? (
-        <p className={`font-bold ${tone === "urgent" ? "text-urgent" : "text-night"}`}>{title}</p>
+        <p
+          className={`flex items-center gap-2 font-bold ${tone === "urgent" ? "text-urgent" : "text-night"}`}
+        >
+          {tone === "urgent" ? <TriangleAlert aria-hidden="true" size={22} /> : null}
+          {title}
+        </p>
       ) : null}
       <div>{children}</div>
     </div>
@@ -85,7 +94,7 @@ export function Loading({ what = "this page" }: { what?: string }) {
 
 export function ErrorBox({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
-    <Notice tone="info" title="We hit a snag">
+    <Notice tone="info" title="We hit a snag" live>
       <p>{message}</p>
       <div className="mt-3 flex flex-wrap gap-3">
         {onRetry ? (

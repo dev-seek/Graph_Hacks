@@ -46,6 +46,9 @@ function View({ id, token }: { id: string; token: string }) {
               <h2 id="t-ev" className="text-xl">
                 By date
               </h2>
+              {t.events.length === 0 ? (
+                <p className="mt-2 text-muted">Nothing has happened yet. Dates will appear here.</p>
+              ) : null}
               <ol className="mt-2 space-y-2">
                 {t.events.map((e, i) => (
                   <li key={`${e.at}-${i}`}>

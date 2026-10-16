@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { use, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { Loaded, WithToken, useLoad } from "@/components/Journey";
-import { Button, ErrorBox, Notice } from "@/components/ui";
+import { Button, ButtonLink, ErrorBox, Notice } from "@/components/ui";
 import { call, fam, friendly, type AnswersOut, type Round } from "@/lib/api";
 import { ROUND_INTRO } from "@/copy";
 
@@ -21,6 +21,14 @@ function RoundForm({ id, token, round }: { id: string; token: string; round: Rou
   const [err, setErr] = useState<string | null>(null);
   const [announce, setAnnounce] = useState("");
   const done = round.questions.every((q) => vals[q.qid]);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const live = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    // A new round: move focus to its heading and fill the (initially empty) live region.
+    heading.current?.focus();
+    if (live.current)
+      live.current.textContent = `Round ${round.round_no}: ${round.questions.length} questions.`;
+  }, [round.round_no, round.questions.length]);
 
   async function submit() {
     setBusy(true);
@@ -51,10 +59,13 @@ function RoundForm({ id, token, round }: { id: string; token: string; round: Rou
       }}
     >
       <div>
-        <h1 className="text-3xl">Round {round.round_no}</h1>
+        <h1 ref={heading} tabIndex={-1} className="text-3xl">
+          Round {round.round_no}
+        </h1>
         <p className="mt-2">{ROUND_INTRO}</p>
+        <p ref={live} aria-live="polite" role="status" className="sr-only" />
         <p aria-live="polite" role="status" className="sr-only">
-          Round {round.round_no}: {round.questions.length} questions. {announce}
+          {announce}
         </p>
       </div>
       {round.questions.map((q, i) => (
@@ -120,9 +131,12 @@ function RoundPage({ id, token }: { id: string; token: string }) {
         r.questions.length === 0 ? (
           <Notice title="No questions right now">
             <p>Go back to your journey to see what happens next.</p>
+            <p className="mt-3">
+              <ButtonLink href={`/j/${id}`}>Back to your journey</ButtonLink>
+            </p>
           </Notice>
         ) : (
-          <RoundForm id={id} token={token} round={r} />
+          <RoundForm key={r.round_no} id={id} token={token} round={r} />
         )
       }
     </Loaded>
