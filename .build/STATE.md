@@ -14,7 +14,19 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty; plan P4 at its start)
+- [ ] 1. Web tooling: pinned deps (openapi-typescript, vitest, RTL, playwright, axe, cytoscape, lucide, qrcode), /api rewrite, generated types + sync check, VERIFIED.md entries
+- [ ] 2. copy.ts (all §6.4/§6.5 strings) + shared layout shell, header with "How it works", disclaimer footer
+- [ ] 3. Lexicon probe: disease-name lexicon from FalkorDB vs recorded demo parent payloads; ADR if collisions (rule 1)
+- [ ] 4. Landing `/`, `/start` (consent-lite, example story), `/help`, `/about`
+- [ ] 5. Journey: `/j/[id]` home, token handling, confirm, round/[n] (aria-live), constellation SVG
+- [ ] 6. Doctor step, timeline, printable `/j/[id]/pack` (A4+Letter overlap, QR with fragment code)
+- [ ] 7. `/clinician/[id]` (§6.5 disclaimer verbatim, candidates, paths, checks, referral, Phenopacket download)
+- [ ] 8. `/demo` step-through + judge panel (Cypher/rows/ms/gate, cytoscape from recorded data only)
+- [ ] 9. Guided tours (parent/clinician/centre), `/centre` honest empty state
+- [ ] 10. Banned-word + disease-name unit test over parent strings and demo payloads
+- [ ] 11. Vitest components; Playwright journeys, keyboard, 360px, axe; `make e2e`
+- [ ] 12. copy-a11y-reviewer pass; fix question wording/captions in backend; re-record demos
+- [ ] 13. Lighthouse >=95, screenshots 360/1280 into docs/explain/P4-screens/, gate, explain doc, AI_USAGE
 
 ## Needs from human
 - [ ] (non-blocking) set ANTHROPIC_API_KEY in .env then `make llm-contract` to measure profiles (ADR-0009 says not measured); then re-record demos with LLM_MODE=record

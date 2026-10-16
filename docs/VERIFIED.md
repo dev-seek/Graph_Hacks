@@ -67,3 +67,6 @@ SDK `anthropic==1.14.0` (httpx2-based). Verified against a stub transport (`back
 - `phenopackets==2.0.2.post5` (official GA4GH protobuf classes): `google.protobuf.json_format.ParseDict(doc, Phenopacket(), ignore_unknown_fields=False)` rejects unknown or mistyped fields; used by `app.agents.packs.validate_phenopacket`.
 - `pypdf==6.20.1`: `PdfReader(BytesIO(data)).pages[i].extract_text()` reads `data/fixtures/sample_letter.pdf`; garbage input raises and becomes HTTP 409.
 - FastAPI in this lockfile wraps included routers (`app.routes` holds `_IncludedRouter`), so route enumeration for tests uses the OpenAPI document.
+
+## Web toolchain (P4, 2026-10-16)
+Pinned exactly in `web/package.json` (pnpm lockfile): `openapi-typescript 7.13.0` (`pnpm gen:types` writes `src/api/schema.d.ts` from the frozen `src/api/openapi.json`; `pnpm check:types-sync` fails on drift), `vitest 5.0.4` + `@testing-library/react 16.3.3` + jsdom 30 (`pnpm test`), `@playwright/test 1.64.1` + `@axe-core/playwright 4.13.0`, `cytoscape 3.34.3`, `lucide-react 1.57.0`, `qrcode 1.5.4`. Next rewrites `/api/*` to `API_ORIGIN` (default `http://127.0.0.1:8000`) so the browser is same-origin. Each library is exercised by a test or the build before it is relied on (see P4 tasks).
