@@ -14,6 +14,7 @@ from app.agents.reasoning import DOCTOR_SOURCES, Reasoning
 from app.api.schemas import ParentFindingView, ParentPack
 from app.graph.client import rows
 from app.graph.family import FamilyRepo, FindingRow
+from app.llm.lexicon import violations
 from app.llm.schemas import ReferralDraft
 
 MAX_CHECKS = 8
@@ -62,6 +63,8 @@ def doctor_pack(deps: AgentDeps, repo: FamilyRepo, rs: Reasoning, code: str) -> 
         for q in tests[:MAX_QUESTIONS]
         if q.term in copy
     ]
+    checks = [c for c in checks if not violations(c)]
+    asks = [a for a in asks if not violations(a)]
     summary = (
         f"{len(present)} things noticed and {len(absent)} things checked and not present, "
         f"gathered over {repo.round_count('home')} rounds of questions."

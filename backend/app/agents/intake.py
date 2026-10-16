@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 from app.agents.deps import AgentDeps
 from app.agents.reasoning import term_names
 from app.llm.fallbacks import clause_items
+from app.llm.lexicon import violations
 from app.llm.router import LLMResult
 from app.llm.schemas import DocExtraction, DocItem, ExtractedItem, StoryExtraction
 
@@ -57,6 +58,9 @@ def parse_onset(text: str | None) -> float | None:
 
 def _check_quotes(items: list[ExtractedItem] | list[DocItem], text: str) -> None:
     for it in items:
+        bad = violations(it.plain_label)
+        if bad:
+            raise ValueError(f"plain_label not allowed for parents: {bad}")
         if it.quote not in text:
             raise ValueError(f"quote is not an exact substring of the input: {it.quote!r}")
 
@@ -121,6 +125,8 @@ def resolve_items(
     out: list[PendingItem] = []
     seen: set[tuple[str, str]] = set()
     for idx, it in enumerate(items[:MAX_PENDING]):
+        if violations(it.plain_label):
+            continue  # parents never see condition names, even when a letter or a model uses one
         hits = deps.resolver.resolve(it.quote, k=3)
         term = hits[0] if hits else None
         guess = next((g for g in it.hpo_guess if g in known), None)

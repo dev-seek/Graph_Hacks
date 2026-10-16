@@ -184,3 +184,28 @@ def test_kabir_with_llm_off_reaches_referral_on_the_recorded_case(make_service: 
     res = run_journey(svc, kabir_script(svc, dc))
     assert res.final_phase == "specialist_step"
     assert svc.deps.router.adapter is None
+
+
+def test_condition_name_in_a_letter_never_reaches_the_parent(make_service: Any) -> None:
+    from app.llm.schemas import DocExtraction, DocItem
+
+    letter = "Examination: tall stature. Consistent with Marfan syndrome. Heart murmur heard."
+
+    def model(text: str) -> DocExtraction:
+        item = DocItem(
+            quote="Consistent with Marfan syndrome",
+            plain_label="Marfan syndrome",
+            status="present",
+            source="doctor_exam",
+        )
+        return DocExtraction(items=[item])
+
+    svc = make_service(
+        "fake", FakeAdapter({"read_document": model, **scripted_llm(TIPTOE).handlers})
+    )
+    fid, _ = svc.create_family()
+    out = svc.submit_story(fid, "He walked on tiptoes for a few months.", 30, None)
+    svc.confirm(fid, [i.id for i in out.extraction_to_confirm], [], [])
+    doc = svc.add_document(fid, "text", letter, None)
+    shown = " ".join(i.plain_label.lower() for i in doc.extraction_to_confirm)
+    assert "marfan" not in shown and "syndrome" not in shown

@@ -17,7 +17,7 @@ from app.api.ratelimit import RateLimiter
 from app.graph.client import QueryLog, set_query_log
 
 FAMILY_LIMIT = RateLimiter(120, 60.0)  # per token per minute
-CREATE_LIMIT = RateLimiter(10, 3600.0)  # new families per client per hour
+CREATE_LIMIT = RateLimiter(int(os.environ.get("CREATE_LIMIT_PER_HOUR") or 10), 3600.0)  # per client
 CLINICIAN_LIMIT = RateLimiter(60, 60.0)
 _demo: dict[str, bool] = {}
 _logs: dict[str, QueryLog] = {}
