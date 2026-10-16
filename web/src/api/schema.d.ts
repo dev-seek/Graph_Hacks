@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/centre/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Centre Cases */
+        get: operations["centre_cases_api_centre_cases_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/centre/cases/{case_id}": {
         parameters: {
             query?: never;
@@ -72,6 +89,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/centre/inspector": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Centre Inspector
+         * @description The centre's recent graph queries (name, Cypher, params, rows, ms): no free text.
+         */
+        get: operations["centre_inspector_api_centre_inspector_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/centre/lookalikes": {
         parameters: {
             query?: never;
@@ -79,10 +116,31 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Centre Lookalikes */
+        /**
+         * Centre Lookalikes
+         * @description Look-alikes for a centre case (`case_id`) or for HPO ids (`terms`, comma separated).
+         */
         get: operations["centre_lookalikes_api_centre_lookalikes_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/centre/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Centre Notes */
+        get: operations["centre_notes_api_centre_notes_get"];
+        put?: never;
+        /** Centre Add Note */
+        post: operations["centre_add_note_api_centre_notes_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -98,6 +156,23 @@ export interface paths {
         };
         /** Centre Overview */
         get: operations["centre_overview_api_centre_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/centre/protocols": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Centre Protocols */
+        get: operations["centre_protocols_api_centre_protocols_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -134,6 +209,23 @@ export interface paths {
         put?: never;
         /** Centre Whatif */
         post: operations["centre_whatif_api_centre_whatif_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/centre/workload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Centre Workload */
+        get: operations["centre_workload_api_centre_workload_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -518,6 +610,31 @@ export interface components {
             /** Terms */
             terms: string[];
         };
+        /** CentreCaseRow */
+        CentreCaseRow: {
+            /** Age Band */
+            age_band: string;
+            /** Case Id */
+            case_id: string;
+            /** Diagnosis */
+            diagnosis?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "open" | "referred" | "resolved";
+        };
+        /** CentreClinicianStat */
+        CentreClinicianStat: {
+            /** Cases */
+            cases: number;
+            /** Clinician */
+            clinician: string;
+            /** Resolved */
+            resolved: number;
+            /** Specialty */
+            specialty: string;
+        };
         /** CentreCluster */
         CentreCluster: {
             /** Cases */
@@ -548,6 +665,33 @@ export interface components {
             /** Turnaround Days */
             turnaround_days?: number | null;
         };
+        /** CentreNote */
+        CentreNote: {
+            /** At */
+            at: string;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Role */
+            role: string;
+            /** Target */
+            target: string;
+            /** Text */
+            text: string;
+        };
+        /** CentreNoteIn */
+        CentreNoteIn: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "case" | "term" | "protocol";
+            /** Target */
+            target: string;
+            /** Text */
+            text: string;
+        };
         /** CentreOverview */
         CentreOverview: {
             /** Cases */
@@ -561,24 +705,89 @@ export interface components {
             /** Resolved */
             resolved: number;
         };
+        /** CentreProtocolStat */
+        CentreProtocolStat: {
+            /** Avg Days */
+            avg_days: number;
+            /** Cases */
+            cases: number;
+            /** Protocol */
+            protocol: string;
+            /** Tests */
+            tests: string[];
+        };
         /** CentreRouting */
         CentreRouting: {
             /** Case Id */
             case_id: string;
+            /**
+             * Disclaimer
+             * @default Illustrative clinic data (synthetic). Decision support for clinic staff only.
+             */
+            disclaimer: string;
+            /** Expected Days */
+            expected_days?: number | null;
             /** Lookalikes */
             lookalikes: components["schemas"]["CentreLookalike"][];
+            /** Suggested Clinician */
+            suggested_clinician?: string | null;
+            /** Suggested Protocol */
+            suggested_protocol?: string | null;
+            /** Suggested Specialty */
+            suggested_specialty?: string | null;
+            /** Suggested Tests */
+            suggested_tests?: string[];
+        };
+        /** CentreWhatIfDetail */
+        CentreWhatIfDetail: {
+            /** After */
+            after: number;
+            /** Before */
+            before: number;
+            /** Case Id */
+            case_id: string;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "crosses_up" | "crosses_down";
         };
         /** CentreWhatIfIn */
         CentreWhatIfIn: {
             /** New Kb Version */
             new_kb_version: string;
+            /** Tau2 */
+            tau2?: number | null;
         };
         /** CentreWhatIfOut */
         CentreWhatIfOut: {
             /** Affected Cases */
             affected_cases: string[];
+            /** Details */
+            details?: components["schemas"]["CentreWhatIfDetail"][];
+            /** From Version */
+            from_version?: string | null;
+            /**
+             * Graph
+             * @default centre_whatif
+             */
+            graph: string;
+            /**
+             * Ms
+             * @default 0
+             */
+            ms: number;
+            /**
+             * Rescored
+             * @default 0
+             */
+            rescored: number;
             /** Summary */
             summary: string;
+            /** Tau2 */
+            tau2?: number | null;
+            /** To Version */
+            to_version?: string | null;
         };
         /** ClinicianCandidate */
         ClinicianCandidate: {
@@ -1107,6 +1316,38 @@ export interface operations {
             };
         };
     };
+    centre_cases_api_centre_cases_get: {
+        parameters: {
+            query?: {
+                status?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentreCaseRow"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     centre_case_api_centre_cases__case_id__get: {
         parameters: {
             query?: never;
@@ -1140,7 +1381,9 @@ export interface operations {
     };
     centre_clusters_api_centre_clusters_get: {
         parameters: {
-            query?: never;
+            query?: {
+                method?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1156,9 +1399,18 @@ export interface operations {
                     "application/json": components["schemas"]["CentreCluster"][];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    centre_lookalikes_api_centre_lookalikes_get: {
+    centre_inspector_api_centre_inspector_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1173,7 +1425,103 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
+                    "application/json": components["schemas"]["QueryLogEntry"][];
+                };
+            };
+        };
+    };
+    centre_lookalikes_api_centre_lookalikes_get: {
+        parameters: {
+            query?: {
+                case_id?: string;
+                terms?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
                     "application/json": components["schemas"]["CentreLookalike"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    centre_notes_api_centre_notes_get: {
+        parameters: {
+            query?: {
+                target?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentreNote"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    centre_add_note_api_centre_notes_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CentreNoteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentreNote"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -1194,6 +1542,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CentreOverview"];
+                };
+            };
+        };
+    };
+    centre_protocols_api_centre_protocols_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentreProtocolStat"][];
                 };
             };
         };
@@ -1258,6 +1626,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    centre_workload_api_centre_workload_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CentreClinicianStat"][];
                 };
             };
         };

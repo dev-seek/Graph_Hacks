@@ -1,0 +1,1 @@
+UNWIND $rows AS r MATCH (c:Case {case_id: r.c}), (p:DiagnosticProtocol {id: r.p}), (k:Clinician {id: r.k}) CREATE (c)-[:RESULTED_IN]->(d:CaseDecision {id: r.id, outcome: r.outcome, decided_at: r.decided_at, turnaround_days: r.days, synthetic: true}), (d)-[:USED_PROTOCOL]->(p), (d)-[:DECIDED_BY]->(k)

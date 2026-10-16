@@ -9,7 +9,6 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from falkordb import Graph
 from mcp.server.mcpserver import MCPServer
 from redis.exceptions import ResponseError
 
@@ -90,14 +89,22 @@ def explain_candidate(
 
 
 def centre_route_case(deps: AgentDeps, hpo_ids: list[str]) -> dict[str, Any]:
-    """Look-alike cases + who solved them + protocol, from the `centre` graph (built in P5)."""
-    g: Graph = deps.db.select_graph("centre")
+    """Look-alike cases + who solved them + protocol, from the `centre` graph (Q7)."""
+    from app.centre.service import CentreService, suggest
+
+    svc = CentreService(deps.db, lambda _n: deps.reasoner, None, deps.reasoner.cache.ancestors)
     try:
-        found = rows(g, "centre_lookalikes", {"terms": hpo_ids[:MAX_FINDINGS]})
+        look = svc.lookalikes_for(hpo_ids[:MAX_FINDINGS])
     except (ResponseError, FileNotFoundError):
         return {"available": False, "reason": "centre graph not loaded", "lookalikes": [],
                 "disclaimer": CLINICIAN_DISCLAIMER}  # fmt: skip
-    return {"available": True, "lookalikes": found, "disclaimer": CLINICIAN_DISCLAIMER}
+    return {
+        "available": True,
+        "lookalikes": [x.model_dump() for x in look],
+        **suggest(look),
+        "note": "Illustrative clinic data (synthetic).",
+        "disclaimer": CLINICIAN_DISCLAIMER,
+    }
 
 
 def build_server(deps: AgentDeps) -> MCPServer:

@@ -7,13 +7,16 @@ centre and demo routes stay 501 until their phases wire them (P3 task 10, P5).
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Annotated, NoReturn
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from redis.exceptions import ResponseError
 
 from app.agents.service import BadRequest, FamilyNotFound
 from app.api import schemas as s
 from app.api.runtime import (
+    WHATIF_LIMIT,
+    Centre,
     ClinicianFamilyId,
     FamilyId,
     Service,
@@ -23,13 +26,10 @@ from app.api.runtime import (
     query_log,
     to_http,
 )
+from app.centre.service import BadInput, NotFound
 
 router = APIRouter(prefix="/api")
 Bearer = Annotated[str | None, Header(alias="Authorization")]
-
-
-def _todo() -> NoReturn:
-    raise HTTPException(status_code=501, detail="not implemented yet")
 
 
 def _guard[T](fn: Callable[[], T]) -> T:
@@ -138,44 +138,108 @@ def get_phenopacket(family_id: str, svc: Service, _: ClinicianFamilyId) -> s.Phe
     return s.PhenopacketOut(phenopacket=_guard(lambda: svc.phenopacket(family_id)))
 
 
+def _centre_guard[T](fn: Callable[[], T]) -> T:
+    try:
+        return fn()
+    except NotFound as exc:
+        raise HTTPException(status_code=404, detail="not found") from exc
+    except BadInput as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ResponseError as exc:  # centre graph not built yet
+        raise HTTPException(
+            status_code=503, detail="centre graph not loaded: run make centre"
+        ) from exc
+
+
 @router.get("/centre/overview", tags=["centre"])
-def centre_overview() -> s.CentreOverview:
-    _todo()
+def centre_overview(c: Centre) -> s.CentreOverview:
+    return _centre_guard(c.overview)
+
+
+@router.get("/centre/cases", tags=["centre"])
+def centre_cases(c: Centre, status: str = "", limit: int = 50) -> list[s.CentreCaseRow]:
+    return _centre_guard(lambda: [s.CentreCaseRow(**x) for x in c.cases(status, limit)])
 
 
 @router.get("/centre/lookalikes", tags=["centre"])
-def centre_lookalikes() -> list[s.CentreLookalike]:
-    _todo()
+def centre_lookalikes(c: Centre, case_id: str = "", terms: str = "") -> list[s.CentreLookalike]:
+    """Look-alikes for a centre case (`case_id`) or for HPO ids (`terms`, comma separated)."""
+    if case_id:
+        return _centre_guard(lambda: c.routing(case_id).lookalikes)
+    ids = [t.strip() for t in terms.split(",") if t.strip()]
+    return _centre_guard(lambda: c.lookalikes_for(ids))
 
 
 @router.get("/centre/routing/{case_id}", tags=["centre"])
-def centre_routing(case_id: str) -> s.CentreRouting:
-    _todo()
+def centre_routing(case_id: str, c: Centre) -> s.CentreRouting:
+    return _centre_guard(lambda: c.routing(case_id))
 
 
 @router.get("/centre/bridges", tags=["centre"])
-def centre_bridges() -> list[s.CentreBridge]:
-    _todo()
+def centre_bridges(c: Centre) -> list[s.CentreBridge]:
+    return _centre_guard(c.bridges)
 
 
 @router.get("/centre/clusters", tags=["centre"])
-def centre_clusters() -> list[s.CentreCluster]:
-    _todo()
+def centre_clusters(c: Centre, method: str = "lp") -> list[s.CentreCluster]:
+    return _centre_guard(lambda: c.clusters(method))
 
 
 @router.get("/centre/cases/{case_id}", tags=["centre"])
-def centre_case(case_id: str) -> s.CentreCase:
-    _todo()
+def centre_case(case_id: str, c: Centre) -> s.CentreCase:
+    return _centre_guard(lambda: c.case(case_id))
+
+
+@router.get("/centre/protocols", tags=["centre"])
+def centre_protocols(c: Centre) -> list[s.CentreProtocolStat]:
+    return _centre_guard(lambda: [s.CentreProtocolStat(**x) for x in c.protocols()])
+
+
+@router.get("/centre/workload", tags=["centre"])
+def centre_workload(c: Centre) -> list[s.CentreClinicianStat]:
+    return _centre_guard(lambda: [s.CentreClinicianStat(**x) for x in c.workload()])
+
+
+@router.get("/centre/notes", tags=["centre"])
+def centre_notes(c: Centre, target: str = "") -> list[s.CentreNote]:
+    return _centre_guard(lambda: [s.CentreNote(**n.model_dump()) for n in c.notes(target)])
+
+
+@router.post("/centre/notes", tags=["centre"])
+def centre_add_note(body: s.CentreNoteIn, c: Centre) -> s.CentreNote:
+    return _centre_guard(
+        lambda: s.CentreNote(**c.add_note(body.kind, body.target, body.text).model_dump())
+    )
+
+
+@router.get("/centre/inspector", tags=["centre"])
+def centre_inspector(c: Centre) -> list[s.QueryLogEntry]:
+    """The centre's recent graph queries (name, Cypher, params, rows, ms): no free text."""
+    return c.inspector()
 
 
 @router.post("/centre/ask", tags=["centre"])
-def centre_ask(body: s.CentreAskIn) -> s.CentreAskOut:
-    _todo()
+def centre_ask(body: s.CentreAskIn, c: Centre) -> s.CentreAskOut:
+    return _centre_guard(lambda: c.ask(body.question))
 
 
 @router.post("/centre/whatif", tags=["centre"])
-def centre_whatif(body: s.CentreWhatIfIn) -> s.CentreWhatIfOut:
-    _todo()
+def centre_whatif(body: s.CentreWhatIfIn, c: Centre, request: Request) -> s.CentreWhatIfOut:
+    host = request.client.host if request.client else "unknown"
+    if not WHATIF_LIMIT.allow(host):
+        raise HTTPException(status_code=429, detail="too many what-if runs")
+    r = _centre_guard(lambda: c.whatif(body.new_kb_version, body.tau2))
+    return s.CentreWhatIfOut(
+        affected_cases=r.cases,
+        summary=r.summary,
+        from_version=r.from_version,
+        to_version=r.to_version,
+        tau2=r.tau2,
+        rescored=r.rescored,
+        details=[s.CentreWhatIfDetail(**d.model_dump()) for d in r.details],
+        ms=r.ms,
+        graph=r.graph,
+    )
 
 
 @router.get("/demo/journeys", tags=["demo"])

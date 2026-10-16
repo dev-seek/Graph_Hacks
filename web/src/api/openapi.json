@@ -116,6 +116,75 @@
         "title": "CentreCase",
         "type": "object"
       },
+      "CentreCaseRow": {
+        "additionalProperties": false,
+        "properties": {
+          "age_band": {
+            "title": "Age Band",
+            "type": "string"
+          },
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "diagnosis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diagnosis"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "referred",
+              "resolved"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "status",
+          "age_band"
+        ],
+        "title": "CentreCaseRow",
+        "type": "object"
+      },
+      "CentreClinicianStat": {
+        "additionalProperties": false,
+        "properties": {
+          "cases": {
+            "title": "Cases",
+            "type": "integer"
+          },
+          "clinician": {
+            "title": "Clinician",
+            "type": "string"
+          },
+          "resolved": {
+            "title": "Resolved",
+            "type": "integer"
+          },
+          "specialty": {
+            "title": "Specialty",
+            "type": "string"
+          }
+        },
+        "required": [
+          "clinician",
+          "specialty",
+          "cases",
+          "resolved"
+        ],
+        "title": "CentreClinicianStat",
+        "type": "object"
+      },
       "CentreCluster": {
         "additionalProperties": false,
         "properties": {
@@ -233,6 +302,78 @@
         "title": "CentreLookalike",
         "type": "object"
       },
+      "CentreNote": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "title": "At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "at",
+          "role",
+          "kind",
+          "target"
+        ],
+        "title": "CentreNote",
+        "type": "object"
+      },
+      "CentreNoteIn": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "case",
+              "term",
+              "protocol"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "target": {
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          },
+          "text": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "target",
+          "text"
+        ],
+        "title": "CentreNoteIn",
+        "type": "object"
+      },
       "CentreOverview": {
         "additionalProperties": false,
         "properties": {
@@ -267,6 +408,38 @@
         "title": "CentreOverview",
         "type": "object"
       },
+      "CentreProtocolStat": {
+        "additionalProperties": false,
+        "properties": {
+          "avg_days": {
+            "title": "Avg Days",
+            "type": "number"
+          },
+          "cases": {
+            "title": "Cases",
+            "type": "integer"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "type": "string"
+          },
+          "tests": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tests",
+            "type": "array"
+          }
+        },
+        "required": [
+          "protocol",
+          "tests",
+          "cases",
+          "avg_days"
+        ],
+        "title": "CentreProtocolStat",
+        "type": "object"
+      },
       "CentreRouting": {
         "additionalProperties": false,
         "properties": {
@@ -274,11 +447,67 @@
             "title": "Case Id",
             "type": "string"
           },
+          "disclaimer": {
+            "default": "Illustrative clinic data (synthetic). Decision support for clinic staff only.",
+            "title": "Disclaimer",
+            "type": "string"
+          },
+          "expected_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Days"
+          },
           "lookalikes": {
             "items": {
               "$ref": "#/components/schemas/CentreLookalike"
             },
             "title": "Lookalikes",
+            "type": "array"
+          },
+          "suggested_clinician": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggested Clinician"
+          },
+          "suggested_protocol": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggested Protocol"
+          },
+          "suggested_specialty": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggested Specialty"
+          },
+          "suggested_tests": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Suggested Tests",
             "type": "array"
           }
         },
@@ -289,12 +518,58 @@
         "title": "CentreRouting",
         "type": "object"
       },
+      "CentreWhatIfDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "title": "After",
+            "type": "number"
+          },
+          "before": {
+            "title": "Before",
+            "type": "number"
+          },
+          "case_id": {
+            "title": "Case Id",
+            "type": "string"
+          },
+          "direction": {
+            "enum": [
+              "crosses_up",
+              "crosses_down"
+            ],
+            "title": "Direction",
+            "type": "string"
+          }
+        },
+        "required": [
+          "case_id",
+          "before",
+          "after",
+          "direction"
+        ],
+        "title": "CentreWhatIfDetail",
+        "type": "object"
+      },
       "CentreWhatIfIn": {
         "additionalProperties": false,
         "properties": {
           "new_kb_version": {
             "title": "New Kb Version",
             "type": "string"
+          },
+          "tau2": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tau2"
           }
         },
         "required": [
@@ -313,9 +588,64 @@
             "title": "Affected Cases",
             "type": "array"
           },
+          "details": {
+            "items": {
+              "$ref": "#/components/schemas/CentreWhatIfDetail"
+            },
+            "title": "Details",
+            "type": "array"
+          },
+          "from_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Version"
+          },
+          "graph": {
+            "default": "centre_whatif",
+            "title": "Graph",
+            "type": "string"
+          },
+          "ms": {
+            "default": 0.0,
+            "title": "Ms",
+            "type": "number"
+          },
+          "rescored": {
+            "default": 0,
+            "title": "Rescored",
+            "type": "integer"
+          },
           "summary": {
             "title": "Summary",
             "type": "string"
+          },
+          "tau2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tau2"
+          },
+          "to_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "To Version"
           }
         },
         "required": [
@@ -1748,6 +2078,63 @@
         ]
       }
     },
+    "/api/centre/cases": {
+      "get": {
+        "operationId": "centre_cases_api_centre_cases_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Status",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreCaseRow"
+                  },
+                  "title": "Response Centre Cases Api Centre Cases Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Cases",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
     "/api/centre/cases/{case_id}": {
       "get": {
         "operationId": "centre_case_api_centre_cases__case_id__get",
@@ -1793,6 +2180,18 @@
     "/api/centre/clusters": {
       "get": {
         "operationId": "centre_clusters_api_centre_clusters_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "method",
+            "required": false,
+            "schema": {
+              "default": "lp",
+              "title": "Method",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -1807,6 +2206,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Centre Clusters",
@@ -1815,9 +2224,58 @@
         ]
       }
     },
+    "/api/centre/inspector": {
+      "get": {
+        "description": "The centre's recent graph queries (name, Cypher, params, rows, ms): no free text.",
+        "operationId": "centre_inspector_api_centre_inspector_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/QueryLogEntry"
+                  },
+                  "title": "Response Centre Inspector Api Centre Inspector Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Inspector",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
     "/api/centre/lookalikes": {
       "get": {
+        "description": "Look-alikes for a centre case (`case_id`) or for HPO ids (`terms`, comma separated).",
         "operationId": "centre_lookalikes_api_centre_lookalikes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "case_id",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Case Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "terms",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Terms",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -1832,9 +2290,105 @@
               }
             },
             "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
           }
         },
         "summary": "Centre Lookalikes",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/notes": {
+      "get": {
+        "operationId": "centre_notes_api_centre_notes_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "target",
+            "required": false,
+            "schema": {
+              "default": "",
+              "title": "Target",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreNote"
+                  },
+                  "title": "Response Centre Notes Api Centre Notes Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Notes",
+        "tags": [
+          "centre"
+        ]
+      },
+      "post": {
+        "operationId": "centre_add_note_api_centre_notes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CentreNoteIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CentreNote"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Centre Add Note",
         "tags": [
           "centre"
         ]
@@ -1856,6 +2410,31 @@
           }
         },
         "summary": "Centre Overview",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/protocols": {
+      "get": {
+        "operationId": "centre_protocols_api_centre_protocols_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreProtocolStat"
+                  },
+                  "title": "Response Centre Protocols Api Centre Protocols Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Protocols",
         "tags": [
           "centre"
         ]
@@ -1939,6 +2518,31 @@
           }
         },
         "summary": "Centre Whatif",
+        "tags": [
+          "centre"
+        ]
+      }
+    },
+    "/api/centre/workload": {
+      "get": {
+        "operationId": "centre_workload_api_centre_workload_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CentreClinicianStat"
+                  },
+                  "title": "Response Centre Workload Api Centre Workload Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Centre Workload",
         "tags": [
           "centre"
         ]

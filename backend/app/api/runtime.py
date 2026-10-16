@@ -14,6 +14,8 @@ from langchain_falkordb.checkpoint import FalkorDBSaver
 from app.agents.deps import AgentDeps
 from app.agents.service import BadRequest, FamilyNotFound, FamilyService
 from app.api.ratelimit import RateLimiter
+from app.centre.service import CentreService
+from app.engine.reasoner import Reasoner
 from app.graph.client import QueryLog, set_query_log
 
 FAMILY_LIMIT = RateLimiter(120, 60.0)  # per token per minute
@@ -33,6 +35,27 @@ def _service() -> FamilyService:
 
 def get_service() -> FamilyService:
     return _service()
+
+
+@lru_cache(maxsize=1)
+def _centre() -> CentreService:
+    deps = _service().deps
+    reasoners: dict[str, Reasoner] = {deps.kb_version: deps.reasoner}
+
+    def reasoner_for(name: str) -> Reasoner:
+        if name not in reasoners:
+            reasoners[name] = Reasoner(deps.db.select_graph(name))
+        return reasoners[name]
+
+    return CentreService(deps.db, reasoner_for, deps.router, deps.reasoner.cache.ancestors)
+
+
+def get_centre() -> CentreService:
+    return _centre()
+
+
+Centre = Annotated[CentreService, Depends(get_centre)]
+WHATIF_LIMIT = RateLimiter(6, 60.0)  # the what-if copies the graph: keep it rare
 
 
 Service = Annotated[FamilyService, Depends(get_service)]

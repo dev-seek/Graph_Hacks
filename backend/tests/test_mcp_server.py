@@ -45,4 +45,7 @@ def test_lists_four_tools_and_calls_two() -> None:
     }
     assert "HP:" in str(_payload(r1))
     assert "disclaimer" in str(_payload(r2)).lower()
-    assert "available" in str(_payload(r3))
+    routed = _payload(r3)
+    assert "available" in str(routed)
+    if "'available': True" in str(routed) or '"available": true' in str(routed):
+        assert "suggested_protocol" in str(routed)  # Q7 look-alikes carry clinician and protocol

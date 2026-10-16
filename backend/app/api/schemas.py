@@ -276,6 +276,14 @@ class CentreLookalike(Strict):
 class CentreRouting(Strict):
     case_id: str
     lookalikes: list[CentreLookalike]
+    suggested_clinician: str | None = None  # ADR-0015 (additive)
+    suggested_specialty: str | None = None
+    suggested_protocol: str | None = None
+    suggested_tests: list[str] = Field(default_factory=list[str])
+    expected_days: int | None = None
+    disclaimer: str = (
+        "Illustrative clinic data (synthetic). Decision support for clinic staff only."
+    )
 
 
 class CentreBridge(Strict):
@@ -310,11 +318,62 @@ class CentreAskOut(Strict):
 
 class CentreWhatIfIn(Strict):
     new_kb_version: str
+    tau2: float | None = Field(default=None, ge=0.0, le=1.0)  # ADR-0015 (additive)
+
+
+class CentreWhatIfDetail(Strict):
+    case_id: str
+    before: float
+    after: float
+    direction: Literal["crosses_up", "crosses_down"]
 
 
 class CentreWhatIfOut(Strict):
     affected_cases: list[str]
     summary: str
+    from_version: str | None = None  # ADR-0015 (additive)
+    to_version: str | None = None
+    tau2: float | None = None
+    rescored: int = 0
+    details: list[CentreWhatIfDetail] = Field(default_factory=list[CentreWhatIfDetail])
+    ms: float = 0.0
+    graph: str = "centre_whatif"
+
+
+class CentreNoteIn(Strict):
+    kind: Literal["case", "term", "protocol"]
+    target: str = Field(min_length=1, max_length=40)
+    text: str = Field(min_length=1, max_length=500)
+
+
+class CentreNote(Strict):
+    id: str
+    text: str
+    at: str
+    role: str
+    kind: str
+    target: str
+
+
+class CentreProtocolStat(Strict):
+    protocol: str
+    tests: list[str]
+    cases: int
+    avg_days: float
+
+
+class CentreClinicianStat(Strict):
+    clinician: str
+    specialty: str
+    cases: int
+    resolved: int
+
+
+class CentreCaseRow(Strict):
+    case_id: str
+    status: Literal["open", "referred", "resolved"]
+    age_band: str
+    diagnosis: str | None = None
 
 
 # --- demo, debug, meta --------------------------------------------------------------------------
