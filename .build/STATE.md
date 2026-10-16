@@ -17,7 +17,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
 - [x] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
 - [x] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
-- [ ] 4 Frozen run in background (started 2026-10-16 09:00; resumable: `PYTHONPATH=backend uv run python -u -m app.eval.frozen test all 6`; rerun retries error rows)
+- [x] 4 Frozen run done 2026-10-16 (842 min, 0 unresolved errors after one retry pass)
 - [x] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
 - [x] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
 - [x] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
@@ -27,7 +27,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 11 Ask the centre (centre_template_pick, fallback, whitelist)
 - [x] 12 API routes + benchmark test (routing p90<100ms, others <2s)
 - [x] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
-- [ ] 14 Report eval/reports/<date>.md + JSON + charts; gate
+- [x] 14 Report eval/reports/<date>.md + JSON + charts; gate
 
 ## Needs from human
 - [ ] (non-blocking) Review ADR-0012 (441 disease names that equal HPO sign labels are exempt from the parent-text check; a few, e.g. "Acute myeloid leukemia", read as diagnoses)
