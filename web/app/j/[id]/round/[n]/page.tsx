@@ -59,7 +59,7 @@ function RoundForm({ id, token, round }: { id: string; token: string; round: Rou
       }}
     >
       <div>
-        <h1 ref={heading} tabIndex={-1} className="text-3xl">
+        <h1 ref={heading} tabIndex={-1} className="text-3xl focus:outline-none">
           Round {round.round_no}
         </h1>
         <p className="mt-2">{ROUND_INTRO}</p>
