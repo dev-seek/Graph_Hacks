@@ -76,7 +76,6 @@ def test_story_to_referral_on_fake(make_service: Any, case_ctx: dict[str, Any]) 
     pp = svc.phenopacket(res.family_id)
     validate_phenopacket(pp)
     assert pp["subject"]["sex"] == "MALE" and pp["phenotypicFeatures"]
-    assert any(f.get("excluded") for f in pp["phenotypicFeatures"]) or True
     letter_art = repo.latest_artifact("referral_letter")
     assert letter_art is not None and "Reason for referral" in letter_art["payload"]["text"]
     view = svc.clinician(res.family_id)

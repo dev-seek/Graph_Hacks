@@ -30,6 +30,7 @@ DEMO_DIR = ROOT / "data" / "demo"
 EMBED_CACHE = DEMO_DIR / "query_embeddings.json"
 NERVOUS_SYSTEM = "HP:0000707"
 TOP_TRIES = 25
+MIN_KABIR_ROUNDS = 2
 
 JOURNEYS: dict[str, dict[str, str]] = {
     "kabir": {
@@ -161,6 +162,7 @@ def kabir_script(svc: FamilyService, dc: DevCase) -> JourneyScript:
         accept=accept_related(known, svc.deps.reasoner.cache.ancestors),
         answer=lambda term, text: sim.answer(term),
         letter=lambda s, fid: letter,
+        advance_months=6,
         max_rounds=4,
     )
 
@@ -209,15 +211,19 @@ def run_all(svc: FamilyService, mode: str) -> tuple[dict[str, dict[str, Any]], d
     st = load_stories()["Kabir"]
     terms = story_terms_of(svc, st.story, load_letters()[1])
     best: dict[str, Any] | None = None
+    fallback: tuple[dict[str, Any], Pick] | None = None
     for sim_score, dc in candidate_cases(svc, terms, TOP_TRIES):
         res = run_journey(svc, kabir_script(svc, dc))
-        picks["kabir"] = Pick(dc.case.case_id, sim_score, len(dc.case.present), res.final_phase)
-        best = _record(
-            "kabir", res, mode, kb, {"case_id": dc.case.case_id, "similarity": sim_score}
-        )
+        pick = Pick(dc.case.case_id, sim_score, len(dc.case.present), res.final_phase)
+        doc = _record("kabir", res, mode, kb, {"case_id": dc.case.case_id, "similarity": sim_score})
         if res.final_phase == JOURNEYS["kabir"]["expected"]:
-            break
+            if res.rounds >= MIN_KABIR_ROUNDS:  # the reviewed path says "2 home rounds"
+                best, picks["kabir"] = doc, pick
+                break
+            fallback = fallback or (doc, pick)
         svc.delete_family(res.family_id)
+    if best is None and fallback is not None:
+        best, picks["kabir"] = fallback[0], fallback[1]
     if best is None:
         raise RuntimeError("no dev case matched the Kabir criteria")
     out["kabir"] = best

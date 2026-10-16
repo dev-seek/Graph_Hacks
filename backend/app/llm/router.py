@@ -112,7 +112,7 @@ class LLMRouter:
                 self.family_tokens[family_id] = used + spent
             log.info("llm_ok", task=task, mode=self.mode, attempt=attempt, family=family_id)
             return LLMResult(out, "llm")
-        return fell_back(f"invalid_after_repair:{error}")
+        return fell_back("invalid_after_repair")  # error text can echo parent words: not logged
 
     def _call(self, task: TaskId, messages: list[Message], schema: type[T], max_out: int) -> T:
         assert self.adapter is not None  # noqa: S101

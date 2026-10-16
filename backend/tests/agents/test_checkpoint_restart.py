@@ -31,3 +31,28 @@ def test_interrupt_resumes_in_a_fresh_process() -> None:
     resumed = _run("resume", thread)
     assert "FOUND ('ask',) question-1" in resumed
     assert "DONE yes" in resumed
+
+
+def test_real_agent_resumes_in_a_second_process() -> None:
+    import json
+
+    from tests.conftest import _kb_ready
+
+    if not _kb_ready():
+        pytest.skip("needs the built kb")
+    worker = Path(__file__).parent / "restart_family_worker.py"
+
+    def run(*args: str) -> dict[str, object]:
+        out = subprocess.run(  # noqa: S603 (fixed argv, our own worker script)
+            [sys.executable, str(worker), *args],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=True,
+            env={**__import__("os").environ, "PYTHONPATH": f"backend:{Path.cwd()}/backend"},
+        )
+        return json.loads(out.stdout.strip().splitlines()[-1])
+
+    a = run("start")
+    b = run("finish", str(a["fid"]), str(a["token"]), json.dumps(a["ids"]))
+    assert b["findings"] == ["HP:0030051"] and b["phase"] in ("questions", "watching")

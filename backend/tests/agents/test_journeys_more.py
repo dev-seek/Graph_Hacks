@@ -57,7 +57,7 @@ def test_arjun_no_escalation(make_service: Any) -> None:
             max_rounds=4,
         ),
     )
-    assert res.final_phase in ("watching", "questions")
+    assert res.final_phase == "watching"
     assert "referral_ready" not in [s["screen"] for s in res.steps]
     assert svc.deps.repo(res.family_id).latest_artifact("phenopacket") is None
 
@@ -67,7 +67,7 @@ def test_resume_after_restart_uses_a_new_service(make_service: Any) -> None:
     fid, token = svc1.create_family()
     out = svc1.submit_story(fid, "He walked on tiptoes for a few months.", 30, "male")
     assert out.extraction_to_confirm
-    svc2 = make_service("fake", scripted_llm(TIPTOE))  # new graph + saver objects: a "restart"
+    svc2 = make_service("fake", scripted_llm(TIPTOE))  # new graph, saver and connection
     assert svc2.authenticate(fid, token) and not svc2.authenticate(fid, token + "x")
     assert svc2.state(fid).phase == "confirm"
     st = svc2.confirm(fid, [i.id for i in out.extraction_to_confirm], [], [])
@@ -163,3 +163,24 @@ def test_watch_all_notifies_once_for_a_new_gate(make_service: Any) -> None:
     out = svc.submit_story(fid, "He walked on tiptoes for a few months.", 30, None)
     svc.confirm(fid, [i.id for i in out.extraction_to_confirm], [], [])
     assert svc.watch_all() >= 0  # runs over every family graph without raising
+
+
+def test_maya_story_never_reaches_the_llm(make_service: Any) -> None:
+    adapter = FakeAdapter()
+    svc = make_service("fake", adapter)
+    st = load_stories()["Maya"]
+    run_journey(svc, JourneyScript(story=st.story, age_months=st.age_months))
+    assert adapter.calls == []  # deterministic rules decided before any model call
+
+
+def test_kabir_with_llm_off_reaches_referral_on_the_recorded_case(make_service: Any) -> None:
+    from app.agents.demo import CachedEmbedder, kabir_script, load_demo
+    from app.eval.cases import load_dev_cases
+
+    svc = make_service("off")
+    svc.deps.resolver._embedder = CachedEmbedder(None)  # noqa: SLF001 (recorded query vectors)
+    case_id = load_demo("kabir")["case_id"]
+    dc = next(c for c in load_dev_cases(svc.deps.kb) if c.case.case_id == case_id)
+    res = run_journey(svc, kabir_script(svc, dc))
+    assert res.final_phase == "specialist_step"
+    assert svc.deps.router.adapter is None

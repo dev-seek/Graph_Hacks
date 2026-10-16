@@ -11,7 +11,9 @@ import re
 BANNED_WORDS = frozenset(
     """diagnosis diagnoses diagnosed diagnose syndrome disease disorder condition probability
     probable likelihood likely chance percent cancer tumour tumor carrier genetic mutation
-    chromosomal""".split()
+    chromosomal retardation retarded mongoloid idiot imbecile handicap handicapped crippled
+    deformed abnormal abnormality abnormalities anomaly anomalies morphology hypoplasia dysplasia
+    aplasia agenesis""".split()
 )
 # Disease-flavoured suffixes (-ism, -itis, -osis, -pathy, -emia, -oma, -oid) with lay exceptions.
 _SUFFIX = re.compile(r"\b[a-z]{2,}(?:ism|itis|osis|opathy|pathy|aemia|emia|oma|oid)\b")

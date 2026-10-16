@@ -48,3 +48,38 @@ def test_demo_routes_serve_recordings_without_a_graph() -> None:
     steps = c.get("/api/demo/kabir/steps").json()
     assert steps[0]["screen"] == "story" and steps[-1]["screen"] == "referral_ready"
     assert c.get("/api/demo/nobody/steps").status_code == 404
+
+
+def _strings(obj: Any, skip: frozenset[str] = frozenset({"quote", "disclaimer"})) -> list[str]:
+    out: list[str] = []
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k not in skip:
+                out += _strings(v, skip)
+    elif isinstance(obj, list):
+        for v in obj:
+            out += _strings(v, skip)
+    elif isinstance(obj, str):
+        out.append(obj)
+    return out
+
+
+@pytest.mark.parametrize("jid", sorted(JOURNEYS))
+def test_every_parent_facing_string_passes_the_wording_check(jid: str) -> None:
+    from app.llm.lexicon import violations
+
+    doc = load_demo(jid)
+    known: set[str] = set()
+    for step in doc["steps"]:
+        for c in step["payload"].get("clinician", {}).get("candidates", []):
+            known.add(c["name"].lower())
+    bad: list[tuple[str, str, list[str]]] = []
+    for step in doc["steps"]:
+        view = {k: v for k, v in step["payload"].items() if k not in INSPECTOR_KEYS}
+        for text in _strings(view):
+            low = text.lower()
+            hit = violations(text) if step["screen"] not in ("story",) else []
+            hit += [n for n in known if n in low]
+            if hit and step["screen"] in ("round", "see_doctor", "answers", "after_letter"):
+                bad.append((step["screen"], text[:80], hit))
+    assert bad == [], bad[:5]

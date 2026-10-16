@@ -34,12 +34,6 @@ from app.llm.settings import DEFAULT_PATH, LLMSettings, load_settings
 
 MIN_VALIDITY = 0.95
 MIN_SPAN_EXACT = 0.90
-# $ per million tokens (input, output) by model id; used only to rank profiles by cost.
-PRICES: dict[str, tuple[float, float]] = {
-    "claude-haiku-4-5": (1.0, 5.0),
-    "claude-sonnet-5-5": (2.0, 10.0),
-    "claude-opus-5-5": (4.0, 20.0),
-}
 STORIES = [
     "He was floppy as a baby and he does not walk yet. He has had many chest infections.",
     "She has had seizures since she was one. Her head looks small. She is not talking.",
@@ -165,7 +159,7 @@ def run_profile(
 
 
 def usage_cost(adapter: AnthropicAdapter, model: str) -> float:
-    pin, pout = PRICES.get(model, (0.0, 0.0))
+    pin, pout = adapter.settings.prices_usd_per_mtok.get(model, (0.0, 0.0))
     u = adapter.last_usage
     return (u.get("input", 0) * pin + u.get("output", 0) * pout) / 1_000_000
 

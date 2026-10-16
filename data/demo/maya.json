@@ -14,49 +14,49 @@
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.4,
+      "ms": 0.35,
       "name": "f_get_family",
       "params": {
-       "id": "5450afa20250427f"
+       "id": "3b104ff7e5cd4a5b"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.35,
+      "ms": 0.32,
       "name": "f_get_state",
       "params": {
-       "id": "5450afa20250427f"
+       "id": "3b104ff7e5cd4a5b"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nSET c.age_months_at_start = $age, c.sex = coalesce($sex, c.sex)\nRETURN c.age_months_at_start AS age",
-      "ms": 0.39,
+      "ms": 0.4,
       "name": "f_set_age",
       "params": {
        "age": 20,
-       "id": "5450afa20250427f",
+       "id": "3b104ff7e5cd4a5b",
        "sex": "female"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (s:Story {text_hash: $hash})\nON CREATE SET s.at = $at\nRETURN s.text_hash AS hash",
-      "ms": 0.33,
+      "ms": 0.34,
       "name": "f_add_story",
       "params": {
-       "at": "2026-10-15T17:46:02.227+00:00",
+       "at": "2026-10-16T02:14:04.965+00:00",
        "hash": "156e068c52b2181115cb9b16635d12b557e852150a00eb0205cf47eed3e115cc"
       },
       "rows": 1
      },
      {
       "cypher": "MERGE (f:Flag {rule_id: $rule_id, quote_hash: $qhash})\nON CREATE SET f.level = $level, f.at = $at, f.quote = $quote\nRETURN f.rule_id AS rule_id",
-      "ms": 0.43,
+      "ms": 0.39,
       "name": "f_add_flag",
       "params": {
-       "at": "2026-10-15T17:46:02.230+00:00",
+       "at": "2026-10-16T02:14:04.967+00:00",
        "level": "EMERGENCY",
        "qhash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
        "quote": "<redacted>",
@@ -66,10 +66,10 @@
      },
      {
       "cypher": "MERGE (f:Flag {rule_id: $rule_id, quote_hash: $qhash})\nON CREATE SET f.level = $level, f.at = $at, f.quote = $quote\nRETURN f.rule_id AS rule_id",
-      "ms": 0.38,
+      "ms": 0.31,
       "name": "f_add_flag",
       "params": {
-       "at": "2026-10-15T17:46:02.233+00:00",
+       "at": "2026-10-16T02:14:04.969+00:00",
        "level": "EMERGENCY",
        "qhash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
        "quote": "<redacted>",
@@ -79,10 +79,10 @@
      },
      {
       "cypher": "MERGE (e:Event {id: $id})\nON CREATE SET e.kind = $kind, e.label = $label, e.at = $at\nRETURN e.id AS id",
-      "ms": 0.39,
+      "ms": 0.32,
       "name": "f_add_event",
       "params": {
-       "at": "2026-10-15T17:46:02.233+00:00",
+       "at": "2026-10-16T02:14:04.970+00:00",
        "id": "story_156e068c52b2",
        "kind": "story",
        "label": "<redacted>"
@@ -91,20 +91,20 @@
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.34,
+      "ms": 0.26,
       "name": "f_get_state",
       "params": {
-       "id": "5450afa20250427f"
+       "id": "3b104ff7e5cd4a5b"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nSET f.phase = $phase, f.round_no = $round_no, f.updated_at = $at\nRETURN f.phase AS phase",
-      "ms": 0.37,
+      "ms": 0.29,
       "name": "f_set_state",
       "params": {
-       "at": "2026-10-15T17:46:02.234+00:00",
-       "id": "5450afa20250427f",
+       "at": "2026-10-16T02:14:04.970+00:00",
+       "id": "3b104ff7e5cd4a5b",
        "phase": "urgent",
        "round_no": 0
       },
@@ -151,25 +151,25 @@
     "queries": [
      {
       "cypher": "MATCH (f:Family {id: $id})-[:HAS_CHILD]->(c:Child)\nRETURN f.id AS id, f.kb_version AS kb_version, f.consent_centre AS consent,\n       c.age_months_at_start AS age_months, c.sex AS sex, f.created_at AS created_at",
-      "ms": 0.37,
+      "ms": 0.31,
       "name": "f_get_family",
       "params": {
-       "id": "5450afa20250427f"
+       "id": "3b104ff7e5cd4a5b"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Family {id: $id})\nRETURN f.phase AS phase, f.round_no AS round_no, f.updated_at AS updated_at",
-      "ms": 0.35,
+      "ms": 0.27,
       "name": "f_get_state",
       "params": {
-       "id": "5450afa20250427f"
+       "id": "3b104ff7e5cd4a5b"
       },
       "rows": 1
      },
      {
       "cypher": "MATCH (f:Flag)\nRETURN f.rule_id AS rule_id, f.level AS level, f.at AS at\nORDER BY f.at",
-      "ms": 0.36,
+      "ms": 0.29,
       "name": "f_list_flags",
       "params": {},
       "rows": 2

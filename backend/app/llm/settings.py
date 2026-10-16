@@ -44,6 +44,7 @@ class LLMSettings(BaseModel):
     embeddings: dict[str, str] = Field(default_factory=dict)
     budget: Budget = Budget()
     timeout_s: float = 30.0
+    prices_usd_per_mtok: dict[str, tuple[float, float]] = Field(default_factory=dict)
 
     def profile_for(self, task: str) -> Profile:
         name = self.chosen.get(task) or (self.candidates.get(task) or ["fast"])[0]

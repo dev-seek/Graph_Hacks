@@ -25,11 +25,24 @@ from app.engine.scoring import (
     score_round,
 )
 from app.graph.client import rows as run
+from app.llm.lexicon import violations
 
 MAX_DEPTH = 20
 MIN_ASKABLE_DEPTH = 3
 TOP_CANDIDATES = 50
 ANCESTOR_TIMEOUT_MS = 10_000
+
+
+def parent_askable(row: dict[str, Any]) -> bool:
+    """A question a parent can be shown (ADR-0011).
+
+    Wording must pass the lexicon; a home question also needs a real lay synonym, otherwise its
+    label is raw medical jargon that a parent cannot answer.
+    """
+    text = f"{row['question']} {row.get('plain') or ''}"
+    if violations(text):
+        return False
+    return row["obs"] != "home" or " | " in (row.get("lay") or "")
 
 
 class GraphUnavailable(RuntimeError):
@@ -157,7 +170,12 @@ class Reasoner:
         if candidates_terms:
             ids = sorted(candidates_terms)
             for r in _run(self.graph, "q3b_askable", {"askable": ids}):
-                if r["question"] and r["obs"] and (r["depth"] or 0) >= MIN_ASKABLE_DEPTH:
+                if (
+                    r["question"]
+                    and r["obs"]
+                    and (r["depth"] or 0) >= MIN_ASKABLE_DEPTH
+                    and parent_askable(r)
+                ):
                     askable[str(r["id"])] = Askable(
                         str(r["id"]),
                         r["obs"],

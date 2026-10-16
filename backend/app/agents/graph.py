@@ -202,6 +202,12 @@ def build_agent(deps: AgentDeps, saver: Any) -> CompiledStateGraph[Any, Any, Any
         assert info is not None  # noqa: S101
         n = int(ev["round_no"])
         by_q = {r["qid"]: r for r in repo.round(n)}
+        plain = {
+            str(r["id"]): str(r["plain"] or r["name"])
+            for r in rows(
+                deps.kb, "q7_question_copy", {"ids": [q["term_id"] for q in by_q.values()]}
+            )
+        }
         yes_terms: list[str] = []
         for a in ev["answers"]:
             q = by_q.get(a["qid"])
@@ -214,7 +220,7 @@ def build_agent(deps: AgentDeps, saver: Any) -> CompiledStateGraph[Any, Any, Any
                 repo.copy_termrefs(names, edges)
                 fid = repo.add_finding(
                     term_id=q["term_id"],
-                    label=str(q["text"]),
+                    label=str(plain.get(q["term_id"]) or q["term_id"]),
                     status=status,
                     source="parent_answer",
                     ev_kind="answer",

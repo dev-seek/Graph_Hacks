@@ -61,3 +61,9 @@ Versions: langgraph 1.2.15, langgraph-checkpoint 4.3.0, langchain-falkordb 0.2.0
 ## Anthropic adapter request shape (P3 task 2, 2026-10-15) — offline only, live NOT measured
 SDK `anthropic==1.14.0` (httpx2-based). Verified against a stub transport (`backend/tests/llm/test_anthropic_adapter.py`):
 `client.messages.parse(model, max_tokens, system=[{type:text, text, cache_control:{type:ephemeral}}], messages, output_format=<Pydantic>)` sends `output_config.format.type=json_schema` and returns `parsed_output`; advisor profiles use `client.beta.messages.parse(..., betas=["advisor-tool-2026-03-01"], tools=[{type:"advisor_20260301", name:"advisor", model, max_uses, max_tokens}])`. `stop_reason` `refusal`/`max_tokens` -> `LLMUnavailable` -> fallback. Model id `claude-haiku-5-5` (spec) replaced by `claude-haiku-4-5` (ADR-0009). Live behaviour (advisor + structured output together, real costs) is unmeasured: no key.
+
+## MCP SDK 2.x, Phenopacket validation, pypdf (P3, 2026-10-16)
+- `mcp==2.3.0`: `from mcp.server.fastmcp import FastMCP` no longer exists; use `from mcp.server.mcpserver import MCPServer` (`@server.tool(name=...)`, `.run("stdio" | "streamable-http")`) and `from mcp.client import Client` (`async with Client(server) as c: c.list_tools(); c.call_tool(name, args)`, in-process). Test: `backend/tests/test_mcp_server.py`.
+- `phenopackets==2.0.2.post5` (official GA4GH protobuf classes): `google.protobuf.json_format.ParseDict(doc, Phenopacket(), ignore_unknown_fields=False)` rejects unknown or mistyped fields; used by `app.agents.packs.validate_phenopacket`.
+- `pypdf==6.20.1`: `PdfReader(BytesIO(data)).pages[i].extract_text()` reads `data/fixtures/sample_letter.pdf`; garbage input raises and becomes HTTP 409.
+- FastAPI in this lockfile wraps included routers (`app.routes` holds `_IncludedRouter`), so route enumeration for tests uses the OpenAPI document.

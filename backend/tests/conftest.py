@@ -29,9 +29,8 @@ requires_kb = pytest.mark.skipif(not _kb_ready(), reason="needs the built kb (ma
 
 @pytest.fixture(scope="session")
 def make_service() -> Iterator[object]:
-    saver = FalkorDBSaver(database="langgraph_checkpoints_test")
-
     def factory(mode: str = "fake", adapter: FakeAdapter | None = None) -> FamilyService:
+        saver = FalkorDBSaver(database="langgraph_checkpoints_test")  # fresh connection each time
         router = LLMRouter(mode=mode, adapter=adapter if mode == "fake" else None)  # type: ignore[arg-type]
         deps = AgentDeps.build(router=router, embedder=NoEmbedder())
         return FamilyService(deps, saver)
