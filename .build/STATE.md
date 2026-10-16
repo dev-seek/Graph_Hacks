@@ -18,7 +18,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
 - [x] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
 - [ ] 4 Start frozen run in background (lpo + standard)
-- [ ] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
+- [x] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
 - [ ] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
 - [ ] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
 - [ ] 8 Q8 algorithms (bridges, WCC, label propagation)

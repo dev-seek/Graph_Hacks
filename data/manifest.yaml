@@ -24,3 +24,13 @@ sources:
     version: 0.1.27
     url: https://github.com/monarch-initiative/phenopacket-store/releases/download/0.1.27/all_phenopackets.zip
     sha256: d0c70005bb09b87035087516252b6b539fbc0415be7c664b73c9cde7eedf205a
+  hp_json_prev:
+    file: hp_v2025-09-01.json
+    version: v2025-09-01
+    url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2025-09-01/hp.json
+    sha256: 6327923417bf3d66953de48733cbce8d455ef2fe7f799e16ae27a2da571fa4bc
+  hpoa_prev:
+    file: phenotype_v2025-09-01.hpoa
+    version: v2025-09-01
+    url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2025-09-01/phenotype.hpoa
+    sha256: 67c073f4a9f11181df05c7396c4748a63529c14ca90ae8cd2e0f96cacd68f0ea

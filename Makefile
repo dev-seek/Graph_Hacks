@@ -7,7 +7,7 @@ export PATH := /opt/homebrew/opt/node@22/bin:$(PATH)
 RUN := scripts/run_logged.sh
 NYI = @echo "$(1): not yet implemented ($(2))"
 
-.PHONY: lighthouse lexicon setup data kb up down check test-int llm-key-check review-check openapi eval-smoke eval llm-contract demo-record demo-replay web e2e
+.PHONY: kb-prev lighthouse lexicon setup data kb up down check test-int llm-key-check review-check openapi eval-smoke eval llm-contract demo-record demo-replay web e2e
 
 setup:
 	@$(RUN) setup bash -c "uv sync && ( [ ! -f web/package.json ] || pnpm --dir web install --frozen-lockfile ) && (uv run pre-commit install || true)"
@@ -17,6 +17,9 @@ data:
 
 kb:
 	@$(RUN) kb env PYTHONPATH=backend uv run python -m app.kb.cli
+
+kb-prev:
+	@$(RUN) kb-prev env PYTHONPATH=backend uv run python -m app.kb.prev
 
 up:
 	@$(RUN) up docker compose up -d --wait falkordb api
