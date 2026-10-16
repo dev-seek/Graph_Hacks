@@ -1,4 +1,4 @@
-"""Frozen-split evaluation runner (spec §14, ADR-0014).
+"""Frozen-split evaluation runner (spec §14, ADR-0013).
 
 Runs the pre-registered plan on a split (`dev` for dry runs, `test` for the frozen run) and
 appends one JSON line per finished (kb, strategy, no_rate, case) to a git-ignored checkpoint file.
@@ -44,7 +44,7 @@ class Job:
 
 
 def plan() -> list[Job]:
-    """Pre-registered scope (ADR-0014)."""
+    """Pre-registered scope (ADR-0013)."""
     jobs = [Job("lpo", s, 0.10) for s in ("ours", "b1", "b2")]
     jobs += [Job("std", s, 0.10) for s in ("ours", "b1", "b2")]
     jobs += [Job("lpo", "ours", 0.0), Job("lpo", "ours", 0.30)]
@@ -67,7 +67,7 @@ def graph_names() -> dict[str, str]:
 
 
 def case_list(split: str) -> list[DevCase]:
-    """Case list fixed on the STANDARD kb and reused for the lpo run (ADR-0014)."""
+    """Case list fixed on the STANDARD kb and reused for the lpo run (ADR-0013)."""
     cache = FROZEN_DIR / f"{split}_cases.json"
     if cache.exists():
         return [DevCase.model_validate(x) for x in json.loads(cache.read_text())]

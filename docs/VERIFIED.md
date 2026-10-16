@@ -73,7 +73,7 @@ Pinned exactly in `web/package.json` (pnpm lockfile): `openapi-typescript 7.13.0
 
 ## Centre algorithms and GRAPH.COPY on falkordb/falkordb:6.0.2 (P5 task 1, 2026-10-16)
 Probe on a 5-node toy graph (3 Case, 2 Term). `CALL dbms.procedures()` lists: `algo.BFS, HarmonicCentrality, MSF, SPpaths, SSpaths, WCC, betweenness, labelPropagation, maxFlow, pageRank`.
-- `algo.betweenness({nodeLabels, relationshipTypes, samplingSize, samplingSeed})` YIELD `node, score` works with those keys; unknown keys fail with `Unknown parameter: <key>`. **Edges are followed in their stored direction only** (no orientation option): on `(:Case)-[:PRESENTED_WITH]->(:Term)` every score is 0.0. Adding the reverse edge type (`(:Term)-[:PRESENTED_IN]->(:Case)`) and listing both types in `relationshipTypes` gives non-zero scores (t1 = t2 = 6, case b = 8). Centre seed therefore writes the reverse edge (ADR-0013).
+- `algo.betweenness({nodeLabels, relationshipTypes, samplingSize, samplingSeed})` YIELD `node, score` works with those keys; unknown keys fail with `Unknown parameter: <key>`. **Edges are followed in their stored direction only** (no orientation option): on `(:Case)-[:PRESENTED_WITH]->(:Term)` every score is 0.0. Adding the reverse edge type (`(:Term)-[:PRESENTED_IN]->(:Case)`) and listing both types in `relationshipTypes` gives non-zero scores (t1 = t2 = 6, case b = 8). Centre seed therefore writes the reverse edge (ADR-0014).
 - `algo.WCC({nodeLabels, relationshipTypes})` YIELD `node, componentId` works (weak components).
 - `algo.labelPropagation({nodeLabels, relationshipTypes, maxIterations})` YIELD `node, communityId` works.
 - `Graph.copy(dest)` (GRAPH.COPY) works from the python client.

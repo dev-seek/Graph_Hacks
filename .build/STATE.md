@@ -14,9 +14,9 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [ ] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
-- [ ] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
-- [ ] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
+- [x] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
+- [x] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
+- [x] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
 - [ ] 4 Start frozen run in background (lpo + standard)
 - [ ] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
 - [ ] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)

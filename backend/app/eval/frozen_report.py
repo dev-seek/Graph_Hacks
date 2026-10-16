@@ -15,10 +15,10 @@ from collections.abc import Sequence
 from datetime import date
 from typing import Any
 
+from app.engine.config import PATH as ENGINE_YAML
 from app.engine.config import tuned_taus
 from app.engine.gates import Taus
 from app.engine.reasoner import Reasoner
-from app.engine.config import PATH as ENGINE_YAML
 from app.eval.cases import DevCase
 from app.eval.frozen import (
     ROUNDS,
@@ -173,9 +173,7 @@ def build(split: str) -> dict[str, Any]:
             "referral": referral(traces.get(f"{kb}:ours:0.10", {}), ids, taus),
         }
         rep[kb]["negatives"], runs = negatives_for(kb, taus)
-        rep[kb]["tau_sweep"] = sweep_summary(
-            [t for i, t in traces.get(f"{kb}:ours:0.10", {}).items()], runs
-        )
+        rep[kb]["tau_sweep"] = sweep_summary(list(traces.get(f"{kb}:ours:0.10", {}).values()), runs)
     rep["no_rate_sweep"] = {}
     for nr in ("0.00", "0.10", "0.30"):
         t = traces.get(f"lpo:ours:{nr}", {})
