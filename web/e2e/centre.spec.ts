@@ -13,7 +13,7 @@ test("centre dashboard: routing, ask, groups, bridges; no axe violations; 360 px
   // routing shows five look-alikes, each with a clinician and a protocol
   const rows = page.getByRole("table", { name: "Closest solved look-alike cases" }).locator("tbody tr");
   await expect(rows).toHaveCount(5, { timeout: 15_000 });
-  await expect(page.getByText(/^Suggested: Clinician/)).toBeVisible();
+  await expect(page.getByText(/^Suggested \(for staff to confirm\): Clinician/)).toBeVisible();
   // ask the centre (keyword path: the e2e API runs with LLM_MODE=off)
   await page.getByRole("button", { name: "Which protocol is fastest?" }).click();
   await expect(page.getByText(/Fastest on average/)).toBeVisible();
@@ -45,6 +45,6 @@ test("centre dashboard: knowledge-update re-check", async ({ page }) => {
   await page.goto("/centre");
   await page.getByRole("button", { name: /Re-check open cases on kb_/ }).click();
   await expect(page.getByText(/open cases rescored on kb_/)).toBeVisible({ timeout: 150_000 });
-  await expect(page.getByText(/the live centre is unchanged/)).toBeVisible();
+  await expect(page.getByText(/The live centre is unchanged/)).toBeVisible();
   await axeClean(page);
 });

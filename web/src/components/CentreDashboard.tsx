@@ -31,7 +31,9 @@ export function CentreDashboard({ overview }: { overview: Overview }) {
   return (
     <div className="space-y-8">
       <Notice title={CENTRE_DATA_LABEL}>
-        <p>{CENTRE_DISCLAIMER}</p>
+        <p>
+          <strong>For clinic staff only. Not a diagnosis.</strong> {CENTRE_DISCLAIMER}
+        </p>
         <p className="mt-2 text-muted">
           {overview.cases} cases · {overview.resolved} solved · {overview.clinicians} clinicians ·{" "}
           {overview.protocols} protocols · knowledge base {overview.kb_version}
@@ -100,16 +102,16 @@ function Routing({
         <div className="mt-4 space-y-4">
           <div className="rounded-xl border-2 border-sage p-4" aria-live="polite">
             <p className="font-bold">
-              Suggested: {route.data.suggested_clinician ?? "no clinician"}
+              Suggested (for staff to confirm): {route.data.suggested_clinician ?? "no clear match yet"}
               {route.data.suggested_specialty ? ` (${route.data.suggested_specialty})` : ""}
             </p>
             <p>
-              Protocol: {route.data.suggested_protocol ?? "none"}
+              Protocol: {route.data.suggested_protocol ?? "no clear match yet"}
               {route.data.suggested_tests?.length ? ` — ${route.data.suggested_tests.join(", ")}` : ""}
-              {route.data.expected_days ? ` — usually about ${route.data.expected_days} days` : ""}
+              {route.data.expected_days ? ` — similar solved cases took about ${route.data.expected_days} days` : ""}
             </p>
           </div>
-          <div className="overflow-x-auto" tabIndex={0}>
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Look-alike cases table, scrollable">
             <table className="w-full min-w-[40rem] border-collapse">
               <caption className="sr-only">Closest solved look-alike cases</caption>
               <thead>
@@ -119,7 +121,7 @@ function Routing({
                   <th scope="col" className={th}>Shared signs</th>
                   <th scope="col" className={th}>Clinician</th>
                   <th scope="col" className={th}>Protocol</th>
-                  <th scope="col" className={th}>Days</th>
+                  <th scope="col" className={th}>Days to solve</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,7 +145,7 @@ function Routing({
               </tbody>
             </table>
           </div>
-          <p className="text-sm text-muted">{route.data.disclaimer}</p>
+          <p>{route.data.disclaimer}</p>
         </div>
       ) : route.loading && caseId ? (
         <Loading what="look-alikes" />
@@ -175,7 +177,7 @@ function AskCentre() {
         Ask the centre
       </h2>
       <p className="text-muted">
-        Questions are matched to a fixed set of checks on the case memory. Nothing is typed into the database.
+        Your question is matched to a fixed list of safe checks. Nothing you type is run as a query.
       </p>
       <form
         className="mt-3 flex flex-wrap items-end gap-3"
@@ -236,13 +238,13 @@ function Bridges() {
       <h2 id="cx-bridge" className="text-xl">
         Signs that link groups of cases
       </h2>
-      <p className="text-muted">The signs that sit between the most pairs of cases (betweenness, sampled).</p>
+      <p className="text-muted">Signs that connect the most pairs of cases. Counted on a sample, so treat the scores as rough.</p>
       {load.error ? <ErrorBox message={load.error} onRetry={load.reload} /> : null}
       {load.data ? (
         <ol className="mt-2 space-y-1">
           {load.data.map((b) => (
             <li key={b.term_id}>
-              {b.name} <span className="text-sm text-muted">({b.term_id} · score {Math.round(b.score)})</span>
+              {b.name} <span className="text-sm text-muted">({b.term_id}, link score {Math.round(b.score)})</span>
             </li>
           ))}
         </ol>
@@ -271,8 +273,8 @@ function Clusters({ setCaseId }: { setCaseId: (id: string) => void }) {
       </div>
       <p className="mt-2 text-sm text-muted">
         {method === "lp"
-          ? "Label propagation over each case's five closest cases."
-          : "Connected groups of cases with a strong overlap (score 0.30 or more)."}
+          ? "Groups found by letting each case join the group most of its five closest cases belong to."
+          : "Groups where every case shares many signs with another (similarity 0.30 or higher). Connected groups of cases with a strong overlap."}
       </p>
       {load.error ? <ErrorBox message={load.error} onRetry={load.reload} /> : null}
       {load.data ? (
@@ -281,7 +283,7 @@ function Clusters({ setCaseId }: { setCaseId: (id: string) => void }) {
             <li key={c.cluster_id}>
               <strong>{c.size} cases:</strong>{" "}
               {c.cases.slice(0, 8).map((id) => (
-                <button key={id} type="button" className="mr-2 min-h-11 underline" onClick={() => setCaseId(id)}>
+                <button key={id} type="button" className="mr-2 inline-flex min-h-11 min-w-11 items-center px-2 underline" aria-label={`Select case ${id}`} onClick={() => setCaseId(id)}>
                   {id}
                 </button>
               ))}
@@ -306,14 +308,14 @@ function Protocols() {
         Protocols and clinicians
       </h2>
       <div className="mt-2 grid gap-6 md:grid-cols-2">
-        <div className="overflow-x-auto" tabIndex={0}>
+        <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Protocols table, scrollable">
           <table className="w-full min-w-[20rem] border-collapse">
             <caption className="sr-only">Protocols by speed</caption>
             <thead>
               <tr className="border-b border-border">
                 <th scope="col" className={th}>Protocol</th>
                 <th scope="col" className={th}>Cases</th>
-                <th scope="col" className={th}>Avg days</th>
+                <th scope="col" className={th}>Average days</th>
               </tr>
             </thead>
             <tbody>
@@ -327,7 +329,7 @@ function Protocols() {
             </tbody>
           </table>
         </div>
-        <div className="overflow-x-auto" tabIndex={0}>
+        <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Clinicians table, scrollable">
           <table className="w-full min-w-[20rem] border-collapse">
             <caption className="sr-only">Cases per clinician</caption>
             <thead>
@@ -378,8 +380,7 @@ function WhatIfPanel({ kb, setCaseId }: { kb: string; setCaseId: (id: string) =>
         When the knowledge base updates
       </h2>
       <p className="text-muted">
-        Open cases were last checked against an older release. This copies the centre, re-scores every open case on{" "}
-        {kb} and lists the ones that now show a much stronger rare-disease pattern.
+        Open cases were last checked against an older release. This makes a copy of the centre, re-checks every open case against {kb}, and lists the cases whose pattern changed a lot. The live centre is not changed.
       </p>
       <div className="mt-3">
         <Button onClick={() => void run()} disabled={busy}>
@@ -393,17 +394,17 @@ function WhatIfPanel({ kb, setCaseId }: { kb: string; setCaseId: (id: string) =>
           <div className="space-y-3">
             <p className="font-bold">{res.summary}</p>
             <p className="text-sm text-muted">
-              Done in {Math.round(res.ms)} ms on a copy of the graph ({res.graph}); the live centre is unchanged.
+              Finished in {Math.round(res.ms)} ms on a copy ({res.graph}). The live centre is unchanged.
             </p>
             {(res.details ?? []).length > 0 ? (
-              <div className="overflow-x-auto" tabIndex={0}>
+              <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Changed cases table, scrollable">
                 <table className="w-full min-w-[24rem] border-collapse">
-                  <caption className="sr-only">Open cases whose picture changed</caption>
+                  <caption className="sr-only">Open cases whose picture changed. Scores run from 0 to 1; the line is 0.50, where a specialist look is suggested.</caption>
                   <thead>
                     <tr className="border-b border-border">
                       <th scope="col" className={th}>Case</th>
-                      <th scope="col" className={th}>Before</th>
-                      <th scope="col" className={th}>After</th>
+                      <th scope="col" className={th}>Before (match score)</th>
+                      <th scope="col" className={th}>After (match score)</th>
                       <th scope="col" className={th}>Change</th>
                     </tr>
                   </thead>
@@ -411,13 +412,13 @@ function WhatIfPanel({ kb, setCaseId }: { kb: string; setCaseId: (id: string) =>
                     {(res.details ?? []).map((d) => (
                       <tr key={d.case_id} className="border-b border-line">
                         <th scope="row" className={td}>
-                          <button type="button" className="min-h-11 underline" onClick={() => setCaseId(d.case_id)}>
+                          <button type="button" className="inline-flex min-h-11 min-w-11 items-center px-2 underline" aria-label={`Select case ${d.case_id}`} onClick={() => setCaseId(d.case_id)}>
                             {d.case_id}
                           </button>
                         </th>
                         <td className={td}>{d.before.toFixed(2)}</td>
                         <td className={td}>{d.after.toFixed(2)}</td>
-                        <td className={td}>{d.direction === "crosses_up" ? "now above the line" : "now below the line"}</td>
+                        <td className={td}>{d.direction === "crosses_up" ? "moved above the line" : "moved below the line"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -447,7 +448,7 @@ function Notes({ caseId }: { caseId: string }) {
   }
   return (
     <Card aria-labelledby="cx-notes">
-      <h2 id="cx-notes" className="text-xl">
+      <h2 id="cx-notes" className="text-xl" aria-live="polite">
         Notes on {caseId}
       </h2>
       <ul className="mt-2 space-y-2">
@@ -498,7 +499,7 @@ function QueryLog() {
       <h2 id="cx-log" className="text-xl">
         Graph queries behind this page
       </h2>
-      <p className="text-muted">Every number here is a registered query on the FalkorDB centre graph.</p>
+      <p className="text-muted">Every number here comes from a saved query on the centre graph. You can read each one below.</p>
       <Button tone="secondary" className="mt-2" aria-expanded={show} onClick={() => setShow(!show)}>
         {show ? "Hide recent queries" : "Show recent queries"}
       </Button>
@@ -513,7 +514,7 @@ function QueryLog() {
                     {q.rows} rows · {q.ms.toFixed(1)} ms
                   </span>
                 </summary>
-                <pre className="overflow-x-auto rounded-lg bg-night p-3 text-xs text-card">{q.cypher}</pre>
+                <pre tabIndex={0} role="region" aria-label="Query text" className="overflow-x-auto rounded-lg bg-night p-3 text-xs text-card">{q.cypher}</pre>
               </details>
             </li>
           ))}

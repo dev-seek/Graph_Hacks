@@ -64,7 +64,7 @@ export const PARENT_BANNED = [
 // --- Centre dashboard (clinician-facing) -------------------------------------------------------
 export const CENTRE_DATA_LABEL = "Illustrative clinic data";
 export const CENTRE_DISCLAIMER =
-  "These are made-up cases built from published research records, with role names instead of people. They show how a clinic's shared memory could work. Decision support for clinic staff only; not a diagnosis.";
+  "These are made-up cases. They are built from published research records and use role names, not people. They show how a clinic's shared memory could work. This is decision support for clinic staff. It is not a diagnosis.";
 export const CENTRE_QUESTIONS = [
   "Which signs connect different groups of cases?",
   "Which protocol is fastest?",

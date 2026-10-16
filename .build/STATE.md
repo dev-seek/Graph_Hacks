@@ -26,7 +26,7 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 10 What-if (GRAPH.COPY, rescore open cases, KbUpdate)
 - [x] 11 Ask the centre (centre_template_pick, fallback, whitelist)
 - [x] 12 API routes + benchmark test (routing p90<100ms, others <2s)
-- [ ] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
+- [x] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
 - [ ] 14 Report eval/reports/<date>.md + JSON + charts; gate
 
 ## Needs from human
@@ -55,6 +55,7 @@ Non-blocking (do when convenient):
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
+- P5 frozen run: `.build/frozen/test_checkpoint.jsonl` (git-ignored, never open it). Resume: `PYTHONPATH=backend nohup uv run python -u -m app.eval.frozen test all 6`; progress in .build/logs/frozen-test.log. Then `python -m app.eval.frozen_report test` and `python -m app.eval.frozen_render <json>`. Do not run e2e/builds while it runs (FalkorDB crashed once under load; error rows are retried on resume). `make centre` after any FalkorDB restart (centre graph is not persisted until a BGSAVE).
 - phase_start P5: 35ca415 (= tag P4-done)
 - P4 handoff (known gaps): inspector replays RECORDED queries (/debug/queries is live but the UI does not call it; a live "run my family" panel needs an API/ADR); doctor step "Why now" shows the pack summary, not §4.2's three plain reasons; example story gives 1 question in round 1 (copy promises 3-5); with no key the demo clinician view/Phenopacket contain junk findings ("Community Paediatrics Clinic", "DOB…", "No seizures reported" as present): don't linger on them in the video; no-key story reader only splits clauses (free narratives end at "watching").
 - Video should show: landing → example story → round → /demo/kabir?judge=1 (queries, gate numbers, graph) → pack print → clinician view → Phenopacket download → Maya urgent.
