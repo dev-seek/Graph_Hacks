@@ -56,3 +56,64 @@ h3 {
 .on-night :focus-visible {
   outline-color: var(--starlight);
 }
+
+/* Constellation stars fade in; static when the visitor asks for reduced motion (spec §4.2). */
+.cx-star {
+  animation: cx-fade 0.7s ease-out both;
+}
+@keyframes cx-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-star {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+a {
+  color: var(--night);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.on-night a {
+  color: var(--card);
+}
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--night);
+  color: var(--card);
+  padding: 0.75rem 1rem;
+  z-index: 50;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* Print: one clean page, A4 and Letter share the same safe area (no fixed @page size). */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    font-size: 11pt;
+  }
+  @page {
+    margin: 14mm 12mm;
+  }
+  .print-page {
+    max-width: 7.2in;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+}

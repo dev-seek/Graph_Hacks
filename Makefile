@@ -7,7 +7,7 @@ export PATH := /opt/homebrew/opt/node@22/bin:$(PATH)
 RUN := scripts/run_logged.sh
 NYI = @echo "$(1): not yet implemented ($(2))"
 
-.PHONY: setup data kb up down check test-int llm-key-check review-check openapi eval-smoke eval llm-contract demo-record demo-replay web e2e
+.PHONY: lexicon setup data kb up down check test-int llm-key-check review-check openapi eval-smoke eval llm-contract demo-record demo-replay web e2e
 
 setup:
 	@$(RUN) setup bash -c "uv sync && ( [ ! -f web/package.json ] || pnpm --dir web install --frozen-lockfile ) && (uv run pre-commit install || true)"
@@ -54,6 +54,9 @@ demo-record:
 
 demo-replay:
 	@$(RUN) demo-replay env PYTHONPATH=backend LLM_MODE=replay uv run python -m app.agents.demo_cli replay
+
+lexicon:
+	@uv run python scripts/export_lexicon.py --probe
 
 web:
 	pnpm --dir web dev

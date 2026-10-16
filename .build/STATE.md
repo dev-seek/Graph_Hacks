@@ -14,9 +14,9 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [ ] 1. Web tooling: pinned deps (openapi-typescript, vitest, RTL, playwright, axe, cytoscape, lucide, qrcode), /api rewrite, generated types + sync check, VERIFIED.md entries
+- [x] 1. Web tooling: pinned deps (openapi-typescript, vitest, RTL, playwright, axe, cytoscape, lucide, qrcode), /api rewrite, generated types + sync check, VERIFIED.md entries
 - [ ] 2. copy.ts (all §6.4/§6.5 strings) + shared layout shell, header with "How it works", disclaimer footer
-- [ ] 3. Lexicon probe: disease-name lexicon from FalkorDB vs recorded demo parent payloads; ADR if collisions (rule 1)
+- [x] 3. Lexicon probe: disease-name lexicon from FalkorDB vs recorded demo parent payloads; ADR if collisions (rule 1)
 - [ ] 4. Landing `/`, `/start` (consent-lite, example story), `/help`, `/about`
 - [ ] 5. Journey: `/j/[id]` home, token handling, confirm, round/[n] (aria-live), constellation SVG
 - [ ] 6. Doctor step, timeline, printable `/j/[id]/pack` (A4+Letter overlap, QR with fragment code)
@@ -44,6 +44,7 @@ Non-blocking (do when convenient):
 - [ ] Write the blog post from docs/submission/blog_outline.md (after P6)
 
 ## Decisions made during the build
+- P4: lexicon probe (scripts/export_lexicon.py, 20,087 disease names, `make lexicon`) found 0 collisions with recorded demo parent text, even at min length 4: no ADR needed. `CLINICIAN_DISCLAIMER` in frozen schemas.py is not the §6.5 text; web shows §6.5 verbatim from `web/src/copy.ts` (API field left unchanged). "Use an example story" auto-confirms (made-up, labelled) so round 1 is two clicks away.
 - Spec §10 model id `claude-haiku-5-5` is not a verified id; `config/llm.yaml` uses `claude-haiku-4-5` (conflict with the locked spec, AGENTS.md rule wins; ADR-0009). Parent-askable filter changes planner inputs (ADR-0011).
 - P3 demos recorded with LLM_MODE=off (no ANTHROPIC_API_KEY): fallback extraction + parent accepting list items related to the matched dev case. Kabir case PMID_33674768_Patient_55_This_study (14 signs, similarity 0.379, REFERRAL_READY), Arjun = neg08 (no escalation), Maya urgent. Query embeddings cached in data/demo/query_embeddings.json so replay needs no model/network. ADR-0009/0010. (one line each; ADR link)
 - Spec §7 invariant 'absent obligate >= x500' asserted on lr_absent only: the locked +-ln100 clip caps the combined effect at x100 (no scoring change made).
