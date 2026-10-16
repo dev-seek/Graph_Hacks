@@ -98,6 +98,16 @@ def test_routing_by_hpo_ids_expands_ancestors(svc: CentreService) -> None:
 
 
 @needs_centre
+def test_case_detail_open_and_resolved(svc: CentreService) -> None:
+    """Regression: an aggregate with a null diagnosis column crashed FalkorDB (VERIFIED.md)."""
+    for status in ("open", "resolved"):
+        cid = svc.cases(status, 1)[0]["case_id"]
+        c = svc.case(cid)
+        assert c.terms and c.status == status
+        assert (c.diagnosis is None) == (status == "open")
+
+
+@needs_centre
 def test_routing_unknown_case_is_not_found(svc: CentreService) -> None:
     with pytest.raises(NotFound):
         svc.routing("C-999")

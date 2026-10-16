@@ -58,10 +58,10 @@ test("clinician tour has three steps", async ({ page }) => {
   await expect(dlg.getByText("Step 1 of 3")).toBeVisible();
 });
 
-test("centre tour has three steps and the page explains an empty state", async ({ page }) => {
+test("centre tour has three steps and the dashboard shows the illustrative-data label", async ({ page }) => {
   await page.goto("/centre");
   await expect(page.getByRole("dialog").getByText("Step 1 of 3")).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
-  await expect(page.getByText("The centre dashboard isn't switched on yet")).toBeVisible();
+  await expect(page.getByText("Illustrative clinic data").first()).toBeVisible();
   await axeClean(page);
 });

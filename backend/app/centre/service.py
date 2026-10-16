@@ -137,6 +137,7 @@ class CentreService:
         self.router = router
         self.ancestors = ancestors
         self.log = QueryLog()
+        self._mass: dict[tuple[str, tuple[str, ...]], float] = {}  # (kb, signs) -> rare mass
 
     @property
     def g(self) -> Graph:
@@ -181,14 +182,15 @@ class CentreService:
             raise NotFound(case_id)
         with self.logged():
             r = rows(self.g, "c_case", {"id": case_id})
-        if not r or r[0]["case_id"] is None:
+            names = rows(self.g, "c_case_terms", {"id": case_id}) if r else []
+        if not r:
             raise NotFound(case_id)
         x = r[0]
         return s.CentreCase(
             case_id=x["case_id"],
             status=x["status"],
             age_band=x["age_band"],
-            terms=sorted(x["terms"]),
+            terms=sorted(str(n["name"]) for n in names),
             diagnosis=x["diagnosis"],
         )
 
@@ -377,11 +379,13 @@ class CentreService:
         reasoner = self.reasoner_for(kb)
 
         def one(r: dict[str, Any]) -> tuple[str, float]:
-            findings = [Finding(str(t), "present", "doctor_exam") for t in r["terms"]]
-            if not findings:
-                return str(r["case_id"]), 0.0
-            _, res = reasoner.score(findings)
-            return str(r["case_id"]), round(float(res.rare_mass), 4)
+            terms = tuple(sorted(str(t) for t in r["terms"]))
+            key = (kb, terms)
+            if key not in self._mass:
+                findings = [Finding(t, "present", "doctor_exam") for t in terms]
+                _, res = reasoner.score(findings) if findings else ([], None)
+                self._mass[key] = round(float(res.rare_mass), 4) if res else 0.0
+            return str(r["case_id"]), self._mass[key]
 
         with ThreadPoolExecutor(WHATIF_THREADS) as pool:
             return dict(pool.map(one, open_rows))

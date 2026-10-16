@@ -18,6 +18,7 @@ export function Header() {
   const path = usePathname() ?? "/";
   const nav = [
     ["/demo", "Example families"],
+    ["/centre", "Clinic centre"],
     ["/help", "Help"],
     ["/about", "About"],
   ] as const;

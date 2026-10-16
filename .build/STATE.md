@@ -17,15 +17,15 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
 - [x] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
 - [x] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
-- [ ] 4 Start frozen run in background (lpo + standard)
+- [ ] 4 Frozen run in background (started 2026-10-16 09:00; resumable: `PYTHONPATH=backend uv run python -u -m app.eval.frozen test all 6`; rerun retries error rows)
 - [x] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
-- [ ] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
-- [ ] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
-- [ ] 8 Q8 algorithms (bridges, WCC, label propagation)
-- [ ] 9 Notes
-- [ ] 10 What-if (GRAPH.COPY, rescore open cases, KbUpdate)
-- [ ] 11 Ask the centre (centre_template_pick, fallback, whitelist)
-- [ ] 12 API routes + benchmark test (routing p90<100ms, others <2s)
+- [x] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
+- [x] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
+- [x] 8 Q8 algorithms (bridges, WCC, label propagation)
+- [x] 9 Notes
+- [x] 10 What-if (GRAPH.COPY, rescore open cases, KbUpdate)
+- [x] 11 Ask the centre (centre_template_pick, fallback, whitelist)
+- [x] 12 API routes + benchmark test (routing p90<100ms, others <2s)
 - [ ] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
 - [ ] 14 Report eval/reports/<date>.md + JSON + charts; gate
 

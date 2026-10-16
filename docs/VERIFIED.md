@@ -78,3 +78,6 @@ Probe on a 5-node toy graph (3 Case, 2 Term). `CALL dbms.procedures()` lists: `a
 - `algo.labelPropagation({nodeLabels, relationshipTypes, maxIterations})` YIELD `node, communityId` works.
 - `Graph.copy(dest)` (GRAPH.COPY) works from the python client.
 - Gotcha: a long-running first script here hung when output was piped (buffering); use `python -u` and a background run.
+
+## FalkorDB 6.0.2 panic on an aggregate over a null column (P5, 2026-10-16)
+`MATCH (c:Case {case_id:$id}) OPTIONAL MATCH (c)-[:PRESENTED_WITH]->(t:Term) RETURN c.case_id, c.status, c.age_band, c.diagnosis_name, c.kb_version, collect(t.name)` on a Case with **no** `diagnosis_name` property made the server panic (`src/reply.rs:655: called Option::unwrap() on a None value`) and restart; graphs created since the last RDB snapshot were lost. Not minimised further. Workaround in the registry: return the case row and the term names as two plain queries (`c_case`, `c_case_terms`). A regression test pins both an open and a resolved case.
