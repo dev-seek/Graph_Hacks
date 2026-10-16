@@ -5,12 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import yaml
 from falkordb import Graph
 from pydantic import BaseModel
 
-from app.eval.paths import DERIVED, RAW, SPLITS
+from app.eval.paths import DERIVED, RAW, ROOT, SPLITS
 from app.graph.client import rows
-from app.kb.parsers.phenopackets import EvalCase, parse_phenopackets
+from app.kb.parsers.hp import Ontology, parse_hp_json
+from app.kb.parsers.phenopackets import EvalCase, Feature, parse_phenopackets
 
 DEV_CASES_PATH = DERIVED / "dev_cases.json"
 MIN_PRESENT = 5
@@ -33,10 +35,33 @@ def _hit_set(graph: Graph, target: str, scored: set[str]) -> list[str]:
     return ids
 
 
+def _ontology() -> Ontology:
+    manifest = yaml.safe_load((ROOT / "data" / "manifest.yaml").read_text())
+    return parse_hp_json(RAW / manifest["sources"]["hp_json"]["file"])
+
+
+def _live(features: list[Feature], onto: Ontology) -> list[Feature]:
+    """Map alt/obsolete HPO ids (the store predates our HPO release) to live ids; drop dead ends."""
+    out: dict[str, Feature] = {}
+    for f in features:
+        live = onto.resolve(f.term_id)
+        if live is not None:
+            out.setdefault(live, Feature(term_id=live, onset_months=f.onset_months))
+    return list(out.values())
+
+
 def build_dev_cases(graph: Graph) -> list[DevCase]:
     """Dev cases whose diagnosis resolves to scored kb disease(s) and with >= 5 present features."""
-    wanted = dev_ids()
+    return build_cases(graph, dev_ids())
+
+
+def build_cases(graph: Graph, wanted: set[str]) -> list[DevCase]:
+    """Cases in `wanted` whose diagnosis resolves on `graph` with >= 5 present features."""
+    onto = _ontology()
     cases = [c for c in parse_phenopackets(RAW / "all_phenopackets.zip") if c.case_id in wanted]
+    for c in cases:
+        c.present = _live(c.present, onto)
+        c.excluded = _live(c.excluded, onto)
     scored = {r["disease"] for r in rows(graph, "q_scored_diseases", {})}
     cache: dict[str, list[str]] = {}
     out: list[DevCase] = []

@@ -39,3 +39,6 @@ data/derived/kb_info*.json
 data/derived/term_labels.v1.jsonl
 data/derived/dev_cases.json
 data/derived/disease_lexicon.json
+
+# Frozen-split checkpoints (never opened by hand; rule 9)
+.build/frozen/

@@ -66,3 +66,31 @@ def min_false_see_doctor(negatives: Sequence[NegativeRun]) -> float:
         if nr.false_referral <= MAX_FALSE_REFERRAL:
             best = min(best, nr.false_see_doctor)
     return best
+
+
+def sweep_summary(positives: Sequence[CaseTrace], negatives: Sequence[NegativeRun]) -> dict[str, object]:
+    """Report-only sensitivity sweep over the tau grid (no re-tuning on the frozen split)."""
+    pts = sweep(positives, negatives)
+    best = choose(pts)
+    ok = feasible(pts)
+
+    def row(p: TauPoint) -> dict[str, object]:
+        return {
+            "taus": [p.taus.t0, p.taus.t1, p.taus.t2],
+            "sensitivity": p.sensitivity,
+            "false_referral": p.false_referral,
+            "false_see_doctor": p.false_see_doctor,
+        }
+
+    return {
+        "points": len(pts),
+        "feasible_points": len(ok),
+        "best_feasible_by_preregistered_rule": row(best) if best else None,
+        "sensitivity_range_feasible": [min(p.sensitivity for p in ok), max(p.sensitivity for p in ok)]
+        if ok
+        else None,
+        "by_tau2": {
+            f"{t2:.2f}": max((p.sensitivity for p in ok if p.taus.t2 == t2), default=None)
+            for t2 in T2_GRID
+        },
+    }
