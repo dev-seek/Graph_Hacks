@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible, Fraunces } from "next/font/google";
 import "./globals.css";
-import { Footer, Header } from "@/components/Shell";
+import { Footer, Header, TourRoot } from "@/components/Shell";
 
 const atkinson = Atkinson_Hyperlegible({
   weight: ["400", "700"],
@@ -35,6 +35,7 @@ export default function RootLayout({
           Skip to the main content
         </a>
         <Header />
+        <TourRoot />
         <main id="main" className="mx-auto max-w-4xl px-4 py-8">
           {children}
         </main>

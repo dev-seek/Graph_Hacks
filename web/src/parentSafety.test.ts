@@ -9,7 +9,7 @@ import { PARENT_BANNED } from "./copy";
 const root = path.resolve(__dirname, "../..");
 const lexPath = path.join(root, "data/derived/disease_lexicon.json");
 const lexicon: string[] = fs.existsSync(lexPath) ? JSON.parse(fs.readFileSync(lexPath, "utf8")) : [];
-const NEGATIONS = ["not a diagnosis", "does not diagnose", "no diagnosis", "is this a diagnosis"];
+const NEGATIONS = ["not a diagnosis", "does not diagnose", "is this a diagnosis"];
 
 function clean(s: string): string {
   let t = s.toLowerCase();

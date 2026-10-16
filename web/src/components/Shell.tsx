@@ -4,7 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { PARENT_DISCLAIMER } from "@/copy";
+import { TourHost } from "./Tour";
 import { HpoStatement, OrphaCitation, useVersions } from "./Attribution";
+
+/** One tour for the whole app; the role follows the route (spec §4.7). */
+export function TourRoot() {
+  const path = usePathname() ?? "/";
+  const role = path.startsWith("/clinician") ? "clinician" : path.startsWith("/centre") ? "centre" : "parent";
+  return <TourHost role={role} />;
+}
 
 export function Header() {
   const path = usePathname() ?? "/";

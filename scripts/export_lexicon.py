@@ -20,7 +20,7 @@ from app.kb.info import load_kb_info  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "derived" / "disease_lexicon.json"
-MIN_LEN = int(os.environ.get("LEXICON_MIN_LEN", "8"))
+MIN_LEN = int(os.environ.get("LEXICON_MIN_LEN", "4"))
 
 
 def build() -> list[str]:
@@ -32,6 +32,10 @@ def build() -> list[str]:
     # A disease named exactly like an HPO sign ("Cleft palate") is a sign when it appears in a
     # parent's words: those names are not forbidden (ADR-0012). Every other disease name is.
     signs = {str(r["name"]).strip().lower() for r in rows(g, "q_all_term_names", {}) if r["name"]}
+    short = {n for n in names if len(n) < MIN_LEN}
+    overlap = sorted(n for n in names if len(n) >= MIN_LEN and n.lower() in signs)
+    (OUT.parent / "disease_lexicon_sign_overlap.json").write_text(json.dumps(overlap))
+    print(f"dropped: {len(short)} shorter than {MIN_LEN}; {len(overlap)} equal to an HPO sign name")
     return sorted(n for n in names if len(n) >= MIN_LEN and n.lower() not in signs)
 
 
@@ -57,8 +61,8 @@ def parent_strings(doc: dict[str, Any]) -> list[str]:
 
 
 def main() -> None:
-    names = build()
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    names = build()
     OUT.write_text(json.dumps(names))
     print(f"lexicon: {len(names)} disease names -> {OUT.relative_to(ROOT)}")
     if "--probe" not in sys.argv:

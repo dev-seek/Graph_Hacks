@@ -3,7 +3,6 @@
 import { use, useState } from "react";
 import { ClinicianBody } from "@/components/ClinicianBody";
 import { Loaded, useLoad } from "@/components/Journey";
-import { TourHost } from "@/components/Tour";
 import { Button, Card } from "@/components/ui";
 import { type ClinicianView } from "@/lib/api";
 import { useMounted } from "@/lib/hooks";
@@ -23,7 +22,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const code = sent || (fromHash ? decodeURIComponent(fromHash) : "");
   return (
     <>
-      <TourHost role="clinician" />
       {code ? (
         <View id={id} code={code} />
       ) : (

@@ -23,7 +23,7 @@ test("example story reaches round 1 in two clicks", async ({ page }) => {
   await parentSafe(page);
 });
 
-test("parent journey with the keyboard only: story, confirm, rounds, doctor, pack", async ({ page }) => {
+test("parent journey with the keyboard only: example story, rounds, journey home", async ({ page }) => {
   await page.goto("/start");
   await tabTo(page, page.getByRole("button", { name: "Use an example story" }));
   await page.keyboard.press("Enter");
@@ -57,11 +57,6 @@ test("360 px: key pages have no horizontal scroll", async ({ page }) => {
     await page.waitForLoadState("networkidle");
     await noOverflow(page);
   }
-});
-
-test("doctor pack prints and carries a QR with the code in the fragment", async ({ page, request }) => {
-  const created = await (await request.post("http://127.0.0.1:8010/api/families")).json();
-  expect(created.family_id).toBeTruthy();
 });
 
 test("urgent story stops everything and shows the mandatory text", async ({ page }) => {

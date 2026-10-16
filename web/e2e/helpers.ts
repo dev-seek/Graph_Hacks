@@ -6,7 +6,7 @@ import path from "node:path";
 // Mirror of web/src/copy.ts PARENT_BANNED (kept here so e2e has no app imports).
 export const BANNED = ["probability", "likely", "chance", "risk score", "diagnosis", "you have", "rule out", "rare disease", "posterior"];
 // The disclaimer says "does not diagnose" and the privacy copy mentions "diagnosis" only in negation.
-const ALLOWED_PHRASES = ["not a diagnosis", "does not diagnose", "no diagnosis", "is this a diagnosis"];
+const ALLOWED_PHRASES = ["not a diagnosis", "does not diagnose", "is this a diagnosis"];
 
 const lexPath = path.resolve(__dirname, "../../data/derived/disease_lexicon.json");
 export const LEXICON: string[] = fs.existsSync(lexPath) ? (JSON.parse(fs.readFileSync(lexPath, "utf8")) as string[]) : [];

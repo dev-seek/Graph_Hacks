@@ -1,6 +1,5 @@
 "use client";
 
-import { TourHost } from "@/components/Tour";
 import { ButtonLink, Notice } from "@/components/ui";
 import { useLoad } from "@/components/Journey";
 
@@ -10,7 +9,6 @@ export default function Centre() {
   const load = useLoad<Overview>("/centre/overview", null);
   return (
     <div className="max-w-[65ch] space-y-6">
-      <TourHost role="centre" />
       <h1 className="text-3xl">Centre brain</h1>
       {load.data ? (
         <Notice title="Centre overview">

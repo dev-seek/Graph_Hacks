@@ -10,4 +10,7 @@ Names that equal an HPO term name (case-insensitive) are removed from the forbid
 
 ## Consequences
 - A real disease whose name is also a sign cannot be detected as a leak by the string test. The structural guard (no candidate or disease keys in any parent model) is what protects those cases.
+- Counts (2026-10-16, kb_20260901): 20,121 disease names; none under 4 characters; 441 equal an HPO sign name and are exempt (examples: "Cleft palate", "Achromatopsia", "Acute myeloid leukemia", "Abducens palsy"); 19,680 stay forbidden. The exempt list is written to `data/derived/disease_lexicon_sign_overlap.json` by `make lexicon`.
 - Before the change: 0 collisions on the first recording, 5 on the second. After: 0.
+- Residual risk: the exempt set contains a few names a parent would read as a diagnosis (for example "Acute myeloid leukemia") if a story ever produced that sign label. Review requested from the human (STATE.md, non-blocking).
+- The Vitest disease-name test needs `data/derived/disease_lexicon.json` (it needs FalkorDB to build) and skips without it; the P4 gate runs `make lexicon` first, and CI relies on the banned-word and structural tests.

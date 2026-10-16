@@ -59,7 +59,9 @@ export default function About() {
           <li>Embedding model BAAI/bge-small-en-v1.5 (MIT), run locally.</li>
         </ul>
         <p className="mt-2 text-muted">
-          OMIM-sourced annotations with IEA evidence are left out. Example families and the centre&apos;s cases
+          Orphadata caveat: prevalence figures are estimates for classes of frequency, so our priors are rough and
+          are only used to order possibilities for clinicians. OMIM-sourced annotations with IEA evidence are
+          left out. Example families and the centre&apos;s cases
           are made up or built from de-identified published cases.
         </p>
       </Card>

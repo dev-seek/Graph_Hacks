@@ -1,5 +1,4 @@
 import { Clock, HeartHandshake, ShieldCheck } from "lucide-react";
-import { TourHost } from "@/components/Tour";
 import { ButtonLink } from "@/components/ui";
 import { HERO, HOW_IT_WORKS, TRUST_STRIP } from "@/copy";
 
@@ -55,7 +54,6 @@ export default function Home() {
           </li>
         </ul>
       </section>
-      <TourHost role="parent" />
     </>
   );
 }

@@ -1,5 +1,5 @@
 status: running
-phase: P4
+phase: P5
 updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Phase table
@@ -9,26 +9,16 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P1 | phases/P1-knowledge.md | done | coverage 99.7% (lpo test 68.7%); lay top-3 100% verbatim / 45% sentences; make kb 120 s cold; counts in ADR-0002; test sha 223e6076…b6d5; make check+test-int green |
 | P2 | phases/P2-engine.md | done | held-out 400 dev: top-10 Ours 60.2% vs B0 56.2 / B1 58.5 / B2 60.5 (gate as worded NOT met, human option a, ADR-0007); negatives false referral 0%, false see-doctor 20%; safety corpus 60/60; bench p90 retrieve 80 / score 31 / plan 98 ms; make check + test-int green |
 | P3 | phases/P3-agents-api.md | done | journeys green on fake+off (+ urgent, restart in 2 processes, injection, erasure); parent-route auth 401 on every route + payload scan; Phenopacket validated (official protobuf); MCP 4 tools list+call; demo-replay reproduces Kabir/Arjun/Maya offline; LLM profiles NOT measured (no key, ADR-0009); make check + test-int (64) green |
-| P4 | phases/P4-web.md | todo | |
+| P4 | phases/P4-web.md | done | Lighthouse a11y 100/100/100 (/, /demo, round page; make lighthouse); 26 Playwright (axe WCAG2.2 AA on 12+ pages, keyboard-only journey/Kabir demo/tour, 360 px, parent DOM free of banned words + 19,680 disease names) + 41 Vitest; make check + test-int (65) green; screenshots 360/1280 + A4/Letter PDFs in docs/explain/P4-screens/; lexicon kb_20260901 probed (0 collisions); ADR-0012 |
 | P5 | phases/P5-centre-eval.md | todo | |
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [x] 1. Web tooling: pinned deps (openapi-typescript, vitest, RTL, playwright, axe, cytoscape, lucide, qrcode), /api rewrite, generated types + sync check, VERIFIED.md entries
-- [x] 2. copy.ts (all §6.4/§6.5 strings) + shared layout shell, header with "How it works", disclaimer footer
-- [x] 3. Lexicon probe: disease-name lexicon from FalkorDB vs recorded demo parent payloads; ADR if collisions (rule 1)
-- [x] 4. Landing `/`, `/start` (consent-lite, example story), `/help`, `/about`
-- [x] 5. Journey: `/j/[id]` home, token handling, confirm, round/[n] (aria-live), constellation SVG
-- [x] 6. Doctor step, timeline, printable `/j/[id]/pack` (A4+Letter overlap, QR with fragment code)
-- [x] 7. `/clinician/[id]` (§6.5 disclaimer verbatim, candidates, paths, checks, referral, Phenopacket download)
-- [x] 8. `/demo` step-through + judge panel (Cypher/rows/ms/gate, cytoscape from recorded data only)
-- [x] 9. Guided tours (parent/clinician/centre), `/centre` honest empty state
-- [x] 10. Banned-word + disease-name unit test over parent strings and demo payloads
-- [x] 11. Vitest components; Playwright journeys, keyboard, 360px, axe; `make e2e`
-- [ ] 12. copy-a11y-reviewer pass; fix question wording/captions in backend; re-record demos
-- [ ] 13. Lighthouse >=95, screenshots 360/1280 into docs/explain/P4-screens/, gate, explain doc, AI_USAGE
+(empty; plan P5 at its start)
 
 ## Needs from human
+- [ ] (non-blocking) Review ADR-0012 (441 disease names that equal HPO sign labels are exempt from the parent-text check; a few, e.g. "Acute myeloid leukemia", read as diagnoses)
+- [ ] (non-blocking) Official HPO logo file for footer/About (HPO requests it); not added
 - [ ] (non-blocking) set ANTHROPIC_API_KEY in .env then `make llm-contract` to measure profiles (ADR-0009 says not measured); then re-record demos with LLM_MODE=record
 Blocking: none right now.
 - [x] P2 gate decision: option (a) (Manoj, 2026-10-15) — see Decisions.
@@ -46,17 +36,18 @@ Non-blocking (do when convenient):
 ## Decisions made during the build
 - P4: lexicon probe (scripts/export_lexicon.py, 20,087 disease names, `make lexicon`) found 0 collisions with recorded demo parent text, even at min length 4: no ADR needed. `CLINICIAN_DISCLAIMER` in frozen schemas.py is not the §6.5 text; web shows §6.5 verbatim from `web/src/copy.ts` (API field left unchanged). "Use an example story" auto-confirms (made-up, labelled) so round 1 is two clicks away.
 - Spec §10 model id `claude-haiku-5-5` is not a verified id; `config/llm.yaml` uses `claude-haiku-4-5` (conflict with the locked spec, AGENTS.md rule wins; ADR-0009). Parent-askable filter changes planner inputs (ADR-0011).
-- P3 demos recorded with LLM_MODE=off (no ANTHROPIC_API_KEY): fallback extraction + parent accepting list items related to the matched dev case. Kabir case PMID_33674768_Patient_55_This_study (14 signs, similarity 0.379, REFERRAL_READY), Arjun = neg08 (no escalation), Maya urgent. Query embeddings cached in data/demo/query_embeddings.json so replay needs no model/network. ADR-0009/0010. (one line each; ADR link)
+- P3 demos recorded with LLM_MODE=off (no ANTHROPIC_API_KEY): fallback extraction + parent accepting list items related to the matched dev case. Kabir case PMID_40215970_F11_II_2 (22 signs, similarity 0.306, REFERRAL_READY; the earlier "PMID_33674768 / 0.379" note was stale: P3-done already had this case), Arjun = neg08 (no escalation), Maya urgent. Query embeddings cached in data/demo/query_embeddings.json so replay needs no model/network. ADR-0009/0010. (one line each; ADR link)
 - Spec §7 invariant 'absent obligate >= x500' asserted on lr_absent only: the locked +-ln100 clip caps the combined effect at x100 (no scoring change made).
 - Candidate set = diseases from Q2a u Q2b u Q2c; priors are rescaled in engine to sum 1-pi0 over diseases with >=1 phenotype (Q2g).
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
-- P4: no-key (LLM_MODE=off) story reader only splits clauses and often resolves junk, so free narratives end at "watching" with no rounds; example story on /start is a short phrase list that works without a key. With a key (extract_story by Claude) free text should work: unmeasured. Demo Kabir questions read "Have you noticed Farsightedness…" and pack checks repeat one generic line: fix in backend wording (task 12). e2e: `make e2e` starts its own API (:8010, LLM_MODE=off) + prod web (:3100); needs `make up` for FalkorDB. Fixed: unquoted `off` in config/llm.yaml loaded as False.
-- P3 handoff: demos recorded with LLM_MODE=off (no key); re-record with `LLM_MODE=record make demo-record` after `make llm-contract` once a key exists. Question copy is rules-only P1 text ("Have you noticed X in your child?"): copy-a11y-reviewer in P4. Parent-askable filter = ADR-0011 (held-out eval not re-run).
-- Fragile: AgentState keeps only plain dicts; the single `await_event` node must stay interrupt-only; family writes must stay MERGE on stable ids. MCP http transport has no auth: run it on localhost only (document in README, P6). Behind a proxy set CREATE_LIMIT_PER_HOUR. Daily watcher: WATCHER_INTERVAL_S (off by default). Two real KB versions + centre graph still to do (P5).
+- P4 handoff (known gaps): inspector replays RECORDED queries (/debug/queries is live but the UI does not call it; a live "run my family" panel needs an API/ADR); doctor step "Why now" shows the pack summary, not §4.2's three plain reasons; example story gives 1 question in round 1 (copy promises 3-5); with no key the demo clinician view/Phenopacket contain junk findings ("Community Paediatrics Clinic", "DOB…", "No seizures reported" as present): don't linger on them in the video; no-key story reader only splits clauses (free narratives end at "watching").
+- Video should show: landing → example story → round → /demo/kabir?judge=1 (queries, gate numbers, graph) → pack print → clinician view → Phenopacket download → Maya urgent.
+- Run `make lexicon` before the gate (needs FalkorDB). e2e: `make e2e` (own API :8010 LLM_MODE=off + prod web :3100); `make lighthouse`; screenshots: `SCREENSHOTS=1 pnpm --dir web e2e screens`.
+- P3 handoff: re-record with `LLM_MODE=record make demo-record` after `make llm-contract` once a key exists. MCP http transport has no auth: localhost only. Daily watcher: WATCHER_INTERVAL_S. Two real KB versions + centre graph still to do (P5).
 cut: 4
-- phase_start: P3 230f8bd · P4 = tag P3-done · P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a (review files REVIEWED and committed at P2-done).
+- phase_start: P3 230f8bd · P4 = tag P3-done (6cd1432) · P5 = tag P4-done · P0 5832463 · P1 930a69e (= P0-done) · P2 c3eaf0a (review files REVIEWED and committed at P2-done).
 - negatives.curated.yaml: AI-drafted; IDs machine-checked vs HPO 2026-09-01 (all valid, none obsolete); 6 corrections accepted by Manoj 2026-10-15 (see task 13).
 - Local env: `colima start --cpu 2 --memory 4` before `make up`; node@22 via brew (Makefile adds PATH); TypeScript pinned 6.x; pnpm-workspace `allowBuilds` denies unrs-resolver; `ruff format` excludes docs/ and *.md.
 - Safety: always pass `age_months` to match() (unknown age makes `fever_under_3_months` fire on any "fever"); patterns lazy/bounded; negations cancel only overlapping spans (test_safety_adversarial.py).
