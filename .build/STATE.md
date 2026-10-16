@@ -14,7 +14,20 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty; plan P5 at its start)
+- [ ] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
+- [ ] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
+- [ ] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
+- [ ] 4 Start frozen run in background (lpo + standard)
+- [ ] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
+- [ ] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
+- [ ] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
+- [ ] 8 Q8 algorithms (bridges, WCC, label propagation)
+- [ ] 9 Notes
+- [ ] 10 What-if (GRAPH.COPY, rescore open cases, KbUpdate)
+- [ ] 11 Ask the centre (centre_template_pick, fallback, whitelist)
+- [ ] 12 API routes + benchmark test (routing p90<100ms, others <2s)
+- [ ] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
+- [ ] 14 Report eval/reports/<date>.md + JSON + charts; gate
 
 ## Needs from human
 - [ ] (non-blocking) Review ADR-0012 (441 disease names that equal HPO sign labels are exempt from the parent-text check; a few, e.g. "Acute myeloid leukemia", read as diagnoses)
@@ -42,6 +55,7 @@ Non-blocking (do when convenient):
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
+- phase_start P5: 35ca415 (= tag P4-done)
 - P4 handoff (known gaps): inspector replays RECORDED queries (/debug/queries is live but the UI does not call it; a live "run my family" panel needs an API/ADR); doctor step "Why now" shows the pack summary, not §4.2's three plain reasons; example story gives 1 question in round 1 (copy promises 3-5); with no key the demo clinician view/Phenopacket contain junk findings ("Community Paediatrics Clinic", "DOB…", "No seizures reported" as present): don't linger on them in the video; no-key story reader only splits clauses (free narratives end at "watching").
 - Video should show: landing → example story → round → /demo/kabir?judge=1 (queries, gate numbers, graph) → pack print → clinician view → Phenopacket download → Maya urgent.
 - Run `make lexicon` before the gate (needs FalkorDB). e2e: `make e2e` (own API :8010 LLM_MODE=off + prod web :3100); `make lighthouse`; screenshots: `SCREENSHOTS=1 pnpm --dir web e2e screens`.
