@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
+import uuid
 from collections import defaultdict
 from collections.abc import Callable, Generator, Mapping
 from concurrent.futures import ThreadPoolExecutor
@@ -35,6 +37,7 @@ TERM_ID = re.compile(r"^HP:\d{7}$")
 KB_NAME = re.compile(r"^kb_\d{8}$")
 MAX_TERMS = 40
 MAX_NOTE = 500
+MAX_NOTES = 50  # c_notes returns the latest 50; demo-only cap (ADR-0015)
 WHATIF_THREADS = 8
 
 
@@ -137,6 +140,7 @@ class CentreService:
         self.router = router
         self.ancestors = ancestors
         self.log = QueryLog()
+        self._whatif_lock = threading.Lock()
         self._mass: dict[tuple[str, tuple[str, ...]], float] = {}  # (kb, signs) -> rare mass
 
     @property
@@ -274,6 +278,8 @@ class CentreService:
     # ---- notes --------------------------------------------------------------------------------
     def add_note(self, kind: str, target: str, text: str, role: str = "clinician") -> Note:
         text = " ".join(text.split())[:MAX_NOTE]
+        if len(self.notes()) >= MAX_NOTES:
+            raise BadInput("note limit reached for this demo")
         if not text:
             raise BadInput("note is empty")
         if kind not in ("case", "term", "protocol"):
@@ -281,7 +287,7 @@ class CentreService:
         ok = {"case": CASE_ID, "term": TERM_ID, "protocol": re.compile(r"^PR-\d$")}[kind]
         if not ok.match(target):
             raise BadInput(f"bad {kind} id")
-        nid = f"N-{int(time.time() * 1000)}"
+        nid = f"N-{uuid.uuid4().hex[:12]}"
         at = datetime.now(UTC).isoformat(timespec="seconds")
         with self.logged():
             made = write(
@@ -302,6 +308,14 @@ class CentreService:
     def whatif(self, new_kb: str, tau2: float | None = None) -> WhatIfResult:
         if not KB_NAME.match(new_kb) or new_kb not in self.db.list_graphs():
             raise BadInput("unknown knowledge-base version")
+        if not self._whatif_lock.acquire(blocking=False):
+            raise BadInput("a re-check is already running")
+        try:
+            return self._whatif(new_kb, tau2)
+        finally:
+            self._whatif_lock.release()
+
+    def _whatif(self, new_kb: str, tau2: float | None) -> WhatIfResult:
         tau = tau2 if tau2 is not None else tuned_taus().t2
         t0 = time.perf_counter()
         with self.logged():
@@ -310,10 +324,8 @@ class CentreService:
             raise NotFound("no open cases")
         old_kb = str(open_rows[0]["kb_version"])
         copy_t = time.perf_counter()
-        try:
+        if WHATIF in self.db.list_graphs():
             self.db.select_graph(WHATIF).delete()
-        except Exception:  # noqa: BLE001, S110 (nothing to delete the first time)
-            pass
         self.g.copy(WHATIF)
         self.log.add(
             QueryLogEntry("GRAPH.COPY", f"GRAPH.COPY {CENTRE} {WHATIF}", {}, 0, _ms(copy_t))

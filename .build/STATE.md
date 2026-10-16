@@ -1,5 +1,5 @@
 status: running
-phase: P5
+phase: P6
 updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 
 ## Phase table
@@ -10,24 +10,11 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P2 | phases/P2-engine.md | done | held-out 400 dev: top-10 Ours 60.2% vs B0 56.2 / B1 58.5 / B2 60.5 (gate as worded NOT met, human option a, ADR-0007); negatives false referral 0%, false see-doctor 20%; safety corpus 60/60; bench p90 retrieve 80 / score 31 / plan 98 ms; make check + test-int green |
 | P3 | phases/P3-agents-api.md | done | journeys green on fake+off (+ urgent, restart in 2 processes, injection, erasure); parent-route auth 401 on every route + payload scan; Phenopacket validated (official protobuf); MCP 4 tools list+call; demo-replay reproduces Kabir/Arjun/Maya offline; LLM profiles NOT measured (no key, ADR-0009); make check + test-int (64) green |
 | P4 | phases/P4-web.md | done | Lighthouse a11y 100/100/100 (/, /demo, round page; make lighthouse); 26 Playwright (axe WCAG2.2 AA on 12+ pages, keyboard-only journey/Kabir demo/tour, 360 px, parent DOM free of banned words + 19,680 disease names) + 41 Vitest; make check + test-int (65) green; screenshots 360/1280 + A4/Letter PDFs in docs/explain/P4-screens/; lexicon kb_20260901 probed (0 collisions); ADR-0012 |
-| P5 | phases/P5-centre-eval.md | todo | |
+| P5 | phases/P5-centre-eval.md | done | frozen test 5,336 cases, lpo headline top-1 3.4% / top-10 13.0% (14.3% after doctor), level with B2, +0.7..+1.7 pts over B0 (report eval/reports/2026-10-16-test.md); negatives 0% false referral / 22.5% false see-doctor; centre routing p90 <100 ms, other centre queries <2 s; centre e2e + axe pass; make check + test-int (76) green; ADRs 0013-0015 |
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-- [x] 1 Probe algo.* + GRAPH.COPY on pinned image; log VERIFIED.md
-- [x] 2 `make eval` harness (resumable, aggregates only, timeouts counted) + dev dry run, timing
-- [x] 3 Pre-registration ADR (case list fixed on standard kb; lpo misses counted; scope; SHA check) committed BEFORE any test run
-- [x] 4 Frozen run done 2026-10-16 (842 min, 0 unresolved errors after one retry pass)
-- [x] 5 Older KB (two real releases): verify tag/URL, build kb_<prev> (ADR)
-- [x] 6 Centre seed `make centre` (cases, HAS_ANC, SIMILAR_TO, clinicians, protocols, decisions; ADR rules)
-- [x] 7 Q7 routing (ancestor expansion, UNWIND-safe) + MCP update + int test
-- [x] 8 Q8 algorithms (bridges, WCC, label propagation)
-- [x] 9 Notes
-- [x] 10 What-if (GRAPH.COPY, rescore open cases, KbUpdate)
-- [x] 11 Ask the centre (centre_template_pick, fallback, whitelist)
-- [x] 12 API routes + benchmark test (routing p90<100ms, others <2s)
-- [x] 13 Centre dashboard page (copy-a11y-reviewer, axe, Playwright)
-- [x] 14 Report eval/reports/<date>.md + JSON + charts; gate
+(empty; plan P6 at its start)
 
 ## Needs from human
 - [ ] (non-blocking) Review ADR-0012 (441 disease names that equal HPO sign labels are exempt from the parent-text check; a few, e.g. "Acute myeloid leukemia", read as diagnoses)
@@ -55,6 +42,7 @@ Non-blocking (do when convenient):
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
+- P5 handoff: headline lpo top-10 13.0% (after doctor 14.3%); Ours does NOT beat B2 (README must say so); referral sensitivity ~13%; lpo only 68.7% of test targets still annotated. After any FalkorDB restart run `make kb && make kb-prev && make centre` (VERIFIED.md). Centre what-if first run ~40 s. Don't run e2e while heavy jobs run.
 - P5 frozen run: `.build/frozen/test_checkpoint.jsonl` (git-ignored, never open it). Resume: `PYTHONPATH=backend nohup uv run python -u -m app.eval.frozen test all 6`; progress in .build/logs/frozen-test.log. Then `python -m app.eval.frozen_report test` and `python -m app.eval.frozen_render <json>`. Do not run e2e/builds while it runs (FalkorDB crashed once under load; error rows are retried on resume). `make centre` after any FalkorDB restart (centre graph is not persisted until a BGSAVE).
 - phase_start P5: 35ca415 (= tag P4-done)
 - P4 handoff (known gaps): inspector replays RECORDED queries (/debug/queries is live but the UI does not call it; a live "run my family" panel needs an API/ADR); doctor step "Why now" shows the pack summary, not §4.2's three plain reasons; example story gives 1 question in round 1 (copy promises 3-5); with no key the demo clinician view/Phenopacket contain junk findings ("Community Paediatrics Clinic", "DOB…", "No seizures reported" as present): don't linger on them in the video; no-key story reader only splits clauses (free narratives end at "watching").
