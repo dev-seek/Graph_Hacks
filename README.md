@@ -11,9 +11,21 @@ TODO(P6)
 TODO(P6) — demo GIF
 
 ## 3. Try it
+
+You need Docker, [uv](https://docs.astral.sh/uv/), Node 22 with pnpm, and `make`. No API key is needed:
+the demos run in replay mode and every language step has a deterministic fallback.
+
 ```bash
-make setup data kb up      # 3 commands once P1 lands; demos run with LLM_MODE=replay (no API key)
+make setup         # Python and web dependencies
+make data up       # download the pinned public data (checksummed), start FalkorDB + API + web
+make seed          # build the knowledge graphs and the synthetic clinic (a few minutes)
 ```
+
+Open <http://localhost:8080>. Stop with `make down`.
+
+Optional: to let Claude read the stories, put your key in a local `.env` file as `ANTHROPIC_API_KEY`
+and set `LLM_MODE=live`; `make llm-key-check` reports whether it is set (never the value).
+
 TODO(P6) — 5-minute tour with the example families; link to docs/USER_GUIDE.md
 
 ## 4. How it works
