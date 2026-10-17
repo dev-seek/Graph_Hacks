@@ -109,6 +109,27 @@ def test_family_budget_exhausted_falls_back() -> None:
     assert res.reason == "family_budget"
 
 
+def test_daily_budget_exhausted_falls_back_and_resets_next_day() -> None:
+    s = _settings().model_copy(deep=True)
+    s.budget.daily_tokens = 1
+    clock = [100.0]
+    r = LLMRouter(s, mode="fake", adapter=FakeAdapter(), clock=lambda: clock[0])
+    first = r.run("extract_story", "He is floppy, he is small", StoryExtraction, _fallback)
+    assert first.source == "llm"
+    res = r.run("extract_story", "again here", StoryExtraction, _fallback)
+    assert (res.source, res.reason) == ("fallback", "daily_budget")
+    clock[0] += 86400 * 1.1  # a new UTC day
+    assert r.run("extract_story", "new day", StoryExtraction, _fallback).source == "llm"
+
+
+def test_replay_mode_is_not_metered() -> None:
+    s = _settings().model_copy(deep=True)
+    s.budget.daily_tokens = 1
+    r = LLMRouter(s, mode="replay", adapter=FakeAdapter())
+    for _ in range(3):
+        assert r.run("extract_story", "some story", StoryExtraction, _fallback).source == "llm"
+
+
 def test_input_is_wrapped_in_input_tags() -> None:
     fake = FakeAdapter({"phrase_question": lambda t: Rephrase(question="q", why="w")})
     seen: list[str] = []

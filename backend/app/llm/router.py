@@ -7,6 +7,7 @@ reason recorded. Logs carry ids and sizes only, never parent text (AGENTS.md).
 from __future__ import annotations
 
 import concurrent.futures
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Generic, Literal
@@ -46,12 +47,16 @@ class LLMRouter:
         mode: Mode | None = None,
         adapter: LLMPort | None = None,
         cache: LLMCache | None = None,
+        clock: Callable[[], float] = time.time,
     ) -> None:
         self.settings = settings or load_settings()
         self.mode: Mode = mode or self.settings.mode
         self.cache = cache or LLMCache()
         self.adapter = adapter or self._build_adapter()
         self.family_tokens: dict[str, int] = {}
+        self._clock = clock
+        self._day = -1
+        self._day_tokens = 0
 
     def _build_adapter(self) -> LLMPort | None:
         if self.mode == "off":
@@ -85,6 +90,8 @@ class LLMRouter:
         used = self.family_tokens.get(family_id or "", 0)
         if family_id and used >= budget:
             return fell_back("family_budget")
+        if self._metered and self._today_tokens() >= self.settings.budget.daily_tokens:
+            return fell_back("daily_budget")
         max_out = self.settings.profile_for(task).max_output_tokens
         messages = [Message("user", wrap_input(input_text))]
         error: str | None = None
@@ -107,12 +114,24 @@ class LLMRouter:
                 return fell_back(f"unavailable:{type(exc).__name__}")
             except Exception as exc:  # noqa: BLE001 (any adapter/network failure degrades)
                 return fell_back(f"error:{type(exc).__name__}")
+            spent = (len(input_text) + len(out.model_dump_json())) // CHARS_PER_TOKEN
             if family_id:
-                spent = (len(input_text) + len(out.model_dump_json())) // CHARS_PER_TOKEN
                 self.family_tokens[family_id] = used + spent
+            if self._metered:
+                self._day_tokens = self._today_tokens() + max(spent, 1)
             log.info("llm_ok", task=task, mode=self.mode, attempt=attempt, family=family_id)
             return LLMResult(out, "llm")
         return fell_back("invalid_after_repair")  # error text can echo parent words: not logged
+
+    @property
+    def _metered(self) -> bool:
+        return self.mode != "replay"  # replay reads the cache and costs nothing
+
+    def _today_tokens(self) -> int:
+        day = int(self._clock() // 86400)
+        if day != self._day:
+            self._day, self._day_tokens = day, 0
+        return self._day_tokens
 
     def _call(self, task: TaskId, messages: list[Message], schema: type[T], max_out: int) -> T:
         assert self.adapter is not None  # noqa: S101
