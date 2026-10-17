@@ -7,7 +7,7 @@ Legend: [x] done and evidenced, [ ] human-only or blocked on something only the 
 - [x] No secrets: gitleaks v8.28.0 over the full history, 92 commits, "no leaks found" (2026-10-17); `.env` git-ignored, `.env.example` lists names only; CI job `secrets` runs gitleaks on every push.
 - [x] README sections 1-11 per §18: `README.md` (problem, 3-command setup, architecture and graph Mermaid diagrams, Cypher + algorithms table with file links, evaluation with CIs and honest framing, safety design, attributions, limits, tracks, AI disclosure). Link check: `backend/tests/test_readme_links.py`.
 - [x] Three-command local setup works from a fresh clone: see "Fresh-clone test" below.
-- [x] All three tracks named: README top, sections 5 and 9.
+- [x] All three tracks named: README 'Track fit' table (section 5).
 - [x] Rules 11-13: `docs/AI_USAGE.md` (who drafted, decided and reviewed each part; pending-review rows are marked as such).
 - [x] Every module explainable: `docs/explain/P0.md` to `P6.md`.
 - [x] Live inspector (never-cut): `/j/<id>/inspector` shows the queries FalkorDB runs for an example-story family (ADR-0016, e2e `web/e2e/inspector.spec.ts`); `/demo/*` replays recorded queries and says so; the centre dashboard has its own live log.
