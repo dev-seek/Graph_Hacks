@@ -59,3 +59,13 @@ Process facts: the first e2e run found a real bug (unquoted `off` in `config/llm
 | Evaluation numbers | Computed by the harness on the frozen test split in one pre-registered run (ADR-0013); not edited by hand | pending (human) | Claude Code |
 
 Process facts: the evaluation plan was committed before the run. A FalkorDB 6.0.2 panic during e2e testing lost the unsaved centre graph and, after reload, changed term search; both are logged in `docs/VERIFIED.md` (workarounds, regression test). The 12 query errors that this caused were retried by resuming the run; none were dropped. No live LLM was used; no key was available.
+
+## P6 (hardening, deployment files, README, submission drafts)
+| Part | Drafted by | Reviewed / edited by | Tool |
+|---|---|---|---|
+| Daily LLM budget, 7-day purge job, PDF size cap, Caddyfile, production compose, web Dockerfile, audit/CI changes, tests, `docs/explain/P6.md` | Claude (Sonnet 5.5, advisor Opus) | pending (human) | Claude Code |
+| `README.md`, `docs/USER_GUIDE.md` | Claude (draft). Numbers are copied from `eval/reports/2026-10-16-test.md`; attributions from `docs/DATA_LICENSES.md`. Team, live URL, video, GIF and tagline are left as TODO for the human. | pending (human) | Claude Code |
+| `docs/submission/video_script.md`, `blog_outline.md`, `deploy.md`, `checklist.md` | Claude (draft). The video must be recorded and voiced by the human, and the blog post written or edited by the human; the outline contains no finished prose on purpose. | pending (human) | Claude Code |
+| `/help` tour link wording | `copy-a11y-reviewer` subagent (Claude); replacement applied by Claude | pending (human) | Claude Code |
+
+Process facts: the first fresh-clone attempt was invalid (Colima does not share paths outside `$HOME`, so bind mounts were empty) and was redone from a clone under `$HOME`; both timings are in the checklist. One `make demo-replay` run in that discarded attempt reported `kabir: DIFFERS`; three later runs in a clean clone all reproduced, and the cause of the one-off is not known. Nothing has been deployed. No live LLM was used; no key was available.
