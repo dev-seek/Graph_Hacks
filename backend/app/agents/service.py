@@ -16,6 +16,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import structlog
 from langgraph.types import Command
 from pypdf import PdfReader
 from redis.exceptions import ResponseError
@@ -83,6 +84,8 @@ URGENT_SOON_BANNER = (
     "Please see a doctor in the next day or two about this: {plain}. If it gets worse, call your "
     "local emergency number."
 )
+
+log = structlog.get_logger("service")
 
 
 class FamilyNotFound(LookupError):
@@ -272,7 +275,8 @@ class FamilyService:
                 if info is None or datetime.fromisoformat(info.created_at) >= cutoff:
                     continue
                 self.deps.repo(fid).delete()
-            except Exception:  # noqa: BLE001, S112 (one broken family must not stop the sweep)
+            except Exception as exc:  # noqa: BLE001 (one broken family must not stop the sweep)
+                log.warning("purge_skip", graph=name, error=type(exc).__name__)  # no free text
                 continue
             erased += 1
         return erased

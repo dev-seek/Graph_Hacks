@@ -16,7 +16,7 @@ candidates:                          # what the contract suite compares per task
   centre_template_pick: [fast]
 prompt_cache: true                    # cache_control on the static system + schema block
 embeddings: {adapter: local, model: BAAI/bge-small-en-v1.5}
-budget: {per_family_tokens: 60000, daily_usd: 5}
+budget: {per_family_tokens: 60000, daily_tokens: 400000}
 prices_usd_per_mtok:                 # [input, output]; ranks profiles by cost in `make llm-contract`
   claude-haiku-4-5: [1.0, 5.0]
   claude-sonnet-5-5: [2.0, 10.0]

@@ -32,7 +32,6 @@ class Profile(BaseModel):
 
 class Budget(BaseModel):
     per_family_tokens: int = 60000
-    daily_usd: float = 5.0
     daily_tokens: int = 400000  # hard stop for the public live mode (all families together)
 
 

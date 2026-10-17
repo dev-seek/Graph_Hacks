@@ -15,7 +15,7 @@ docker compose -f docker-compose.prod.yml up -d --build --wait
 curl -s https://$SITE_ADDRESS/api/health                                     # {"status":"ok"}
 ```
 Optional live mode (rate limited, daily token budget in `config/llm.yaml`): put `ANTHROPIC_API_KEY=...` in a local `.env` next to the compose file and
-start with `LLM_MODE=live`. The default is `replay` (no key needed).
+start with `LLM_MODE=live`. The default is `replay` (no key needed). The daily budget (`budget.daily_tokens`) is counted in memory and resets when the API restarts, so also set a spend limit in the Anthropic console.
 
 ## What the stack does
 - Only Caddy publishes ports (80, 443). FalkorDB, the API and the web app are on the internal network; no MCP port is exposed.

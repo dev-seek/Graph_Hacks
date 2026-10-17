@@ -18,12 +18,12 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 - [x] 1b 7-day purge job (env PURGE_AFTER_DAYS) + base64 cap
 - [x] 2 prod stack: web Dockerfile, Caddyfile (CSP/HSTS, body limit, /api direct), standalone docker-compose.prod.yml, XFF trust, no published ports, /debug gating, FalkorDB persistence/seed step; pin+pull Caddy; run Playwright against it
 - [x] 3 replay cache-miss (verified via Caddy e2e: cache empty, journeys fall back, no 500) fallback check (no 500)
-- [ ] 4 README "Try it" -> fresh-clone test (git clone, other compose project, timed) -> fix snags
-- [ ] 5 audits: pip-audit, pnpm audit, gitleaks (full history) -> gating CI
-- [ ] 6 inspector decision (live /debug/queries behind flag vs honest wording)
-- [ ] 7 full README (Mermaid, Cypher table + link check, eval CIs, B2 honesty, cost not measured, disclosure)
-- [ ] 8 docs/USER_GUIDE.md + /help link (copy-a11y-reviewer)
-- [ ] 9 video_script.md, blog_outline.md, checklist.md, deploy.md
+- [x] 4 README "Try it" -> fresh-clone test (git clone, other compose project, timed) -> fix snags
+- [x] 5 audits: pip-audit, pnpm audit, gitleaks (full history) -> gating CI
+- [x] 6 inspector decision: kept recorded-query replay for the example families, wording made accurate everywhere (README, USER_GUIDE, checklist, explain); centre inspector + /api/debug/queries are live. Live 'run my family' panel stays a documented gap
+- [x] 7 full README (Mermaid, Cypher table + link check, eval CIs, B2 honesty, cost not measured, disclosure)
+- [x] 8 docs/USER_GUIDE.md + /help link (copy-a11y-reviewer)
+- [x] 9 video_script.md, blog_outline.md, checklist.md, deploy.md
 - [ ] 10 reviewer over repo, fix blockers; phase gate
 
 ## Needs from human
