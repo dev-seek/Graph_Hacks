@@ -50,7 +50,7 @@ make data up       # download the pinned public data (checksummed), start Falkor
 make seed          # build the knowledge graphs and the synthetic clinic (a few minutes)
 ```
 
-Open <http://localhost:8080>. Stop with `make down`. A 5-minute illustrated tour is in
+Open <http://localhost:8080>. Stop with `make down`. The demo pages are static recordings and always work. If you restart FalkorDB (or `make down` then `make up`) its graphs reload from a snapshot, and free-text term search can rank slightly differently than in the recordings (so `make demo-replay` may report a difference); `make reset` wipes the volume and rebuilds everything from scratch, which is deterministic ([docs/VERIFIED.md](docs/VERIFIED.md)).
 [docs/USER_GUIDE.md](docs/USER_GUIDE.md); the fastest path is **"Use an example story"** on the first page,
 then **/demo** for the three recorded journeys (Kabir: from a worried story to a referral; Arjun: reassurance;
 Maya: an urgent red flag).
@@ -152,8 +152,9 @@ An MCP server exposes four tools (`resolve_phenotype`, `rank_candidates`, `expla
 
 Verified FalkorDB facts, bugs and workarounds (including a 6.0.2 panic we hit and how the registry avoids it) are in
 [docs/VERIFIED.md](docs/VERIFIED.md); Cypher guardrails in [docs/FALKORDB_CHEATSHEET.md](docs/FALKORDB_CHEATSHEET.md).
-The live inspector in the demo shows the Cypher of every step; it replays the queries recorded when the example family was run, and
-the centre inspector is live. A live log for demo families is available at `/api/debug/queries`.
+The **live inspector**: start "Use an example story" and open the *FalkorDB inspector (live)* link on the journey page to see the Cypher FalkorDB runs for
+that family, with rows and milliseconds ([ADR-0016](docs/adr/0016-live-inspector-for-example-families.md)). The `/demo/*` pages replay the queries recorded
+when each example family was run, and the centre dashboard has its own live query log.
 
 ### Tracks
 
@@ -209,7 +210,7 @@ Frozen test split: `eval/splits/test_ids.txt`, 7,496 cases.
 - English only. Lay-term coverage depends on HPO layperson synonyms plus generated labels.
 - No language-model key was available during the build: the Claude profiles in `config/llm.yaml` are **defaults, not measured**, the recorded
   demos were produced with the deterministic fallbacks, and the cost per journey is unknown. Run `make llm-contract` with a key to measure.
-- Known demo gaps (without a key the clinician view shows some noisy findings; the inspector replays recorded queries) are listed in
+- Known demo gaps (without a key the clinician view shows some noisy findings) are listed in
   [`.build/STATE.md`](.build/STATE.md).
 - Published cases may appear in LLM training data (this affects an LLM baseline, not our engine's scoring).
 

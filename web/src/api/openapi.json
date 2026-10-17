@@ -2714,6 +2714,28 @@
         ]
       }
     },
+    "/api/demo/families": {
+      "post": {
+        "description": "An example-story family: like a parent's, but its query log is open to the live inspector.",
+        "operationId": "create_demo_family_api_demo_families_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentFamilyCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Create Demo Family",
+        "tags": [
+          "demo"
+        ]
+      }
+    },
     "/api/demo/journeys": {
       "get": {
         "operationId": "demo_journeys_api_demo_journeys_get",

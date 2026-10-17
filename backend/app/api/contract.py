@@ -45,6 +45,13 @@ def create_family(svc: Service, request: Request) -> s.ParentFamilyCreated:
     return s.ParentFamilyCreated(family_id=fid, family_token=token)
 
 
+@router.post("/demo/families", tags=["demo"], dependencies=[Depends(create_allowed)])
+def create_demo_family(svc: Service) -> s.ParentFamilyCreated:
+    """An example-story family: like a parent's, but its query log is open to the live inspector."""
+    fid, token = svc.create_family(demo=True)
+    return s.ParentFamilyCreated(family_id=fid, family_token=token)
+
+
 @router.post("/families/{family_id}/story", tags=["parent"])
 def post_story(
     family_id: str, body: s.ParentStoryIn, svc: Service, _: FamilyId

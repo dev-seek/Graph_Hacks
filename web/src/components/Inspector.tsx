@@ -18,7 +18,7 @@ export function Inspector({ steps, index }: { steps: DemoStep[]; index: number }
     <aside aria-label="FalkorDB inspector, recorded run" className="space-y-4">
       <p className="rounded-xl border border-border bg-card p-3 text-sm">
         Recorded run: these are the graph queries FalkorDB actually ran when this example family was recorded,
-        replayed here without a model or network. Open a real journey to see new queries.
+        replayed here without a model or network. To watch new queries as they run, start the example story on the home page: its journey page has a live inspector link.
       </p>
       <Card aria-labelledby="insp-q">
         <h2 id="insp-q" className="text-lg">

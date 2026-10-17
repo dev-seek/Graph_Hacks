@@ -165,12 +165,21 @@ def test_watch_all_notifies_once_for_a_new_gate(make_service: Any) -> None:
     assert svc.watch_all() >= 0  # runs over every family graph without raising
 
 
-def test_purge_expired_erases_only_old_family_graphs(make_service: Any) -> None:
+def test_purge_expired_erases_only_old_family_graphs(
+    make_service: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
     from datetime import UTC, datetime, timedelta
 
     svc = make_service("off")
     fid, _ = svc.create_family()
     db = svc.deps.db
+    real_list = db.list_graphs
+    # the +8 days sweep must only ever see this test's family, never another developer's data
+    monkeypatch.setattr(
+        db,
+        "list_graphs",
+        lambda: [g for g in real_list() if g == f"family_{fid}" or not g.startswith("family_")],
+    )
     graphs_before = {g for g in db.list_graphs() if not g.startswith("family_")}
     assert svc.purge_expired(7) >= 0 and svc.deps.repo(fid).exists()  # fresh: kept
     assert svc.purge_expired(7, now=datetime.now(UTC) + timedelta(days=6)) >= 0

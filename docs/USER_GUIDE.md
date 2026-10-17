@@ -55,8 +55,8 @@ Open **/demo**, pick a journey, and switch on **Show the FalkorDB inspector**.
 
 ![Demo with inspector](explain/P4-screens/09-demo-judge-1280.png)
 
-- For every step you see the registry queries that ran, their Cypher, how many rows came back and how long they took (the example families were
-  recorded against the real graph; the clinic centre's inspector is live).
+- For every step you see the registry queries that ran, their Cypher, how many rows came back and how long they took (the /demo journeys replay queries recorded against the real graph;
+  for a **live** view, start the example story on the home page and open *FalkorDB inspector (live)* on your journey page; the clinic centre has a live log too).
 - **Kabir** goes from story to referral, **Arjun** ends in reassurance (no escalation), **Maya** hits a red flag and stops straight away with
   no language-model call.
 

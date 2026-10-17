@@ -10,7 +10,7 @@ Legend: [x] done and evidenced, [ ] human-only or blocked on something only the 
 - [x] All three tracks named: README top, sections 5 and 9.
 - [x] Rules 11-13: `docs/AI_USAGE.md` (who drafted, decided and reviewed each part; pending-review rows are marked as such).
 - [x] Every module explainable: `docs/explain/P0.md` to `P6.md`.
-- [x] Live inspector: demo inspector replays recorded queries for the example families; `/api/debug/queries` is live for demo families; the centre inspector (`/api/centre/inspector`) is live.
+- [x] Live inspector (never-cut): `/j/<id>/inspector` shows the queries FalkorDB runs for an example-story family (ADR-0016, e2e `web/e2e/inspector.spec.ts`); `/demo/*` replays recorded queries and says so; the centre dashboard has its own live log.
 - [x] Dependency audit: `make audit` (pip-audit and pnpm audit, "No known vulnerabilities found"); gating in CI.
 - [x] Retention and abuse limits: 7-day purge job (integration test), per-route rate limits, upload size caps (5 MB PDF, 8 MB edge), daily token budget for live mode (unit tests).
 - [x] Deployment files verified locally: `docker-compose.prod.yml`, `Caddyfile`, `web/Dockerfile`, `docs/submission/deploy.md`; 29 browser tests pass through Caddy (docs/VERIFIED.md).

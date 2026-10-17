@@ -151,6 +151,25 @@ def test_rate_limit_returns_429(client: TestClient) -> None:
     assert 429 in codes
 
 
+def test_example_family_route_creates_a_demo_family_with_a_live_log(client: TestClient) -> None:
+    c = client.post("/api/demo/families").json()
+    h = {"Authorization": f"Bearer {c['family_token']}"}
+    fid = c["family_id"]
+    client.post(
+        f"/api/families/{fid}/story",
+        headers=h,
+        json={"text": "He walked on tiptoes for a few months.", "child_age_months": 30},
+    )
+    log = client.get(f"/api/debug/queries?family_id={fid}", headers=h).json()
+    assert log and all("tiptoes" not in json.dumps(e["params"]) for e in log)
+    plain = client.post("/api/families").json()
+    ph = {"Authorization": f"Bearer {plain['family_token']}"}
+    assert (
+        client.get(f"/api/debug/queries?family_id={plain['family_id']}", headers=ph).status_code
+        == 403
+    )  # an ordinary family never exposes its query log
+
+
 def test_demo_family_exposes_query_log(client: TestClient) -> None:
     svc = app.dependency_overrides[get_service]()
     fid, token = svc.create_family(demo=True)

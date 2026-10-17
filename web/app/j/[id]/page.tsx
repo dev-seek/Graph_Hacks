@@ -30,6 +30,8 @@ function nextHref(id: string, s: State): { href: string; label: string } | null 
 function Home({ id, token }: { id: string; token: string }) {
   const state = useLoad<State>(`${fam(id)}/state`, token);
   const stars = useLoad<C>(`${fam(id)}/constellation`, token);
+  // Only example families have an open query log (the API answers 403 for everyone else).
+  const inspector = useLoad<unknown[]>(`/debug/queries?family_id=${id}`, token);
   const [copied, setCopied] = useState(false);
   const [gone, setGone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -120,6 +122,11 @@ function Home({ id, token }: { id: string; token: string }) {
           <ButtonLink href={`/j/${id}/timeline`} tone="secondary">
             Everything recorded
           </ButtonLink>
+          {inspector.data ? (
+            <ButtonLink href={`/j/${id}/inspector`} tone="secondary">
+              FalkorDB inspector (live)
+            </ButtonLink>
+          ) : null}
         </div>
         <p role="status" className="mt-2 text-sm text-sage">
           {copied ? "Link copied." : ""}

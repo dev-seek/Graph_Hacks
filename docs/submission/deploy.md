@@ -25,11 +25,15 @@ start with `LLM_MODE=live`. The default is `replay` (no key needed). The daily b
 - Families are erased after 7 days (`PURGE_AFTER_DAYS=7`, hourly sweep); the daily watcher runs every 24 h.
 
 ## After a reboot or a FalkorDB restart
-`restart: unless-stopped` brings the containers back and FalkorDB reloads its snapshot. We observed (docs/VERIFIED.md) that after a FalkorDB
-crash or restart the term search could rank differently, and graphs created since the last snapshot are lost. Re-run the seed step after any
-FalkorDB restart, then restart the API:
+`restart: unless-stopped` brings the containers back and FalkorDB reloads its snapshot. We observed (docs/VERIFIED.md) that after a restart of a seeded
+volume free-text term search can rank differently, even after re-running the seed in place, and that graphs created since the last snapshot are lost.
+A fresh volume is deterministic. For a demo that must behave exactly like the recordings (this erases families, which the public demo deletes after 7 days anyway):
 ```bash
-docker compose -f docker-compose.prod.yml --profile seed run --rm seed && docker compose -f docker-compose.prod.yml restart api
+docker compose -f docker-compose.prod.yml down
+docker volume rm constellation-prod_falkordb_data
+docker compose -f docker-compose.prod.yml up -d --build falkordb
+docker compose -f docker-compose.prod.yml --profile seed run --rm seed
+docker compose -f docker-compose.prod.yml up -d --build --wait
 ```
 
 ## What was verified (local, 2026-10-17)

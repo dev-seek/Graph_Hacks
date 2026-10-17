@@ -23,7 +23,8 @@ export default function Start() {
     setBusy(true);
     setErr(null);
     try {
-      const c = await call<Created>("/families", { method: "POST" });
+      // The made-up example is an example family: its graph queries can be shown in the live inspector.
+      const c = await call<Created>(autoConfirm ? "/demo/families" : "/families", { method: "POST" });
       saveToken(c.family_id, c.family_token);
       rememberLast(c.family_id);
       const t = c.family_token;

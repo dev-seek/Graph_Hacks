@@ -31,6 +31,7 @@ services:
     environment:
       FALKORDB_HOST: falkordb
       FALKORDB_PORT: "6379"
+      CREATE_LIMIT_PER_HOUR: "1000" # local use: every request reaches the api from the web container
       FASTEMBED_CACHE_PATH: /srv/.cache/fastembed
     volumes:
       - ./data/derived:/srv/data/derived:ro # kb_info.json written by `make kb`
