@@ -29,7 +29,7 @@ jobs:
       - run: uv run pytest -q
       - run: uv run python scripts/review_check.py || true   # reports review status; strict gate is local
       - run: uv run pytest -q -m integration
-      - run: uv run pip-audit --skip-editable || true
+      - run: uv run pip-audit --skip-editable
 
   web:
     runs-on: ubuntu-24.04
@@ -48,7 +48,7 @@ jobs:
       - run: pnpm --dir web lint
       - run: pnpm --dir web typecheck
       - run: pnpm --dir web build
-      - run: pnpm --dir web audit --prod || true
+      - run: pnpm --dir web audit --prod
 
   secrets:
     runs-on: ubuntu-24.04
