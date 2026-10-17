@@ -11,7 +11,7 @@ test("example family has a live FalkorDB inspector with the queries it ran", asy
   const id = page.url().match(/\/j\/([^/]+)\//)![1];
   await page.goto(`/j/${id}`);
   await page.getByRole("link", { name: "FalkorDB inspector (live)" }).click();
-  await expect(page.getByRole("heading", { name: "FalkorDB inspector (live)" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Behind the scenes: FalkorDB inspector (live)" })).toBeVisible();
   await expect(page.getByText(/\d+ queries from the query registry/)).toBeVisible({ timeout: 15_000 });
   const first = page.locator("details summary").first();
   await first.click();

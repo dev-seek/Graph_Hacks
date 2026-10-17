@@ -14,13 +14,14 @@ Legend: [x] done and evidenced, [ ] human-only or blocked on something only the 
 - [x] Dependency audit: `make audit` (pip-audit and pnpm audit, "No known vulnerabilities found"); gating in CI.
 - [x] Retention and abuse limits: 7-day purge job (integration test), per-route rate limits, upload size caps (5 MB PDF, 8 MB edge), daily token budget for live mode (unit tests).
 - [x] Deployment files verified locally: `docker-compose.prod.yml`, `Caddyfile`, `web/Dockerfile`, `docs/submission/deploy.md`; 29 browser tests pass through Caddy (docs/VERIFIED.md).
+- [x] Demo GIF in the README: screenshot slideshow (`scripts/make_gif.py`).
 - [x] Drafts for the human: `video_script.md`, `blog_outline.md`, `deploy.md`.
 
 ## Human-only (not done)
 - [ ] **Live deployment link.** Provide `DEPLOY_HOST` and `DEPLOY_DOMAIN`, follow `docs/submission/deploy.md`, run the browser suite against the URL, put the URL in the README table.
 - [ ] **Demo video (at most 3 minutes), voiced by you:** `docs/submission/video_script.md`. Add the link to the README.
 - [ ] **Blog post** (side prize), written or edited by you: `docs/submission/blog_outline.md`.
-- [ ] **Demo GIF** in the README (README section 2 has none yet).
+- [ ] Optional: replace the README slideshow GIF (`docs/media/demo.gif`, stitched from screenshots; no screen recorder or ffmpeg was available) with a real screen recording.
 - [ ] **Team and tagline** in the README and the video.
 - [ ] Review the rows marked "pending (human)" in `docs/AI_USAGE.md`, or leave them as "pending" (do not claim a review that did not happen).
 - [ ] Review ADR-0012 (441 disease names that equal sign labels are allowed in parent text).

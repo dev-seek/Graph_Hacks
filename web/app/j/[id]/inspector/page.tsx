@@ -11,10 +11,11 @@ function View({ id, token }: { id: string; token: string }) {
   const load = useLoad<Entry[]>(`/debug/queries?family_id=${id}`, token);
   return (
     <div className="max-w-[80ch] space-y-6">
-      <h1 className="text-3xl">FalkorDB inspector (live)</h1>
+      <h1 className="text-3xl">Behind the scenes: FalkorDB inspector (live)</h1>
       <p className="rounded-xl border border-border bg-card p-3 text-sm">
-        These are the graph queries FalkorDB ran for this example family, newest last. Go back, answer a round, then refresh this page to see
-        the new ones. Details that could identify a person are replaced with &quot;&lt;redacted&gt;&quot;.
+        This page is for judges and developers. It shows the technical steps FalkorDB ran for this example family. It is not medical
+        information and says nothing about a diagnosis. Anything that could identify a person is hidden and shown as
+        &quot;&lt;redacted&gt;&quot;. Answer a round on your journey page, then press Refresh to see new steps.
       </p>
       <Loaded load={load} what="the query log">
         {(entries) => {
@@ -38,9 +39,9 @@ function View({ id, token }: { id: string; token: string }) {
                           {q.rows} rows · {q.ms} ms
                         </span>
                       </summary>
-                      <pre className="overflow-x-auto rounded-lg bg-night p-3 text-xs text-card">{q.cypher}</pre>
+                      <pre tabIndex={0} aria-label={`Cypher for ${q.name}`} className="overflow-x-auto rounded-lg bg-night p-3 text-xs text-card">{q.cypher}</pre>
                       <p className="mt-1 text-xs text-muted">
-                        Parameters: <code>{JSON.stringify(q.params)}</code>
+                        Parameters: <code className="break-all">{JSON.stringify(q.params)}</code>
                       </p>
                     </details>
                   </li>
