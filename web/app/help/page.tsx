@@ -38,6 +38,16 @@ export default function Help() {
           </Link>
           <ReopenTour />
         </div>
+        <p className="mt-3">
+          <a
+            className="inline-block min-h-11 py-2 font-bold underline"
+            href="https://github.com/dev-seek/Graph_Hacks/blob/main/docs/USER_GUIDE.md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read the 5-minute illustrated tour (opens GitHub in a new tab)
+          </a>
+        </p>
       </Card>
       <section aria-labelledby="h-faq">
         <h2 id="h-faq" className="mb-3 text-xl">
