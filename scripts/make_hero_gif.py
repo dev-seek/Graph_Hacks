@@ -1,7 +1,7 @@
 """README hero GIF from three Playwright captures of the recorded Kabir journey (replay mode).
 
 Capture: `HERO=<dir> E2E_BASE_URL=http://127.0.0.1:8080 pnpm --dir web e2e hero`, then
-`uv run python scripts/make_hero_gif.py <dir>`. Frames are stitched with Pillow (no screen recorder).
+`uv run python scripts/make_hero_gif.py <dir>`. Frames are stitched with Pillow.
 """
 
 from __future__ import annotations
