@@ -84,3 +84,9 @@ Probe on a 5-node toy graph (3 Case, 2 Term). `CALL dbms.procedures()` lists: `a
 
 ## A FalkorDB crash/restart changes the kb's term search (P5, 2026-10-16)
 After the 6.0.2 panic above, the server reloaded `kb_<release>` from its RDB snapshot. Row counts were identical to `kb_info.json`, the ancestor cache was identical, yet the Kabir journey picked different HPO terms for the same story (two integration tests and `make demo-replay` failed). `make kb` (22 s) restored the original behaviour. Most likely the rebuilt full-text/vector indexes rank differently after a reload; not proven. Rule: after any FalkorDB crash or restart run `make kb && make kb-prev && make centre` before trusting search-dependent tests. The frozen evaluation does not use term search (it feeds HPO ids directly), so its numbers are unaffected.
+
+## Public deployment stack (P6, 2026-10-17)
+- `caddy:2.10.2-alpine` exists (pulled, image 4c6e91c6ed0e). `docker-compose.prod.yml` is a standalone file (no dev ports); only caddy publishes 80/443. `docker compose -f docker-compose.prod.yml config` lists no other published port.
+- Seed in a fresh FalkorDB volume (`--profile seed run --rm seed`: data check + `kb` + `kb-prev` + `centre`): 42 s with raw data already present.
+- Through Caddy (`HTTP_PORT=8088`): CSP/HSTS/nosniff/frame headers present; `/api/*` goes straight to the api (no Next rewrite hop); a spoofed `X-Forwarded-For` is ignored (Caddy replaces it), uvicorn sees the real client address, so the per-client family limit (10/h) is per visitor, not global. The 11th create returned 429.
+- Playwright against the Caddy stack (`E2E_BASE_URL=http://127.0.0.1:8088 pnpm e2e`, `CREATE_LIMIT_PER_HOUR=1000`): 29 passed, 1 skipped, with the strict CSP (`script-src 'self' 'unsafe-inline'`: Next.js inlines its hydration scripts). The api container needs `review/` mounted (safety rules are read at start-up), which the dev compose had missed.

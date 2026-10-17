@@ -3,7 +3,8 @@ import { defineConfig, devices } from "@playwright/test";
 // Own backend (LLM_MODE=off: deterministic, no network) and own production web build, on ports that
 // do not collide with the docker stack. FalkorDB must be up (`make up`).
 const API = "http://127.0.0.1:8010";
-const WEB = "http://127.0.0.1:3100";
+const LIVE = process.env.E2E_BASE_URL; // run against an already-deployed stack (e.g. the Caddy compose)
+const WEB = LIVE ?? "http://127.0.0.1:3100";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -13,7 +14,9 @@ export default defineConfig({
   reporter: [["list"]],
   use: { baseURL: WEB, trace: "retain-on-failure" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: [
+  webServer: LIVE
+    ? undefined
+    : [
     {
       command: `cd .. && LLM_MODE=off CREATE_LIMIT_PER_HOUR=1000 FALKORDB_HOST=localhost uv run uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8010`,
       url: `${API}/api/health`,

@@ -31,8 +31,13 @@ services:
     environment:
       FALKORDB_HOST: falkordb
       FALKORDB_PORT: "6379"
+      FASTEMBED_CACHE_PATH: /srv/.cache/fastembed
     volumes:
       - ./data/derived:/srv/data/derived:ro # kb_info.json written by `make kb`
+      - ./review:/srv/review:ro # safety rules, stories, letters
+      - ./data/demo:/srv/data/demo:ro # recorded demo journeys
+      - ./data/llm_cache:/srv/data/llm_cache:ro # recorded LLM answers (replay mode)
+      - fastembed_cache:/srv/.cache/fastembed
     depends_on:
       falkordb:
         condition: service_healthy
@@ -51,12 +56,18 @@ services:
       timeout: 3s
       retries: 12
 
-  # web: stub until P4 (Next.js app in ./web). Enabled with `docker compose --profile web up`.
   web:
-    profiles: [web]
-    image: node:22.23.3-alpine
-    command:
-      ["sh", "-c", "echo 'web service is a stub until P4' && sleep infinity"]
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        API_ORIGIN: http://api:8000
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:3000" # the app: http://localhost:8080
     networks: [internal]
 
 networks:
@@ -64,3 +75,4 @@ networks:
 
 volumes:
   falkordb_data: {}
+  fastembed_cache: {}

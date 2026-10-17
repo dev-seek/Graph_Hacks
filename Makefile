@@ -25,8 +25,8 @@ kb-prev:
 	@$(RUN) kb-prev env PYTHONPATH=backend uv run python -m app.kb.prev
 
 up:
-	@$(RUN) up docker compose up -d --wait falkordb api
-	@echo "health: http://localhost:8000/api/health"
+	@$(RUN) up docker compose up -d --build --wait falkordb api web
+	@echo "app: http://localhost:8080   health: http://localhost:8000/api/health"
 
 down:
 	@$(RUN) down docker compose down

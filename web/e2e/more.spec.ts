@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { axeClean, noOverflow, parentSafe, skipTours, tabTo } from "./helpers";
 
-const API = "http://127.0.0.1:8010/api";
+const API = `${process.env.E2E_BASE_URL ?? "http://127.0.0.1:8010"}/api`;
 const STORY =
   "Kabir has low muscle tone, delayed walking, delayed speech, a squint, a small head, a heart murmur and feeding problems.";
 

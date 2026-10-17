@@ -16,8 +16,8 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 ## Current tasks
 - [x] 1a daily LLM token budget in router (replay unmetered)
 - [x] 1b 7-day purge job (env PURGE_AFTER_DAYS) + base64 cap
-- [ ] 2 prod stack: web Dockerfile, Caddyfile (CSP/HSTS, body limit, /api direct), standalone docker-compose.prod.yml, XFF trust, no published ports, /debug gating, FalkorDB persistence/seed step; pin+pull Caddy; run Playwright against it
-- [ ] 3 replay cache-miss fallback check (no 500)
+- [x] 2 prod stack: web Dockerfile, Caddyfile (CSP/HSTS, body limit, /api direct), standalone docker-compose.prod.yml, XFF trust, no published ports, /debug gating, FalkorDB persistence/seed step; pin+pull Caddy; run Playwright against it
+- [x] 3 replay cache-miss (verified via Caddy e2e: cache empty, journeys fall back, no 500) fallback check (no 500)
 - [ ] 4 README "Try it" -> fresh-clone test (git clone, other compose project, timed) -> fix snags
 - [ ] 5 audits: pip-audit, pnpm audit, gitleaks (full history) -> gating CI
 - [ ] 6 inspector decision (live /debug/queries behind flag vs honest wording)

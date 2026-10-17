@@ -5,7 +5,7 @@ import { skipTours } from "./helpers";
 
 // Gate evidence: `SCREENSHOTS=1 pnpm e2e screens` writes docs/explain/P4-screens/*.png (360 and 1280 px).
 const out = path.resolve(__dirname, "../../docs/explain/P4-screens");
-const API = "http://127.0.0.1:8010/api";
+const API = `${process.env.E2E_BASE_URL ?? "http://127.0.0.1:8010"}/api`;
 test.skip(!process.env.SCREENSHOTS, "set SCREENSHOTS=1 to refresh the gate screenshots");
 
 const sizes = [

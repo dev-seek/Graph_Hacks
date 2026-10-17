@@ -1,0 +1,117 @@
+# Public deployment (spec §17): standalone file, not an overlay, so no dev ports leak in.
+# Only caddy publishes ports; FalkorDB, api and web live on the internal network.
+#   SITE_ADDRESS=constellation.example.org docker compose -f docker-compose.prod.yml up -d --build
+name: constellation-prod
+
+services:
+  falkordb:
+    image: falkordb/falkordb:6.0.2
+    restart: unless-stopped
+    environment:
+      FALKORDB_ARGS: "TIMEOUT_MAX 10000 TIMEOUT_DEFAULT 3000"
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+      LLM_MODE: ${LLM_MODE:-replay} # keyless public demo; "live" is rate limited + daily budget
+      CREATE_LIMIT_PER_HOUR: ${CREATE_LIMIT_PER_HOUR:-10}
+      PURGE_AFTER_DAYS: "7"
+      WATCHER_INTERVAL_S: "86400"
+      FORWARDED_ALLOW_IPS: "*" # only caddy can reach this container (internal network)
+      FASTEMBED_CACHE_PATH: /srv/.cache/fastembed
+    volumes:
+      - ./data/derived:/srv/data/derived:ro
+      - ./review:/srv/review:ro # safety rules, stories, letters
+      - ./data/demo:/srv/data/demo:ro
+      - ./data/llm_cache:/srv/data/llm_cache:ro
+      - fastembed_cache:/srv/.cache/fastembed
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    networks: [internal]
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request as u; u.urlopen('http://localhost:8000/api/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        API_ORIGIN: http://api:8000
+    restart: unless-stopped
+    networks: [internal]
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [api, web]
+    networks: [internal]
+
+  # One-off: `docker compose -f docker-compose.prod.yml --profile seed run --rm seed`
+  # downloads the pinned data and builds the knowledge graphs inside FalkorDB.
+  seed:
+    profiles: [seed]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+      FASTEMBED_CACHE_PATH: /srv/.cache/fastembed
+    working_dir: /srv
+    volumes:
+      - ./data:/srv/data
+      - ./scripts:/srv/scripts:ro
+      - ./eval:/srv/eval:ro
+      - ./review:/srv/review:ro
+      - ./docs:/srv/docs:ro
+      - fastembed_cache:/srv/.cache/fastembed
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    networks: [internal]
+    command:
+      - sh
+      - -c
+      - python scripts/data.py && python -m app.kb.cli && python -m app.kb.prev && python -m app.centre.seed
+
+networks:
+  internal: {}
+
+volumes:
+  falkordb_data: {}
+  caddy_data: {}
+  fastembed_cache: {}

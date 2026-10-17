@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { axeClean, parentSafe, skipTours, tabTo } from "./helpers";
 
-const API = "http://127.0.0.1:8010/api";
+const API = `${process.env.E2E_BASE_URL ?? "http://127.0.0.1:8010"}/api`;
 
 async function walk(page: Page, journey: string) {
   await page.goto(`/demo/${journey}`);

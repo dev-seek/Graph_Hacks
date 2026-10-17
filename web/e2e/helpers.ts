@@ -18,6 +18,7 @@ export async function skipTours(page: Page) {
 }
 
 export async function axeClean(page: Page) {
+  await page.waitForTimeout(400); // let colour transitions finish: axe would read mid-fade colours
   const r = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(r.violations.map((v) => `${v.id}: ${v.nodes[0]?.html.slice(0, 120)}`)).toEqual([]);
 }

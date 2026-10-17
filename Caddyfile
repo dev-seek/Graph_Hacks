@@ -1,0 +1,33 @@
+# Reverse proxy for the public deployment (spec §17). SITE_ADDRESS is the DNS name
+# (automatic HTTPS) or ":80" for a local, prod-shaped run.
+{$SITE_ADDRESS::80} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		X-Frame-Options "DENY"
+		# Next.js inlines its hydration scripts, hence 'unsafe-inline' for script-src.
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		-Server
+	}
+
+	# the API is reached directly (no Next rewrite hop); uploads are capped at the edge
+	handle /api/* {
+		request_body {
+			max_size 8MB
+		}
+		reverse_proxy api:8000 {
+			# the what-if copies a graph and can take about a minute on a cold start
+			transport http {
+				response_header_timeout 180s
+			}
+		}
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}
