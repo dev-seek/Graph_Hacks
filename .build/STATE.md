@@ -14,7 +14,17 @@ updated: 2026-10-15 22:20 IST (human gate decision; negatives map corrected)
 | P6 | phases/P6-ship.md | todo | |
 
 ## Current tasks
-(empty; plan P6 at its start)
+- [x] 1a daily LLM token budget in router (replay unmetered)
+- [x] 1b 7-day purge job (env PURGE_AFTER_DAYS) + base64 cap
+- [ ] 2 prod stack: web Dockerfile, Caddyfile (CSP/HSTS, body limit, /api direct), standalone docker-compose.prod.yml, XFF trust, no published ports, /debug gating, FalkorDB persistence/seed step; pin+pull Caddy; run Playwright against it
+- [ ] 3 replay cache-miss fallback check (no 500)
+- [ ] 4 README "Try it" -> fresh-clone test (git clone, other compose project, timed) -> fix snags
+- [ ] 5 audits: pip-audit, pnpm audit, gitleaks (full history) -> gating CI
+- [ ] 6 inspector decision (live /debug/queries behind flag vs honest wording)
+- [ ] 7 full README (Mermaid, Cypher table + link check, eval CIs, B2 honesty, cost not measured, disclosure)
+- [ ] 8 docs/USER_GUIDE.md + /help link (copy-a11y-reviewer)
+- [ ] 9 video_script.md, blog_outline.md, checklist.md, deploy.md
+- [ ] 10 reviewer over repo, fix blockers; phase gate
 
 ## Needs from human
 - [ ] (non-blocking) Review ADR-0012 (441 disease names that equal HPO sign labels are exempt from the parent-text check; a few, e.g. "Acute myeloid leukemia", read as diagnoses)
@@ -42,6 +52,7 @@ Non-blocking (do when convenient):
 - P2 gate (human decision, Manoj, 2026-10-15): option (a). Held-out dev (400 cases, disjoint from the 120 tuning cases): Ours beats B0 (paired top-10 +1.0..+7.3 pts) and is level with B1 (-1.5..+4.7) and B2 (-3.3..+2.7); MRR Ours 0.369 vs B2 0.368. The gate as worded ("Ours > B0, B1 and B2") is NOT met; this is recorded and reported honestly, not reworded. No re-tuning toward B2 and no planner change. Thresholds τ0/τ1/τ2 = 0.30/0.40/0.50 stay (ADR-0006: referral sensitivity ≈21% on dev, 25% of dev positives end at "mention at routine visit"; 0% false referral, 22.5% false see-doctor on negatives). ADR-0007.
 
 ## Notes for next session (≤ 10 lines)
+- phase_start P6: e986f82 (= tag P5-done)
 - P5 handoff: headline lpo top-10 13.0% (after doctor 14.3%); Ours does NOT beat B2 (README must say so); referral sensitivity ~13%; lpo only 68.7% of test targets still annotated. After any FalkorDB restart run `make kb && make kb-prev && make centre` (VERIFIED.md). Centre what-if first run ~40 s. Don't run e2e while heavy jobs run.
 - P5 frozen run: `.build/frozen/test_checkpoint.jsonl` (git-ignored, never open it). Resume: `PYTHONPATH=backend nohup uv run python -u -m app.eval.frozen test all 6`; progress in .build/logs/frozen-test.log. Then `python -m app.eval.frozen_report test` and `python -m app.eval.frozen_render <json>`. Do not run e2e/builds while it runs (FalkorDB crashed once under load; error rows are retried on resume). `make centre` after any FalkorDB restart (centre graph is not persisted until a BGSAVE).
 - phase_start P5: 35ca415 (= tag P4-done)

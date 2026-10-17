@@ -59,3 +59,14 @@ def test_graph_unavailable_maps_to_503() -> None:
 
     res = TestClient(app).get("/api/_probe_503")
     assert res.status_code == 503 and "graph" in res.json()["detail"]
+
+
+def test_document_base64_is_size_capped() -> None:
+    import pytest
+    from pydantic import ValidationError
+
+    from app.api.schemas import MAX_PDF_BYTES, ParentDocumentIn
+
+    ParentDocumentIn(kind="pdf", content_base64="A" * 100)
+    with pytest.raises(ValidationError):
+        ParentDocumentIn(kind="pdf", content_base64="A" * (MAX_PDF_BYTES * 2))

@@ -18,6 +18,21 @@ log = structlog.get_logger("api")
 WATCHER_INTERVAL_S = int(os.environ.get("WATCHER_INTERVAL_S") or 0)  # 0 = off (86400 = daily)
 
 
+PURGE_AFTER_DAYS = int(os.environ.get("PURGE_AFTER_DAYS") or 0)  # 0 = keep (public demo: 7)
+PURGE_EVERY_S = 3600
+
+
+async def _purge_loop() -> None:
+    while True:
+        try:
+            n = await asyncio.to_thread(get_service().purge_expired, PURGE_AFTER_DAYS)
+            if n:
+                log.info("purged_families", count=n, max_age_days=PURGE_AFTER_DAYS)
+        except Exception:  # noqa: BLE001 (retention must never take the API down)
+            log.exception("purge_failed")
+        await asyncio.sleep(PURGE_EVERY_S)
+
+
 async def _watch_loop() -> None:
     while True:
         await asyncio.sleep(WATCHER_INTERVAL_S)
@@ -29,10 +44,14 @@ async def _watch_loop() -> None:
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None]:
-    task = asyncio.create_task(_watch_loop()) if WATCHER_INTERVAL_S > 0 else None
+    tasks: list[asyncio.Task[None]] = []
+    if WATCHER_INTERVAL_S > 0:
+        tasks.append(asyncio.create_task(_watch_loop()))
+    if PURGE_AFTER_DAYS > 0:
+        tasks.append(asyncio.create_task(_purge_loop()))
     yield
-    if task:
-        task.cancel()
+    for t in tasks:
+        t.cancel()
 
 
 app = FastAPI(title="Constellation API", version="0.1.0", lifespan=lifespan)

@@ -13,6 +13,7 @@ import hmac
 import io
 import secrets
 import uuid
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from langgraph.types import Command
@@ -253,6 +254,28 @@ class FamilyService:
             raise BadRequest("not available right now")
         self._resume(family_id, {"type": "advance", "months": months})
         return self.state(family_id)
+
+    def purge_expired(self, max_age_days: int = 7, *, now: datetime | None = None) -> int:
+        """Public-demo retention (spec §17): erase family graphs older than `max_age_days`.
+
+        Touches `family_*` graphs only (never kb, centre or the checkpoint graph). A graph whose
+        creation time cannot be read is left alone. Returns how many families were erased.
+        """
+        cutoff = (now or datetime.now(UTC)) - timedelta(days=max_age_days)
+        erased = 0
+        for name in self.deps.db.list_graphs():
+            if not name.startswith("family_"):
+                continue
+            fid = name.removeprefix("family_")
+            try:
+                info = self.deps.repo(fid).info()
+                if info is None or datetime.fromisoformat(info.created_at) >= cutoff:
+                    continue
+                self.deps.repo(fid).delete()
+            except Exception:  # noqa: BLE001, S112 (one broken family must not stop the sweep)
+                continue
+            erased += 1
+        return erased
 
     def watch_all(self) -> int:
         """Daily watcher: re-score every active family; notify when a gate newly fires.

@@ -1190,6 +1190,7 @@
           "content_base64": {
             "anyOf": [
               {
+                "maxLength": 6990514,
                 "type": "string"
               },
               {

@@ -165,6 +165,21 @@ def test_watch_all_notifies_once_for_a_new_gate(make_service: Any) -> None:
     assert svc.watch_all() >= 0  # runs over every family graph without raising
 
 
+def test_purge_expired_erases_only_old_family_graphs(make_service: Any) -> None:
+    from datetime import UTC, datetime, timedelta
+
+    svc = make_service("off")
+    fid, _ = svc.create_family()
+    db = svc.deps.db
+    graphs_before = {g for g in db.list_graphs() if not g.startswith("family_")}
+    assert svc.purge_expired(7) >= 0 and svc.deps.repo(fid).exists()  # fresh: kept
+    assert svc.purge_expired(7, now=datetime.now(UTC) + timedelta(days=6)) >= 0
+    assert svc.deps.repo(fid).exists()
+    assert svc.purge_expired(7, now=datetime.now(UTC) + timedelta(days=8)) >= 1
+    assert not svc.deps.repo(fid).exists()
+    assert graphs_before <= set(db.list_graphs())  # kb / centre / checkpoint graphs untouched
+
+
 def test_maya_story_never_reaches_the_llm(make_service: Any) -> None:
     adapter = FakeAdapter()
     svc = make_service("fake", adapter)

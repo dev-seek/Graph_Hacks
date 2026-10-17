@@ -167,7 +167,7 @@ class ParentDocumentIn(Strict):
     kind: Literal["text", "pdf"]
     text: str | None = Field(default=None, max_length=MAX_STORY_CHARS * 5)
     filename: str | None = None
-    content_base64: str | None = None
+    content_base64: str | None = Field(default=None, max_length=MAX_PDF_BYTES * 4 // 3 + 8)
 
 
 class ParentEvent(Strict):
